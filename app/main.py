@@ -1,6 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.routes import auth, mcqs, sessions, analytics
+from app.db.database import engine
+from app.models.models import Base
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="RankBattle UPSC", version="1.0.0")
 

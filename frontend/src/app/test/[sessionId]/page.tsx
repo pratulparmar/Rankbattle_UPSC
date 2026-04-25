@@ -42,12 +42,8 @@ export default function TestPage() {
 
   const handleSubmit = useCallback(async () => {
     setSubmitting(true)
-    const payload: Record<string, number> = {}
-    Object.entries(answers).forEach(([qId, a]) => {
-      if (a.selectedIndex !== null && a.selectedIndex >= 0) payload[qId] = a.selectedIndex
-    })
     try {
-      const res = await submitSession(sessionId, payload, timeSpent)
+      const res = await submitSession(sessionId, answers, timeSpent)
       // Save result to sessionStorage for results page
       sessionStorage.setItem(`result_${sessionId}`, JSON.stringify(res.data))
     } catch (err) {

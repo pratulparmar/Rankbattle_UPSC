@@ -9,7 +9,7 @@ export interface Question {
   difficulty?: string
 }
 
-interface Answer {
+export interface Answer {
   selectedIndex: number | null
   markedForReview: boolean
   visited: boolean

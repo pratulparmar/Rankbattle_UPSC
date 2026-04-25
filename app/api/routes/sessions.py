@@ -37,7 +37,7 @@ def start_session(req: SessionStartRequest, db: Session = Depends(get_db),
         session_id=uuid.uuid4(), user_id=user.user_id,
         mode=req.mode, subject_filter=req.subject_filter,
         topic_filter=req.topic_filter, total_q=req.total_q,
-        duration_mins=req.duration_mins, started_at=datetime.utcnow(),
+        duration_mins=req.duration_mins, started_at=datetime.now(timezone.utc),
         status="IN_PROGRESS"
     )
     db.add(session)
@@ -81,7 +81,7 @@ def submit_session(session_id: str, req: SessionSubmitRequest,
     raw_score = (correct * 2) - (wrong * 0.66)
     final_score = max(0, raw_score)
     accuracy = round(correct / max(correct + wrong, 1) * 100, 2)
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
     started = session.started_at if session.started_at else now
     time_taken = round((now - started).total_seconds() / 60, 1)
     session.status = "SUBMITTED"

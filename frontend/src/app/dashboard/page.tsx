@@ -3,18 +3,15 @@ import { useAuth } from '@/lib/auth'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { getSubjects } from '@/lib/api'
+import BottomNav from '@/components/BottomNav'
 
-const SUBJECT_ICONS: Record<string, string> = {
-  'Economy': '📈', 'Environment': '🌿', 'Geography': '🗺️',
-  'History': '🏛️', 'Polity': '⚖️', 'Science & Tech': '🔬',
-}
-const SUBJECT_COLORS: Record<string, string> = {
-  'Economy': 'bg-green-50 border-green-200 hover:bg-green-100',
-  'Environment': 'bg-emerald-50 border-emerald-200 hover:bg-emerald-100',
-  'Geography': 'bg-blue-50 border-blue-200 hover:bg-blue-100',
-  'History': 'bg-yellow-50 border-yellow-200 hover:bg-yellow-100',
-  'Polity': 'bg-purple-50 border-purple-200 hover:bg-purple-100',
-  'Science & Tech': 'bg-red-50 border-red-200 hover:bg-red-100',
+const SUBJECT_CONFIG: Record<string, { icon: string; bg: string; accent: string; mastery: number }> = {
+  'Economy':       { icon: '📈', bg: 'linear-gradient(135deg, #E8F5E9, #C8E6C9)', accent: '#2E7D52', mastery: 71 },
+  'Environment':   { icon: '🌿', bg: 'linear-gradient(135deg, #E0F2F1, #B2DFDB)', accent: '#00695C', mastery: 64 },
+  'Geography':     { icon: '🗺️', bg: 'linear-gradient(135deg, #E3F2FD, #BBDEFB)', accent: '#1565C0', mastery: 81 },
+  'History':       { icon: '🏛️', bg: 'linear-gradient(135deg, #FFF8E1, #FFECB3)', accent: '#F57F17', mastery: 58 },
+  'Polity':        { icon: '⚖️', bg: 'linear-gradient(135deg, #F3E5F5, #E1BEE7)', accent: '#6A1B9A', mastery: 72 },
+  'Science & Tech':{ icon: '🔬', bg: 'linear-gradient(135deg, #FCE4EC, #F8BBD0)', accent: '#C62828', mastery: 77 },
 }
 
 const SCORES = [62, 71, 58, 75, 68, 79, 83, 88]
@@ -30,7 +27,7 @@ function ScoreCurve({ scores }: { scores: number[] }) {
     <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', height: 72 }} preserveAspectRatio="none">
       <defs>
         <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#A0522D" stopOpacity="0.25"/>
+          <stop offset="0%" stopColor="#A0522D" stopOpacity="0.3"/>
           <stop offset="100%" stopColor="#A0522D" stopOpacity="0"/>
         </linearGradient>
       </defs>
@@ -40,6 +37,39 @@ function ScoreCurve({ scores }: { scores: number[] }) {
         <circle key={i} cx={px(i)} cy={py(s)} r="5" fill="#A0522D" stroke="white" strokeWidth="2.5"/>
       ))}
     </svg>
+  )
+}
+
+function Greeting({ name }: { name: string }) {
+  const hour = new Date().getHours()
+  const greeting = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening'
+  const emoji = hour < 12 ? '🌅' : hour < 17 ? '☀️' : '🌙'
+  return (
+    <div>
+      <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 11, letterSpacing: 2.5, marginBottom: 3, fontFamily: 'JetBrains Mono, monospace' }}>
+        {emoji} {greeting.toUpperCase()}
+      </p>
+      <h2 className="serif" style={{ color: 'white', fontSize: 26, fontWeight: 700, lineHeight: 1.2 }}>
+        {name?.split(' ')[0]} 👋
+      </h2>
+      <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13, marginTop: 4, fontStyle: 'italic', fontFamily: 'Georgia, serif' }}>
+        Your rank is waiting to be claimed.
+      </p>
+    </div>
+  )
+}
+
+function MasteryBar({ value, color }: { value: number; color: string }) {
+  return (
+    <div style={{ marginTop: 10 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+        <span style={{ fontSize: 10, color, fontWeight: 600, letterSpacing: 1 }}>MASTERY</span>
+        <span style={{ fontSize: 10, fontWeight: 700, color, fontFamily: 'JetBrains Mono, monospace' }}>{value}%</span>
+      </div>
+      <div style={{ height: 5, background: 'rgba(0,0,0,0.08)', borderRadius: 999, overflow: 'hidden' }}>
+        <div style={{ width: `${value}%`, height: '100%', background: color, borderRadius: 999, transition: 'width 1s ease' }}/>
+      </div>
+    </div>
   )
 }
 
@@ -70,24 +100,25 @@ export default function Dashboard() {
 
   if (isLoading) return (
     <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--paper)' }}>
-      <p style={{ fontFamily: 'Georgia, serif', color: 'var(--ink-soft)', fontSize: 15 }}>Loading...</p>
+      <p style={{ fontFamily: 'Georgia, serif', color: 'var(--ink-soft)', fontStyle: 'italic' }}>Loading your war room...</p>
     </div>
   )
 
   return (
-    <div className="min-h-screen fade-in" style={{ background: 'var(--paper)', paddingBottom: 24 }}>
+    <div className="min-h-screen fade-in" style={{ background: 'var(--paper)', paddingBottom: 100 }}>
       {/* Header */}
       <div style={{ background: 'linear-gradient(160deg, #3D2E22 0%, #1A1410 100%)', padding: '52px 22px 28px', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: -50, right: -40, width: 220, height: 220, borderRadius: '50%', background: 'rgba(160,82,45,0.15)' }}/>
         <div style={{ position: 'absolute', bottom: -30, left: -20, width: 140, height: 140, borderRadius: '50%', background: 'rgba(200,150,12,0.08)' }}/>
         <div style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 18 }}>
-            <div>
-              <p style={{ color: 'rgba(255,255,255,0.45)', fontSize: 11, letterSpacing: 2.5, marginBottom: 3, fontFamily: 'JetBrains Mono, monospace' }}>GOOD MORNING</p>
-              <h2 className="serif" style={{ color: 'white', fontSize: 26, fontWeight: 600 }}>{user?.name}</h2>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <button onClick={logout} style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 10, padding: '8px 14px', color: 'rgba(255,255,255,0.7)', fontSize: 12, cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
+            <Greeting name={user?.name || 'Aspirant'}/>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8 }}>
+              <div style={{ background: 'rgba(200,150,12,0.18)', border: '1px solid rgba(200,150,12,0.35)', borderRadius: 14, padding: '8px 14px', textAlign: 'center' }}>
+                <p style={{ color: '#E8B422', fontSize: 9, letterSpacing: 1.5, marginBottom: 2 }}>STREAK</p>
+                <p className="mono" style={{ color: 'white', fontSize: 22, fontWeight: 700, lineHeight: 1 }}>🔥 12</p>
+              </div>
+              <button onClick={logout} style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 10, padding: '6px 12px', color: 'rgba(255,255,255,0.5)', fontSize: 11, cursor: 'pointer', fontFamily: 'Inter, sans-serif' }}>
                 Logout
               </button>
             </div>
@@ -96,16 +127,17 @@ export default function Dashboard() {
           {/* Rank card */}
           <div style={{ background: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 18, padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
-              <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 10, letterSpacing: 2.5, marginBottom: 4, fontFamily: 'JetBrains Mono, monospace' }}>CURRENT RANK</p>
-              <p className="mono gold-shine" style={{ fontSize: 40, fontWeight: 700, lineHeight: 1 }}>#2,847</p>
+              <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 10, letterSpacing: 2.5, marginBottom: 4, fontFamily: 'JetBrains Mono, monospace' }}>LIVE RANK</p>
+              <p className="mono gold-shine" style={{ fontSize: 38, fontWeight: 700, lineHeight: 1 }}>#2,847</p>
               <p style={{ color: '#E8B422', fontSize: 12, marginTop: 5, fontWeight: 600 }}>▲ Top 15% · +124 this week</p>
             </div>
-            <div style={{ textAlign: 'right' }}>
-              <div style={{ background: 'rgba(200,150,12,0.18)', border: '1px solid rgba(200,150,12,0.35)', borderRadius: 14, padding: '10px 16px' }}>
-                <p style={{ color: '#E8B422', fontSize: 10, letterSpacing: 1.5, marginBottom: 3 }}>STREAK</p>
-                <p className="mono" style={{ color: 'white', fontSize: 26, fontWeight: 700 }}>🔥 12</p>
-              </div>
-            </div>
+            <svg width="68" height="68" viewBox="0 0 68 68">
+              <circle cx="34" cy="34" r="28" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6"/>
+              <circle cx="34" cy="34" r="28" fill="none" stroke="#C8960C" strokeWidth="6"
+                strokeDasharray={`${0.85 * 2 * Math.PI * 28} ${2 * Math.PI * 28}`}
+                strokeDashoffset={2 * Math.PI * 28 * 0.25} strokeLinecap="round" transform="rotate(-90 34 34)"/>
+              <text x="34" y="39" textAnchor="middle" fill="white" fontSize="13" fontWeight="700" fontFamily="JetBrains Mono, monospace">85%</text>
+            </svg>
           </div>
         </div>
       </div>
@@ -132,62 +164,66 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Start */}
-        <div style={{ background: 'linear-gradient(135deg, #A0522D, #7A3A1E)', borderRadius: 20, padding: '22px', marginBottom: 14, position: 'relative', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', top: -30, right: -30, width: 140, height: 140, borderRadius: '50%', background: 'rgba(255,255,255,0.06)' }}/>
+        <div style={{ background: 'linear-gradient(135deg, #A0522D, #7A3A1E)', borderRadius: 20, padding: '20px', marginBottom: 18, position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: -30, right: -30, width: 130, height: 130, borderRadius: '50%', background: 'rgba(255,255,255,0.06)' }}/>
           <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 10, letterSpacing: 2.5, marginBottom: 5 }}>QUICK START</p>
-          <p className="serif" style={{ color: 'white', fontSize: 20, fontWeight: 600, marginBottom: 4 }}>GS Paper I — Full Length</p>
-          <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 12, marginBottom: 18 }}>100 questions · 120 minutes · −⅓ penalty</p>
-          <div style={{ display: 'flex', gap: 10 }}>
-            <button className="btn-terra" onClick={() => router.push('/test/start')} style={{ flex: 1, padding: '13px', fontSize: 14, background: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(10px)', boxShadow: 'none', border: '1px solid rgba(255,255,255,0.25)' }}>
-              Start Mock →
-            </button>
-            <button style={{ padding: '13px 16px', borderRadius: 14, border: '1px solid rgba(255,255,255,0.2)', background: 'transparent', color: 'white', fontSize: 13, cursor: 'pointer', fontFamily: 'Inter' }}>
-              Subject
-            </button>
-          </div>
+          <p className="serif" style={{ color: 'white', fontSize: 19, fontWeight: 700, marginBottom: 4 }}>GS Paper I — Full Length</p>
+          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, marginBottom: 16 }}>100 questions · 120 min · −⅓ penalty</p>
+          <button className="btn-terra" onClick={() => router.push('/test/start')}
+            style={{ width: '100%', padding: '13px', fontSize: 14, background: 'rgba(255,255,255,0.18)', backdropFilter: 'blur(10px)', boxShadow: 'none', border: '1px solid rgba(255,255,255,0.25)' }}>
+            Start Full Mock →
+          </button>
         </div>
 
-        {/* Aspirants Daily */}
-        <div className="paper-card" style={{ padding: '16px 18px', marginBottom: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }} onClick={() => router.push('/aspirants-daily')}>
-          <div>
-            <p style={{ fontSize: 9, letterSpacing: 2, color: 'var(--ink-faint)', marginBottom: 4, fontWeight: 600 }}>TODAY&apos;S EDITION</p>
-            <p className="serif" style={{ fontSize: 17, fontWeight: 600, fontStyle: 'italic' }}>The Aspirant&apos;s Daily</p>
-            <p style={{ fontSize: 12, color: 'var(--ink-soft)', marginTop: 3 }}>Editorials · Current Affairs · Vocab</p>
-          </div>
-          <div style={{ background: 'var(--paper-dark)', borderRadius: 12, padding: '10px 14px', textAlign: 'center' }}>
-            <div style={{ fontSize: 24 }}>📰</div>
-            <p style={{ fontSize: 9, color: 'var(--terra)', fontWeight: 700, marginTop: 4, letterSpacing: 1.5 }}>READ →</p>
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 18 }}>
-          {[{ l: 'Tests', v: '34', e: '📝' }, { l: 'Accuracy', v: '71%', e: '🎯' }, { l: 'Hours', v: '128h', e: '⏱️' }].map((s, i) => (
+        {/* Stats Row */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginBottom: 22 }}>
+          {[{ l: 'Tests Done', v: '34', e: '📝', c: '#A0522D' }, { l: 'Accuracy', v: '71%', e: '🎯', c: '#2E7D52' }, { l: 'Study Hours', v: '128h', e: '⏱️', c: '#1565C0' }].map((s, i) => (
             <div key={i} className="paper-card" style={{ padding: '14px 10px', textAlign: 'center' }}>
               <div style={{ fontSize: 22, marginBottom: 5 }}>{s.e}</div>
-              <p className="mono" style={{ fontSize: 18, fontWeight: 700, color: 'var(--terra)' }}>{s.v}</p>
-              <p style={{ fontSize: 9, color: 'var(--ink-faint)', letterSpacing: 1.5, marginTop: 2, fontWeight: 600 }}>{s.l.toUpperCase()}</p>
+              <p className="mono" style={{ fontSize: 18, fontWeight: 700, color: s.c }}>{s.v}</p>
+              <p style={{ fontSize: 9, color: 'var(--ink-faint)', letterSpacing: 1.2, marginTop: 2, fontWeight: 600 }}>{s.l.toUpperCase()}</p>
             </div>
           ))}
         </div>
 
-        {/* Subject Grid */}
-        <p className="serif" style={{ fontSize: 18, fontWeight: 600, marginBottom: 12, color: 'var(--ink)' }}>Practice by Subject</p>
+        {/* Subject Cards */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+          <p className="serif" style={{ fontSize: 20, fontWeight: 700, color: 'var(--ink)' }}>Practice by Subject</p>
+          <p style={{ fontSize: 11, color: 'var(--terra)', fontWeight: 600, cursor: 'pointer' }}>See All →</p>
+        </div>
+
         {loadingSubjects ? (
-          <p style={{ color: 'var(--ink-faint)', fontSize: 13 }}>Loading subjects...</p>
+          <p style={{ color: 'var(--ink-faint)', fontSize: 13, textAlign: 'center', padding: '20px 0' }}>Loading subjects...</p>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {subjects.map(name => (
-              <button key={name} onClick={() => router.push(`/test/start?subject=${encodeURIComponent(name)}`)}
-                className={`border-2 rounded-2xl p-4 text-left transition ${SUBJECT_COLORS[name] || 'bg-gray-50 border-gray-200 hover:bg-gray-100'}`}>
-                <div className="text-3xl mb-2">{SUBJECT_ICONS[name] || '📚'}</div>
-                <div className="font-semibold text-sm" style={{ color: 'var(--ink)' }}>{name}</div>
-                <div className="text-xs mt-1" style={{ color: 'var(--ink-faint)' }}>{topicCounts[name]} MCQs →</div>
-              </button>
-            ))}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            {subjects.map(name => {
+              const cfg = SUBJECT_CONFIG[name] || { icon: '📚', bg: 'linear-gradient(135deg, #F5F5F5, #EEEEEE)', accent: '#616161', mastery: 60 }
+              return (
+                <button key={name} onClick={() => router.push(`/test/start?subject=${encodeURIComponent(name)}`)}
+                  style={{
+                    background: cfg.bg, borderRadius: 20, padding: '18px 16px',
+                    border: `1.5px solid ${cfg.accent}22`,
+                    cursor: 'pointer', textAlign: 'left',
+                    boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+                    transition: 'transform 0.18s ease, box-shadow 0.18s ease',
+                  }}
+                  onMouseDown={e => (e.currentTarget.style.transform = 'scale(0.97)')}
+                  onMouseUp={e => (e.currentTarget.style.transform = 'scale(1)')}
+                  onTouchStart={e => (e.currentTarget.style.transform = 'scale(0.97)')}
+                  onTouchEnd={e => (e.currentTarget.style.transform = 'scale(1)')}
+                >
+                  <div style={{ fontSize: 32, marginBottom: 8, lineHeight: 1 }}>{cfg.icon}</div>
+                  <p style={{ fontSize: 14, fontWeight: 700, color: cfg.accent, marginBottom: 2 }}>{name}</p>
+                  <p style={{ fontSize: 11, color: `${cfg.accent}99`, fontWeight: 500 }}>{topicCounts[name]} MCQs</p>
+                  <MasteryBar value={cfg.mastery} color={cfg.accent}/>
+                </button>
+              )
+            })}
           </div>
         )}
       </div>
+
+      <BottomNav/>
     </div>
   )
 }

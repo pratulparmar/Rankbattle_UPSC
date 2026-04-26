@@ -3,6 +3,7 @@ import { useAuth } from '@/lib/auth'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { getAnalytics, getWeakAreas } from '@/lib/api'
+import BottomNav from '@/components/BottomNav'
 
 const ANALYTICS = [
   { subject: 'Polity', color: '#C0392B', user: 72, topper: 88, peer: 65 },

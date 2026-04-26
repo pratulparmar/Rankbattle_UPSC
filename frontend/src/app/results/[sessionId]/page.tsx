@@ -30,18 +30,16 @@ export default function ResultsPage() {
     </div>
   )
 
-  // Log result so we can see exact API fields
-  console.log('Result data:', result)
-
-  const correct = result.correct ?? result.correct_count ?? result.total_correct ?? 0
-  const incorrect = result.incorrect ?? result.incorrect_count ?? result.total_incorrect ?? result.wrong ?? 0
-  const skipped = result.skipped ?? result.unattempted ?? result.total_skipped ?? 0
-  const score = result.score ?? result.total_score ?? result.marks ?? 0
-  const total = result.total_questions ?? result.total ?? 100
-  const accuracy = result.accuracy ?? (correct > 0 ? Math.round((correct / (correct + incorrect)) * 100) : 0)
-  const maxScore = total * 2
-  const scorePercent = Math.round((score / maxScore) * 100)
-  const isPass = scorePercent >= 33
+  // API shape: { session_id, total_q, attempted, correct, wrong, skipped, raw_score, final_score, accuracy, time_taken_mins }
+  const correct   = result.correct ?? 0
+  const wrong     = result.wrong ?? 0
+  const skipped   = result.skipped ?? 0
+  const score     = result.final_score ?? result.raw_score ?? 0
+  const total     = result.total_q ?? 100
+  const accuracy  = result.accuracy ?? 0
+  const maxScore  = total * 2
+  const scorePercent = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0
+  const isPass    = scorePercent >= 33
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -68,9 +66,9 @@ export default function ResultsPage() {
             <div className="text-xs text-green-500 mt-0.5">+{(correct * 2).toFixed(2)}</div>
           </div>
           <div className="bg-white rounded-xl border p-5 text-center">
-            <div className="text-3xl font-bold text-red-500">{incorrect}</div>
+            <div className="text-3xl font-bold text-red-500">{wrong}</div>
             <div className="text-sm text-gray-500 mt-1">Incorrect</div>
-            <div className="text-xs text-red-500 mt-0.5">-{(incorrect * 0.66).toFixed(2)}</div>
+            <div className="text-xs text-red-500 mt-0.5">-{(wrong * 0.66).toFixed(2)}</div>
           </div>
           <div className="bg-white rounded-xl border p-5 text-center">
             <div className="text-3xl font-bold text-gray-400">{skipped}</div>
@@ -91,26 +89,11 @@ export default function ResultsPage() {
           </div>
         </div>
 
-        {/* Subject Breakdown if available */}
-        {result.subject_breakdown && Object.keys(result.subject_breakdown).length > 0 && (
-          <div className="bg-white rounded-xl border p-5 mb-6">
-            <h3 className="font-semibold text-gray-700 mb-4">Subject Breakdown</h3>
-            <div className="space-y-3">
-              {Object.entries(result.subject_breakdown).map(([subject, data]: [string, any]) => {
-                const acc = data.accuracy ?? 0
-                return (
-                  <div key={subject}>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-gray-700">{subject}</span>
-                      <span className="font-medium">{Number(acc).toFixed(0)}%</span>
-                    </div>
-                    <div className="w-full bg-gray-100 rounded-full h-2">
-                      <div className="h-2 rounded-full bg-blue-500" style={{ width: `${Math.min(acc, 100)}%` }} />
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
+        {/* Time taken */}
+        {result.time_taken_mins != null && (
+          <div className="bg-white rounded-xl border p-5 mb-6 flex justify-between items-center">
+            <span className="text-sm font-medium text-gray-700">⏱ Time Taken</span>
+            <span className="text-sm font-bold text-gray-800">{result.time_taken_mins} min</span>
           </div>
         )}
 

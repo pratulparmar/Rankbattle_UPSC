@@ -1,26 +1,72 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper: #F9F7F2;
+  --paper-dark: #F0EDE4;
+  --paper-deeper: #E8E3D8;
+  --terra: #A0522D;
+  --terra-light: #C4733F;
+  --terra-dark: #7A3A1E;
+  --ochre: #C8960C;
+  --ochre-light: #E8B422;
+  --ink: #1A1410;
+  --ink-mid: #3D2E22;
+  --ink-soft: #6B5744;
+  --ink-faint: #9A8070;
+  --success: #2E7D52;
+  --danger: #C0392B;
+  --shadow-sm: 0 2px 8px rgba(30,16,8,0.08);
+  --shadow-md: 0 4px 20px rgba(30,16,8,0.12);
+  --shadow-lg: 0 8px 40px rgba(30,16,8,0.16);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html, body { min-height: 100%; background: var(--paper); color: var(--ink); font-family: 'Inter', sans-serif; }
+
+.serif { font-family: 'Playfair Display', Georgia, serif; }
+.mono { font-family: 'JetBrains Mono', monospace; }
+
+.paper-card {
+  background: white;
+  border-radius: 20px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(160,82,45,0.1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.glass-card {
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.85);
+  border-radius: 20px;
+  box-shadow: var(--shadow-md);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.btn-terra {
+  background: linear-gradient(135deg, var(--terra), var(--terra-dark));
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(160,82,45,0.35);
+  transition: all 0.18s ease;
 }
+.btn-terra:active { transform: scale(0.97); }
+.btn-terra:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.fade-in { animation: fadeUp 0.35s cubic-bezier(0.16,1,0.3,1) forwards; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+
+.gold-shine {
+  background: linear-gradient(90deg, #C8960C, #E8B422, #C8960C);
+  background-size: 200% auto;
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  animation: goldMove 3s linear infinite;
+}
+@keyframes goldMove { to { background-position: 200% center; } }
+
+::-webkit-scrollbar { display: none; }
+* { scrollbar-width: none; }

@@ -1,182 +1,90 @@
 'use client'
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { getAnalytics, getWeakAreas } from '@/lib/api'
 
-// API shape: { subject, topic_id, total_attempts, correct, accuracy }
-interface TopicStat {
-  subject: string
-  topic_id: string
-  total_attempts: number
-  correct: number
-  accuracy: number
-}
+const ANALYTICS = [
+  { subject: 'Polity', color: '#C0392B', user: 72, topper: 88, peer: 65 },
+  { subject: 'History', color: '#6B3A2A', user: 58, topper: 82, peer: 61 },
+  { subject: 'Geography', color: '#2E7D52', user: 81, topper: 90, peer: 70 },
+  { subject: 'Economy', color: '#1A5276', user: 64, topper: 85, peer: 62 },
+  { subject: 'Sci & Tech', color: '#4A235A', user: 77, topper: 88, peer: 68 },
+]
 
-export default function AnalyticsPage() {
+export default function Analytics() {
   const { user, isLoading } = useAuth()
   const router = useRouter()
-  const [topics, setTopics] = useState<TopicStat[]>([])
-  const [weakAreas, setWeakAreas] = useState<TopicStat[]>([])
-  const [loading, setLoading] = useState(true)
-  const [mounted, setMounted] = useState(false)
+  const [vis, setVis] = useState(false)
 
-  useEffect(() => { setMounted(true) }, [])
   useEffect(() => {
     if (!isLoading && !user) router.push('/login')
   }, [user, isLoading])
-  useEffect(() => {
-    Promise.all([getAnalytics(), getWeakAreas()])
-      .then(([aRes, wRes]) => {
-        setTopics(Array.isArray(aRes.data) ? aRes.data : [])
-        setWeakAreas(Array.isArray(wRes.data) ? wRes.data : [])
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false))
-  }, [])
 
-  if (!mounted) return null
+  useEffect(() => { setTimeout(() => setVis(true), 300) }, [])
 
-  // Aggregate by subject
-  const bySubject: Record<string, { total: number; correct: number }> = {}
-  topics.forEach(t => {
-    if (!bySubject[t.subject]) bySubject[t.subject] = { total: 0, correct: 0 }
-    bySubject[t.subject].total   += t.total_attempts
-    bySubject[t.subject].correct += t.correct
-  })
-
-  const totalAttempts = topics.reduce((s, t) => s + t.total_attempts, 0)
-  const totalCorrect  = topics.reduce((s, t) => s + t.correct, 0)
-  const totalWrong    = totalAttempts - totalCorrect
-  const overallAcc    = totalAttempts > 0 ? Math.round((totalCorrect / totalAttempts) * 100) : 0
+  if (isLoading) return <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--paper)' }}><p style={{ color: 'var(--ink-soft)' }}>Loading...</p></div>
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-white border-b px-6 py-4 flex justify-between items-center">
-        <h1 className="text-xl font-bold text-gray-800">🏆 RankBattle UPSC</h1>
-        <button onClick={() => router.push('/dashboard')}
-          className="text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg">
-          ← Dashboard
-        </button>
+    <div className="min-h-screen fade-in" style={{ background: 'var(--paper)', paddingBottom: 24 }}>
+      <div style={{ background: 'linear-gradient(160deg, #3D2E22, #1A1410)', padding: '52px 22px 28px' }}>
+        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 10, letterSpacing: 2.5, fontFamily: 'JetBrains Mono, monospace', marginBottom: 4 }}>PERFORMANCE</p>
+        <h2 className="serif" style={{ color: 'white', fontSize: 26, fontWeight: 600, marginBottom: 18 }}>Subject Analytics</h2>
+        <div style={{ display: 'flex', gap: 24 }}>
+          {[{ l: 'Overall', v: '71%', c: '#E8B422' }, { l: 'vs Topper', v: '−15%', c: '#E74C3C' }, { l: 'vs Peers', v: '+6%', c: '#2ECC71' }].map((s, i) => (
+            <div key={i}>
+              <p className="mono" style={{ color: s.c, fontSize: 22, fontWeight: 700 }}>{s.v}</p>
+              <p style={{ color: 'rgba(255,255,255,0.35)', fontSize: 10, letterSpacing: 1.5 }}>{s.l.toUpperCase()}</p>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <div className="max-w-5xl mx-auto p-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">Your Analytics</h2>
-
-        {loading ? (
-          <div className="text-gray-400">Loading analytics...</div>
-        ) : topics.length === 0 ? (
-          <div className="bg-white rounded-2xl border p-12 text-center">
-            <div className="text-5xl mb-4">📊</div>
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">No data yet</h3>
-            <p className="text-gray-400 text-sm mb-6">Complete a mock test to see your analytics</p>
-            <button onClick={() => router.push('/test/start')}
-              className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-2.5 rounded-lg">
-              Start First Test →
-            </button>
-          </div>
-        ) : (
-          <>
-            {/* Summary cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              <div className="bg-white rounded-xl border p-4 text-center">
-                <div className="text-2xl font-bold text-blue-500">{totalAttempts}</div>
-                <div className="text-xs text-gray-500 mt-1">Questions Attempted</div>
-              </div>
-              <div className="bg-white rounded-xl border p-4 text-center">
-                <div className="text-2xl font-bold text-green-500">{totalCorrect}</div>
-                <div className="text-xs text-gray-500 mt-1">Correct</div>
-              </div>
-              <div className="bg-white rounded-xl border p-4 text-center">
-                <div className="text-2xl font-bold text-red-500">{totalWrong}</div>
-                <div className="text-xs text-gray-500 mt-1">Incorrect</div>
-              </div>
-              <div className="bg-white rounded-xl border p-4 text-center">
-                <div className="text-2xl font-bold text-orange-500">{overallAcc}%</div>
-                <div className="text-xs text-gray-500 mt-1">Overall Accuracy</div>
-              </div>
+      <div style={{ padding: '18px' }}>
+        {/* Legend */}
+        <div style={{ display: 'flex', gap: 18, marginBottom: 18 }}>
+          {[{ l: 'You', c: 'var(--terra)' }, { l: 'Topper', c: 'var(--ochre)' }, { l: 'Peer Avg', c: 'var(--paper-deeper)' }].map((l, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <div style={{ width: 10, height: 10, borderRadius: 3, background: l.c, border: i === 2 ? '1px solid var(--ink-faint)' : 'none' }}/>
+              <span style={{ fontSize: 11, color: 'var(--ink-soft)', fontWeight: 500 }}>{l.l}</span>
             </div>
+          ))}
+        </div>
 
-            {/* Overall accuracy bar */}
-            <div className="bg-white rounded-xl border p-5 mb-6">
-              <h3 className="font-semibold text-gray-700 mb-3">Overall Performance</h3>
-              <div className="flex gap-3 mb-3 text-sm">
-                <span className="text-green-600 font-medium">✓ {totalCorrect} correct</span>
-                <span className="text-gray-300">·</span>
-                <span className="text-red-500 font-medium">✗ {totalWrong} incorrect</span>
-              </div>
-              <div className="w-full h-4 bg-gray-100 rounded-full overflow-hidden flex">
-                <div className="bg-green-500 h-full transition-all" style={{ width: `${overallAcc}%` }} />
-                <div className="bg-red-400 h-full transition-all"
-                  style={{ width: `${totalAttempts > 0 ? Math.round((totalWrong / totalAttempts) * 100) : 0}%` }} />
-              </div>
-            </div>
-
-            {/* Subject breakdown */}
-            <div className="bg-white rounded-xl border p-5 mb-6">
-              <h3 className="font-semibold text-gray-700 mb-4">📚 Subject Breakdown</h3>
-              <div className="space-y-4">
-                {Object.entries(bySubject).map(([subject, data]) => {
-                  const acc = data.total > 0 ? Math.round((data.correct / data.total) * 100) : 0
-                  return (
-                    <div key={subject}>
-                      <div className="flex justify-between text-sm mb-1">
-                        <span className="font-medium text-gray-700">{subject}</span>
-                        <span className="text-gray-500">{data.correct}/{data.total} · {acc}%</span>
-                      </div>
-                      <div className="w-full bg-gray-100 rounded-full h-2.5">
-                        <div className={`h-2.5 rounded-full ${acc >= 60 ? 'bg-green-500' : acc >= 40 ? 'bg-orange-400' : 'bg-red-500'}`}
-                          style={{ width: `${acc}%` }} />
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-
-            {/* Weak areas */}
-            {weakAreas.length > 0 && (
-              <div className="bg-white rounded-xl border p-5 mb-6">
-                <h3 className="font-semibold text-gray-700 mb-4">🎯 Weak Areas (need improvement)</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {weakAreas.slice(0, 6).map((area, idx) => (
-                    <div key={idx} className="bg-red-50 border border-red-100 rounded-lg p-3 flex justify-between items-center">
-                      <div>
-                        <div className="text-sm font-medium text-red-700">{area.topic_id}</div>
-                        <div className="text-xs text-gray-500 mt-0.5">{area.subject}</div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-sm font-bold text-red-600">{area.accuracy}%</div>
-                        <div className="text-xs text-gray-400">{area.total_attempts} attempts</div>
-                      </div>
-                    </div>
-                  ))}
+        <div className="paper-card" style={{ padding: '20px', marginBottom: 14 }}>
+          {ANALYTICS.map((d, i) => (
+            <div key={i} style={{ marginBottom: i < ANALYTICS.length - 1 ? 20 : 0 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 7 }}>
+                <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--ink-mid)' }}>{d.subject}</span>
+                <div style={{ display: 'flex', gap: 12 }}>
+                  <span className="mono" style={{ fontSize: 12, color: d.color, fontWeight: 700 }}>{d.user}%</span>
+                  <span className="mono" style={{ fontSize: 12, color: 'var(--ochre)', fontWeight: 600 }}>{d.topper}%</span>
                 </div>
               </div>
-            )}
+              {[{ w: d.user, bg: d.color }, { w: d.topper, bg: 'linear-gradient(90deg, #C8960C, #E8B422)', op: 0.7 }, { w: d.peer, bg: 'var(--paper-deeper)', border: '1px solid var(--ink-faint)' }].map((bar, bi) => (
+                <div key={bi} style={{ height: 9, background: 'var(--paper-deeper)', borderRadius: 999, overflow: 'hidden', marginBottom: bi < 2 ? 5 : 0 }}>
+                  <div style={{ width: vis ? `${bar.w}%` : '0%', height: '100%', background: bar.bg, opacity: bar.op ?? 1, borderRadius: 999, transition: `width ${0.7 + bi * 0.1}s cubic-bezier(0.34,1.56,0.64,1)` }}/>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
 
-            {/* Topic details table */}
-            <div className="bg-white rounded-xl border p-5">
-              <h3 className="font-semibold text-gray-700 mb-4">Topic Details</h3>
-              <div className="space-y-2">
-                {topics.sort((a, b) => a.accuracy - b.accuracy).map((t, idx) => (
-                  <div key={idx} className="flex justify-between items-center py-2 border-b last:border-0 text-sm">
-                    <div>
-                      <span className="font-medium text-gray-700">{t.topic_id}</span>
-                      <span className="text-gray-400 ml-2 text-xs">{t.subject}</span>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <span className="text-gray-500">{t.correct}/{t.total_attempts}</span>
-                      <span className={`font-bold ${t.accuracy >= 60 ? 'text-green-600' : t.accuracy >= 40 ? 'text-orange-500' : 'text-red-500'}`}>
-                        {t.accuracy}%
-                      </span>
-                    </div>
-                  </div>
-                ))}
+        {/* Weak areas */}
+        <div className="paper-card" style={{ padding: '18px' }}>
+          <p style={{ fontSize: 10, letterSpacing: 2, color: 'var(--ink-faint)', fontWeight: 600, marginBottom: 14 }}>WEAK AREAS — FOCUS NOW</p>
+          {[{ t: "Governor's Powers", s: 'Polity', g: -16 }, { t: 'Medieval History', s: 'History', g: -24 }, { t: 'Economic Reforms', s: 'Economy', g: -21 }].map((w, i) => (
+            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: i < 2 ? '1px solid var(--paper-dark)' : 'none' }}>
+              <div>
+                <p style={{ fontSize: 14, fontWeight: 600, color: 'var(--ink)' }}>{w.t}</p>
+                <p style={{ fontSize: 11, color: 'var(--ink-faint)', marginTop: 2 }}>{w.s}</p>
+              </div>
+              <div style={{ background: 'rgba(192,57,43,0.1)', borderRadius: 8, padding: '5px 10px' }}>
+                <span className="mono" style={{ fontSize: 12, color: '#C0392B', fontWeight: 700 }}>{w.g}%</span>
               </div>
             </div>
-          </>
-        )}
+          ))}
+        </div>
       </div>
     </div>
   )

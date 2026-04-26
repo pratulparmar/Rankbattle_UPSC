@@ -62,4 +62,8 @@ export const submitSession = (
 export const getAnalytics = () => api.get('/analytics/me')
 export const getWeakAreas = () => api.get('/analytics/me/weak-areas')
 
+// Aspirants Daily
+export const getDailyContent = () => api.get('/daily')
+export const getDailyPreview = () => api.get('/daily/preview')
+
 export default api

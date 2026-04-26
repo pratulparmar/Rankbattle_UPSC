@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.routes import auth, mcqs, sessions, analytics
+from app.api.routes import auth, mcqs, sessions, analytics, daily
 from app.db.database import engine
 from app.models.models import Base
 
@@ -20,6 +20,7 @@ app.include_router(auth.router)
 app.include_router(mcqs.router)
 app.include_router(sessions.router)
 app.include_router(analytics.router)
+app.include_router(daily.router)
 
 @app.get("/health")
 def health():

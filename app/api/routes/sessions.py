@@ -164,3 +164,8 @@ def get_session_results(
         })
 
     return {"session_id": str(session_id), "question_results": results}
+
+@router.get("/", response_model=list)
+def list_sessions(db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    sessions = db.query(MockSession).filter(MockSession.user_id == user.user_id).order_by(MockSession.started_at.desc()).limit(50).all()
+    return [{"session_id": str(s.session_id), "mode": s.mode, "subject_filter": s.subject_filter, "total_q": s.total_q, "final_score": s.score, "status": s.status, "started_at": s.started_at.isoformat() if s.started_at else None, "submitted_at": s.submitted_at.isoformat() if s.submitted_at else None} for s in sessions]

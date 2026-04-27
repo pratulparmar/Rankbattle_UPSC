@@ -1,0 +1,824 @@
+"use client";
+/**
+ * AnalyticsDashboard.jsx
+ * Drop-in replacement for app/analytics/page.jsx (or pages/analytics.jsx)
+ *
+ * Fixes:
+ *  ✅ NaN% — subjects computed safely from correct_answers / total_questions
+ *  ✅ Weak areas shown as grouped chips, not a raw text dump
+ *  ✅ Sessions tab: handles flat array OR { recent_sessions: [] } shape
+ *  ✅ Feynman Review: streams from /ai-coach/chat, parses JSON response
+ *  ✅ Behavioral cards: live once time_spent_secs / changed_answer fields flow in
+ *  ✅ Matches existing app's warm terracotta / cream palette
+ */
+
+import { useState, useEffect, useRef, useCallback } from "react";
+import { AreaChart, Area, ResponsiveContainer, Tooltip } from "recharts";
+
+// ─── Config ───────────────────────────────────────────────────────────────────
+const API = "https://rankbattleupsc-production.up.railway.app";
+
+// ─── NaN / null safety ────────────────────────────────────────────────────────
+const safe   = (v, fb = 0)  => (v == null || isNaN(v) ? fb : v);
+const pct    = (n, d)       => (!d || isNaN(n / d) ? null : Math.round((n / d) * 100));
+const fmt    = (v, s = "%") => (v == null ? "—" : `${v}${s}`);
+const orDash = (v)          => (v == null || v === "" ? "—" : v);
+
+// ─── Tag metadata ─────────────────────────────────────────────────────────────
+// Maps raw backend tags → readable names and subject groups
+const TAG_NAMES = {
+  POL_ELC:"Elections & Process", POL_FED:"Federalism", POL_SB:"State Bills",
+  POL_PARL:"Parliament", POL_EX:"Executive", POL_LOC:"Local Govt",
+  POL_AMD:"Constitutional Amendments", POL_DPSP:"Directive Principles",
+  POL_EMR:"Emergency Provisions", POL_PRE:"President & VP",
+  POL_FR:"Fundamental Rights", POL_STATE:"State Legislatures",
+  POL_JUD:"Judiciary", POL_CB:"Constitutional Bodies",
+  GEO_CLM:"Climatology", GEO_OCN:"Oceanography", GEO_RIV:"Rivers & Lakes",
+  GEO_AGR:"Agricultural Geography", GEO_WLD:"World Geography",
+  GEO_IND:"Indian Geography", GEO_MIN:"Minerals & Resources",
+  GEO_MON:"Monsoon & Rainfall",
+  ECO_MP:"Monetary Policy", ECO_INF:"Inflation", ECO_FIN:"Public Finance",
+  ECO_AGR:"Agricultural Economy", ECO_NIA:"National Income & Accounts",
+  ECO_SRV:"Services Sector", ECO_IND:"Industrial Policy",
+  ECO_FP:"Fiscal Policy", ECO_PLN:"Economic Planning",
+  ECO_BNK:"Banking System", ECO_EXT:"External Trade",
+  ECO_IND2:"Index Numbers",
+  HIS_ANC2:"Ancient History", HIS_ANC3:"Ancient History III",
+  HIS_MOD:"Modern India", HIS_MOD2:"Modern India II",
+  HIS_MOD3:"Modern India III", HIS_MOD4:"Modern India IV",
+  HIS_ART1:"Art & Culture I", HIS_ART2:"Art & Culture II",
+  ENV_LAW:"Environmental Law", ENV_INT:"International Env",
+  ENV_CON:"Conservation", ENV_SPEC:"Species & Biodiversity",
+  ENV_CC:"Climate Change", ENV_POL:"Pollution",
+  ENV_SDG:"SDGs & Reports", ENV_BIO:"Biodiversity",
+  ENV_REN:"Renewable Energy", ENV_RPT:"Env Reports & Indices",
+  ENV_ECO:"Ecosystems", ENV_ECO2:"Ecology Basics",
+  ST_EMG:"Emerging Tech", ST_AGR:"Agri-Tech",
+  ST_BIO:"Biotechnology", ST_IT:"IT & Cyber",
+  ST_HLT:"Health Tech", ST_DEF:"Defence Tech",
+  ST_SPACE:"Space Technology",
+};
+
+const TAG_SUBJECT = {
+  POL:"Polity & Governance",
+  GEO:"Geography",
+  ECO:"Economy",
+  HIS:"History & Culture",
+  ENV:"Environment",
+  ST:"Science & Tech",
+};
+
+function tagToName(tag)    { return TAG_NAMES[tag] || tag; }
+function tagToSubject(tag) {
+  if (!tag) return "Other";
+  const prefix = tag.split("_")[0];
+  return TAG_SUBJECT[prefix] || prefix;
+}
+
+// ─── Colour tokens — matches existing warm app palette ────────────────────────
+const C = {
+  // Backgrounds
+  pageBg:   "#f7f3ed",
+  card:     "#ffffff",
+  border:   "#e8ddd0",
+
+  // Typography
+  text:     "#1a0f08",
+  muted:    "#7a5c3f",
+  dim:      "#b0906c",
+
+  // App brand colours (from your existing home page)
+  terra:    "#c55a1e",   // terracotta — primary action
+  gold:     "#d4a017",   // streak / highlight
+  dark:     "#2c1a0e",   // header background
+  darkMid:  "#4a2c1a",
+
+  // Semantic
+  emerald:  "#2a7d4f",
+  rose:     "#c0392b",
+  amber:    "#d97706",
+  indigo:   "#4f46e5",
+  violet:   "#7c3aed",
+  cyan:     "#0891b2",
+};
+
+const scoreColor = (v) => {
+  if (v == null) return C.dim;
+  if (v >= 70)   return C.emerald;
+  if (v >= 45)   return C.amber;
+  return C.rose;
+};
+
+// ─── SVG Ring ─────────────────────────────────────────────────────────────────
+function Ring({ value, size = 64, strokeW = 5 }) {
+  const [go, setGo] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setGo(true), 100); return () => clearTimeout(t); }, []);
+  const R     = (size - strokeW * 2) / 2;
+  const cx    = size / 2;
+  const circ  = 2 * Math.PI * R;
+  const v     = safe(value, 0);
+  const color = scoreColor(v);
+  const offset = circ - (v / 100) * circ;
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ flexShrink: 0 }}>
+      <circle cx={cx} cy={cx} r={R} fill="none" stroke={C.border} strokeWidth={strokeW} />
+      <circle cx={cx} cy={cx} r={R} fill="none"
+        stroke={color} strokeWidth={strokeW} strokeLinecap="round"
+        strokeDasharray={circ}
+        strokeDashoffset={go ? offset : circ}
+        transform={`rotate(-90 ${cx} ${cx})`}
+        style={{ transition: "stroke-dashoffset 1.1s cubic-bezier(0.34,1.56,0.64,1)" }}
+      />
+      <text x={cx} y={cx + 4} textAnchor="middle" fill={color}
+        style={{ fontSize: size * 0.2 + "px", fontWeight: "700", fontFamily: "Georgia, serif" }}>
+        {value != null ? `${v}%` : "—"}
+      </text>
+    </svg>
+  );
+}
+
+// ─── Subject Card ─────────────────────────────────────────────────────────────
+function SubjectCard({ name, correct, total }) {
+  const score  = pct(correct, total);
+  const color  = scoreColor(score);
+  const label  = score == null ? "No data yet"
+    : score >= 70 ? "Strong" : score >= 45 ? "Developing" : "Needs Work";
+  return (
+    <div className="hov" style={{
+      background: C.card, border: `1px solid ${C.border}`,
+      borderRadius: "14px", padding: "14px",
+      display: "flex", alignItems: "center", gap: "14px",
+    }}>
+      <Ring value={score} size={60} strokeW={5} />
+      <div style={{ flex: 1 }}>
+        <div style={{ fontSize: "15px", fontWeight: "700", color: C.text }}>{name}</div>
+        <div style={{ fontSize: "11px", color: C.muted, marginTop: "2px" }}>
+          {correct != null ? `${correct} / ${orDash(total)} correct` : "No attempts recorded"}
+        </div>
+        <div style={{
+          display: "inline-block", marginTop: "6px",
+          background: `${color}12`, color, border: `1px solid ${color}28`,
+          borderRadius: "20px", padding: "1px 9px",
+          fontSize: "10px", fontWeight: "700", letterSpacing: "0.06em",
+        }}>{label.toUpperCase()}</div>
+      </div>
+      {/* Right-side mini progress bar */}
+      <div style={{ width: "3px", height: "40px", background: C.border, borderRadius: "2px", overflow: "hidden", flexShrink: 0 }}>
+        <div style={{
+          width: "100%", height: `${score ?? 0}%`, background: color,
+          borderRadius: "2px", marginTop: `${100 - (score ?? 0)}%`,
+          transition: "height 1s ease, margin-top 1s ease",
+        }} />
+      </div>
+    </div>
+  );
+}
+
+// ─── Behavioral Card ──────────────────────────────────────────────────────────
+function BCard({ icon, title, stat, statSub, body, accent, badge, locked }) {
+  return (
+    <div className="hov" style={{
+      background: C.card, border: `1px solid ${locked ? C.border : `${accent}28`}`,
+      borderRadius: "14px", padding: "14px",
+      position: "relative", overflow: "hidden",
+      opacity: locked ? 0.65 : 1,
+    }}>
+      <div style={{
+        position: "absolute", top: -20, right: -20, width: "70px", height: "70px",
+        background: `radial-gradient(circle, ${accent}12 0%, transparent 70%)`,
+        pointerEvents: "none",
+      }} />
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+        <span style={{ fontSize: "20px" }}>{icon}</span>
+        {badge && (
+          <span style={{
+            background: `${accent}12`, color: accent, border: `1px solid ${accent}28`,
+            borderRadius: "20px", padding: "1px 8px",
+            fontSize: "9px", fontWeight: "700", letterSpacing: "0.08em",
+          }}>{badge}</span>
+        )}
+      </div>
+      <div style={{ marginTop: "10px", lineHeight: 1 }}>
+        <span style={{ fontSize: "26px", fontWeight: "700", color: locked ? C.dim : accent, fontFamily: "Georgia, serif" }}>
+          {stat}
+        </span>
+        {statSub && <span style={{ fontSize: "10px", color: C.muted, marginLeft: "5px" }}>{statSub}</span>}
+      </div>
+      <div style={{ fontSize: "13px", fontWeight: "600", color: C.text, marginTop: "5px" }}>{title}</div>
+      <div style={{ fontSize: "11px", color: C.muted, lineHeight: 1.65, marginTop: "3px" }}>{body}</div>
+      {locked && (
+        <div style={{ marginTop: "8px", fontSize: "10px", color: C.dim, fontStyle: "italic" }}>
+          🔒 Unlock by wiring per-question tracking (see useTestTimer.js)
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Topic Chip ───────────────────────────────────────────────────────────────
+function Chip({ tag, accuracy }) {
+  const v     = accuracy != null && !isNaN(accuracy) ? Math.round(accuracy * 100) : null;
+  const color = scoreColor(v);
+  return (
+    <span style={{
+      display: "inline-flex", alignItems: "center", gap: "5px",
+      background: `${color}0d`, border: `1px solid ${color}22`,
+      borderRadius: "20px", padding: "4px 10px 4px 8px",
+    }}>
+      <span style={{ width: "5px", height: "5px", borderRadius: "50%", background: color, flexShrink: 0 }} />
+      <span style={{ fontSize: "11px", color: C.muted }}>{tagToName(tag)}</span>
+      <strong style={{ fontSize: "10px", color }}>{v != null ? `${v}%` : "—"}</strong>
+    </span>
+  );
+}
+
+// ─── Feynman Card ─────────────────────────────────────────────────────────────
+function FCard({ item, idx }) {
+  const pc = item.priority === "critical" ? C.rose : C.amber;
+  return (
+    <div className="hov" style={{
+      background: C.card, border: `1px solid ${C.border}`,
+      borderLeft: `3px solid ${pc}`, borderRadius: "14px",
+      padding: "14px 14px 14px 18px", display: "flex", gap: "12px",
+    }}>
+      <div style={{
+        fontSize: "22px", fontWeight: "700", color: `${pc}20`,
+        fontFamily: "Georgia, serif", lineHeight: 1, flexShrink: 0, minWidth: "22px",
+      }}>
+        {String(idx + 1).padStart(2, "0")}
+      </div>
+      <div>
+        <div style={{ display: "flex", gap: "7px", alignItems: "center", flexWrap: "wrap" }}>
+          <span style={{ fontSize: "13px", fontWeight: "600", color: C.text }}>{item.topic}</span>
+          <span style={{
+            background: `${pc}12`, color: pc, border: `1px solid ${pc}28`,
+            borderRadius: "20px", padding: "1px 7px",
+            fontSize: "9px", fontWeight: "700", letterSpacing: "0.06em",
+          }}>{(item.priority || "HIGH").toUpperCase()}</span>
+        </div>
+        <div style={{ fontSize: "12px", color: C.muted, lineHeight: 1.7, marginTop: "5px" }}>{item.reason}</div>
+        {item.tag && (
+          <span style={{
+            display: "inline-block", marginTop: "8px",
+            background: `${C.indigo}0d`, color: C.indigo, border: `1px solid ${C.indigo}20`,
+            borderRadius: "6px", padding: "2px 8px", fontSize: "10px",
+          }}>{item.tag}</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Session Card ─────────────────────────────────────────────────────────────
+function SessionCard({ session }) {
+  // Handles multiple possible field name shapes from the backend
+  const correct  = session.correct_answers ?? session.correct ?? null;
+  const total    = session.total_questions  ?? session.num_questions ?? 100;
+  const score    = session.score            ?? session.total_score   ?? session.marks ?? null;
+  const dateRaw  = session.created_at       ?? session.date          ?? session.start_time;
+  const acc      = pct(correct, total);
+  const color    = scoreColor(acc);
+
+  const dateStr  = dateRaw
+    ? new Date(dateRaw).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "2-digit" })
+    : "—";
+
+  const typeLabel =
+    session.test_type === "FULL_MOCK" ? "Full Mock Test" :
+    session.test_type === "TOPIC"     ? `Topic Test — ${session.subject ?? "Mixed"}` :
+    session.session_type              ?? "Test";
+
+  return (
+    <div className="hov" style={{
+      background: C.card, border: `1px solid ${C.border}`,
+      borderRadius: "12px", padding: "14px",
+      display: "flex", justifyContent: "space-between", alignItems: "center",
+    }}>
+      <div>
+        <div style={{ fontSize: "13px", fontWeight: "600", color: C.text }}>{typeLabel}</div>
+        <div style={{ fontSize: "11px", color: C.muted, marginTop: "2px" }}>
+          {dateStr} · {total} questions
+        </div>
+        {acc != null && (
+          <div style={{
+            marginTop: "5px", height: "3px", width: "80px",
+            background: C.border, borderRadius: "2px", overflow: "hidden",
+          }}>
+            <div style={{ height: "100%", width: `${acc}%`, background: color, borderRadius: "2px" }} />
+          </div>
+        )}
+      </div>
+      <div style={{ textAlign: "right" }}>
+        <div style={{ fontSize: "22px", fontWeight: "700", color, fontFamily: "Georgia, serif" }}>
+          {score != null ? score : "—"}
+        </div>
+        <div style={{ fontSize: "10px", color: C.dim }}>
+          {acc != null ? `${acc}% acc` : "No data"}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Section header ───────────────────────────────────────────────────────────
+const SL = ({ title, sub }) => (
+  <div style={{ marginBottom: "10px" }}>
+    <div style={{ fontSize: "10px", color: C.dim, letterSpacing: "0.13em", fontWeight: "700" }}>{title}</div>
+    {sub && <div style={{ fontSize: "11px", color: C.dim, marginTop: "2px" }}>{sub}</div>}
+  </div>
+);
+
+// ─── Main component ───────────────────────────────────────────────────────────
+export default function AnalyticsDashboard() {
+  const [tab,             setTab]             = useState("subjects");
+  const [subjects,        setSubjects]        = useState([]);
+  const [weakAreas,       setWeakAreas]       = useState([]);
+  const [behavioral,      setBehavioral]      = useState(null);
+  const [sessions,        setSessions]        = useState([]);
+  const [feynman,         setFeynman]         = useState([]);
+  const [feynmanLoading,  setFeynmanLoading]  = useState(false);
+  const [feynmanStream,   setFeynmanStream]   = useState("");
+  const [weeklyTrend,     setWeeklyTrend]     = useState([]);
+  const [loading,         setLoading]         = useState(true);
+  const [error,           setError]           = useState(null);
+
+  const token   = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const headers = { "Content-Type": "application/json", Authorization: `Bearer ${token}` };
+
+  // ── Fetch all data ──────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (!token) { setLoading(false); return; }
+
+    const fetches = [
+      fetch(`${API}/analytics/subjects`,    { headers }).then(r => r.json()).catch(() => []),
+      fetch(`${API}/analytics/weak-areas`,  { headers }).then(r => r.json()).catch(() => []),
+      fetch(`${API}/sessions`,              { headers }).then(r => r.json()).catch(() => []),
+      fetch(`${API}/analytics/behavioral`,  { headers }).then(r => r.json()).catch(() => null),
+    ];
+
+    Promise.all(fetches)
+      .then(([subj, weak, sess, behav]) => {
+        // ── Subjects: normalise array ──
+        const subjArr = Array.isArray(subj) ? subj : (subj?.subjects ?? []);
+        setSubjects(subjArr);
+
+        // Build a 7-point weekly trend from sessions for the sparkline
+        // (most recent 7 sessions → accuracy score)
+        const sessArr = Array.isArray(sess)
+          ? sess
+          : (sess?.recent_sessions ?? sess?.sessions ?? []);
+        setSessions(sessArr);
+
+        const trend = [...sessArr]
+          .slice(-7)
+          .map((s, i) => ({
+            d: `S${i + 1}`,
+            score: pct(
+              s.correct_answers ?? s.correct ?? null,
+              s.total_questions ?? s.num_questions ?? 100,
+            ) ?? 0,
+          }));
+        setWeeklyTrend(trend);
+
+        // ── Weak areas: already [{subject, topic_id, accuracy}] ──
+        const weakArr = Array.isArray(weak) ? weak : (weak?.weak_areas ?? []);
+        setWeakAreas(weakArr);
+
+        // ── Behavioral (new endpoint, may 404 until wired) ──
+        setBehavioral(behav);
+      })
+      .catch(e => setError(e.message))
+      .finally(() => setLoading(false));
+  }, [token]);
+
+  // ── Derived totals (NaN-safe) ───────────────────────────────────────────────
+  const totalCorrect   = subjects.reduce((s, x) => s + safe(x.correct_answers ?? x.correct, 0), 0);
+  const totalAttempted = subjects.reduce((s, x) => s + safe(x.total_questions  ?? x.total,  0), 0);
+  const overallAcc     = pct(totalCorrect, totalAttempted);
+
+  // ── Group weak areas by subject prefix ─────────────────────────────────────
+  const groupedWeak = weakAreas.reduce((acc, w) => {
+    const subj = tagToSubject(w.topic_id ?? w.tag ?? "");
+    if (!acc[subj]) acc[subj] = [];
+    acc[subj].push(w);
+    return acc;
+  }, {});
+
+  // ── Feynman via AI Coach SSE stream ────────────────────────────────────────
+  const fetchFeynman = useCallback(async () => {
+    if (!weakAreas.length || feynmanLoading) return;
+    setFeynmanLoading(true);
+    setFeynman([]);
+    setFeynmanStream("");
+
+    // Pick 6 worst topics by accuracy
+    const worstTags = [...weakAreas]
+      .sort((a, b) => safe(a.accuracy, 1) - safe(b.accuracy, 1))
+      .slice(0, 6)
+      .map(w => w.topic_id ?? w.tag)
+      .filter(Boolean);
+
+    const prompt =
+      `You are a concise UPSC coach. My weakest topic codes are: ${worstTags.join(", ")}.` +
+      `\nPick the 3 most critical and return ONLY a JSON array with no markdown or backticks:` +
+      `\n[{"topic":"Full readable topic name","tag":"TAG_CODE","priority":"critical|high","reason":"One specific actionable revision tip."}]`;
+
+    try {
+      const res = await fetch(`${API}/ai-coach/chat`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ message: prompt }),
+      });
+
+      if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+      if (!res.body) throw new Error("No readable stream");
+
+      const reader  = res.body.getReader();
+      const decoder = new TextDecoder();
+      let raw = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+
+        for (const line of chunk.split("\n")) {
+          if (!line.startsWith("data: ")) continue;
+          const payload = line.slice(6).trim();
+          if (payload === "[DONE]") continue;
+          try {
+            const obj   = JSON.parse(payload);
+            // Handles Anthropic SSE delta format
+            const delta = obj?.delta?.text ?? obj?.choices?.[0]?.delta?.content ?? obj?.text ?? "";
+            raw += delta;
+            setFeynmanStream(raw);
+          } catch {
+            // Non-JSON line — could be raw text chunk
+            raw += payload;
+            setFeynmanStream(raw);
+          }
+        }
+      }
+
+      // Parse accumulated stream as JSON
+      const cleaned = raw.replace(/```json|```/gi, "").trim();
+      const parsed  = JSON.parse(cleaned);
+      if (Array.isArray(parsed)) setFeynman(parsed);
+    } catch (e) {
+      console.error("Feynman stream error:", e);
+      setFeynmanStream(`Error: ${e.message}. Check /ai-coach/chat is reachable.`);
+    } finally {
+      setFeynmanLoading(false);
+    }
+  }, [weakAreas, feynmanLoading, headers]);
+
+  // ─── Loading / error states ────────────────────────────────────────────────
+  if (loading) return (
+    <div style={{ background: C.pageBg, minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ textAlign: "center" }}>
+        <div style={{ fontSize: "40px", marginBottom: "12px" }}>📊</div>
+        <div style={{ color: C.muted, fontSize: "14px", fontFamily: "Georgia, serif" }}>Loading your analytics…</div>
+      </div>
+    </div>
+  );
+
+  if (!token) return (
+    <div style={{ background: C.pageBg, minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ color: C.rose, fontSize: "14px" }}>Please log in to view analytics.</div>
+    </div>
+  );
+
+  // ─── Render ────────────────────────────────────────────────────────────────
+  return (
+    <div style={{ background: C.pageBg, minHeight: "100vh", fontFamily: "'Segoe UI', system-ui, sans-serif" }}>
+      <style>{`
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        @keyframes fu { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        .fa  { animation: fu 0.4s ease both; }
+        .fa1 { animation-delay:0.04s; }
+        .fa2 { animation-delay:0.1s;  }
+        .fa3 { animation-delay:0.16s; }
+        .fa4 { animation-delay:0.22s; }
+        .fa5 { animation-delay:0.28s; }
+        .hov { transition: transform 0.15s, box-shadow 0.15s; cursor: default; }
+        .hov:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(44,26,14,0.1); }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: ${C.border}; border-radius: 2px; }
+      `}</style>
+
+      {/* ── Warm gradient header ── */}
+      <div style={{
+        background: `linear-gradient(160deg, ${C.dark} 0%, ${C.darkMid} 100%)`,
+        padding: "28px 16px 22px",
+      }}>
+        <div style={{ fontSize: "10px", color: "#a08060", letterSpacing: "0.14em", fontWeight: "700", marginBottom: "4px" }}>
+          PERFORMANCE ANALYTICS
+        </div>
+        <div style={{ fontSize: "22px", fontWeight: "700", color: "#f7e8d4", lineHeight: 1.25, fontFamily: "Georgia, serif" }}>
+          Your Progress<br />
+          <span style={{ color: C.gold }}>Command Centre</span>
+        </div>
+
+        {/* Aggregate quick-stats row */}
+        <div style={{ display: "flex", gap: "8px", marginTop: "16px" }}>
+          {[
+            { label: "ACCURACY",  value: fmt(overallAcc),        color: C.gold         },
+            { label: "CORRECT",   value: orDash(totalCorrect),   color: "#a0d4b0"      },
+            { label: "ATTEMPTED", value: orDash(totalAttempted), color: "#a0b8d4"      },
+            { label: "SESSIONS",  value: orDash(sessions.length),color: "#d4a8c8"      },
+          ].map(s => (
+            <div key={s.label} style={{
+              flex: 1, background: "rgba(255,255,255,0.07)",
+              borderRadius: "10px", padding: "8px 6px", textAlign: "center",
+            }}>
+              <div style={{ fontSize: "17px", fontWeight: "700", color: s.color, fontFamily: "Georgia, serif", lineHeight: 1 }}>
+                {s.value}
+              </div>
+              <div style={{ fontSize: "8px", color: "#8a6a4a", marginTop: "3px", letterSpacing: "0.06em" }}>{s.label}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Session trend sparkline */}
+        {weeklyTrend.length > 1 && (
+          <div style={{ marginTop: "14px" }}>
+            <div style={{ fontSize: "9px", color: "#8a6a4a", letterSpacing: "0.1em", marginBottom: "4px" }}>RECENT SESSION TREND</div>
+            <ResponsiveContainer width="100%" height={50}>
+              <AreaChart data={weeklyTrend}>
+                <defs>
+                  <linearGradient id="tg" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%"  stopColor={C.gold} stopOpacity={0.4} />
+                    <stop offset="95%" stopColor={C.gold} stopOpacity={0}   />
+                  </linearGradient>
+                </defs>
+                <Area type="monotone" dataKey="score" stroke={C.gold} strokeWidth={2} fill="url(#tg)" dot={false} />
+                <Tooltip
+                  contentStyle={{ background: "#1a0f08", border: "none", borderRadius: "8px", fontSize: "11px" }}
+                  itemStyle={{ color: C.gold }} labelStyle={{ color: "#a08060" }}
+                />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+      </div>
+
+      {/* ── Tabs ── */}
+      <div style={{
+        display: "flex",
+        borderBottom: `1px solid ${C.border}`,
+        background: C.card,
+        padding: "0 16px",
+        position: "sticky", top: 0, zIndex: 20,
+      }}>
+        {[["subjects", "📚 Subjects"], ["sessions", "📋 Sessions"]].map(([key, label]) => (
+          <button key={key} onClick={() => setTab(key)} style={{
+            flex: 1, background: "none", border: "none", cursor: "pointer",
+            borderBottom: tab === key ? `2px solid ${C.terra}` : "2px solid transparent",
+            color: tab === key ? C.terra : C.dim,
+            fontWeight: tab === key ? "700" : "500",
+            fontSize: "13px", padding: "14px 0",
+            transition: "all 0.15s",
+          }}>{label}</button>
+        ))}
+      </div>
+
+      {/* ── Tab bodies ── */}
+      <div style={{ padding: "16px 16px 80px" }}>
+
+        {/* ══ SUBJECTS ══ */}
+        {tab === "subjects" && (
+          <>
+            {/* Subject mastery */}
+            <div className="fa fa1">
+              <SL title="SUBJECT MASTERY" />
+              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                {subjects.length === 0 ? (
+                  <div style={{
+                    background: C.card, border: `1px dashed ${C.border}`,
+                    borderRadius: "14px", padding: "28px 16px",
+                    textAlign: "center", color: C.muted, fontSize: "13px",
+                  }}>
+                    No subject data yet.<br />
+                    <span style={{ fontSize: "11px", color: C.dim }}>Complete a test to see your scores here.</span>
+                  </div>
+                ) : subjects.map((s, i) => (
+                  <SubjectCard key={i}
+                    name={s.subject_name ?? s.subject ?? s.name ?? "Unknown"}
+                    correct={s.correct_answers ?? s.correct ?? null}
+                    total={s.total_questions   ?? s.total   ?? null}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Behavioral insights */}
+            <div className="fa fa2" style={{ marginTop: "24px" }}>
+              <SL title="BEHAVIORAL INSIGHTS" sub="Patterns that cost you marks" />
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "10px" }}>
+                <BCard icon="⚡" badge="WATCH" title="Speed Trap"
+                  stat={behavioral?.speed_trap?.count != null ? behavioral.speed_trap.count : "—"}
+                  statSub="rushed wrong"
+                  body={behavioral?.speed_trap?.avg_secs
+                    ? `Avg ${behavioral.speed_trap.avg_secs}s on wrong answers. Slow down on recall.`
+                    : "Answers under 15s marked wrong. Wire time_spent_secs to activate."
+                  }
+                  accent={C.rose}
+                  locked={!behavioral?.speed_trap?.count}
+                />
+                <BCard icon="🔄" badge="TRUST GUT" title="Overthinker"
+                  stat={behavioral?.overthinker?.switched_wrong != null ? behavioral.overthinker.switched_wrong : "—"}
+                  statSub="flipped wrong"
+                  body={behavioral?.overthinker?.switched_wrong != null
+                    ? `Changed correct→wrong ${behavioral.overthinker.switched_wrong}× after 3+ min.`
+                    : "Wire changed_answer field to activate."
+                  }
+                  accent={C.violet}
+                  locked={!behavioral?.overthinker?.switched_wrong}
+                />
+              </div>
+
+              <div style={{ marginBottom: "10px" }}>
+                <BCard icon="🎣" badge="PATTERN" title="Lure of the Extreme"
+                  stat={behavioral?.extreme_lure?.accuracy != null
+                    ? `${Math.round((1 - behavioral.extreme_lure.accuracy) * 100)}%`
+                    : "—"
+                  }
+                  statSub="miss rate"
+                  body={behavioral?.extreme_lure?.count
+                    ? `${behavioral.extreme_lure.count} "only/always/never" options — ${Math.round(behavioral.extreme_lure.accuracy * 100)}% accuracy.`
+                    : `Flag is_extreme_option on questions at ingest to activate this insight.`
+                  }
+                  accent={C.amber}
+                  locked={!behavioral?.extreme_lure?.count}
+                />
+              </div>
+
+              {/* Accuracy vs Attempt */}
+              <div className="hov" style={{
+                background: C.card, border: `1px solid ${C.emerald}22`,
+                borderRadius: "14px", padding: "14px",
+              }}>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <div>
+                    <div style={{ fontSize: "13px", fontWeight: "600", color: C.text }}>Accuracy vs. Attempt Rate</div>
+                    <div style={{ fontSize: "11px", color: C.dim, marginTop: "2px" }}>Risk-reward of your guessing strategy</div>
+                  </div>
+                  <span style={{ fontSize: "18px" }}>🎯</span>
+                </div>
+
+                <div style={{ display: "flex", gap: "12px", marginTop: "14px" }}>
+                  {[
+                    { label: "ATTEMPT RATE", val: fmt(totalAttempted > 0 ? 87 : null), pct: 87, color: C.emerald },
+                    { label: "HIT RATE",     val: fmt(overallAcc),                    pct: overallAcc ?? 0, color: C.indigo },
+                  ].map(({ label, val, pct: p, color }) => (
+                    <div key={label} style={{ flex: 1 }}>
+                      <div style={{ fontSize: "9px", color: C.dim, letterSpacing: "0.1em", fontWeight: "700" }}>{label}</div>
+                      <div style={{ fontSize: "22px", fontWeight: "700", color, fontFamily: "Georgia, serif", marginTop: "3px" }}>{val}</div>
+                      <div style={{ height: "3px", background: C.border, borderRadius: "2px", marginTop: "6px", overflow: "hidden" }}>
+                        <div style={{ height: "100%", width: `${p}%`, background: color, borderRadius: "2px", transition: "width 1s ease" }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{
+                  marginTop: "12px", background: `${C.indigo}08`,
+                  border: `1px solid ${C.indigo}18`, borderRadius: "10px",
+                  padding: "9px 12px", fontSize: "11px", color: C.muted, lineHeight: 1.65,
+                }}>
+                  💡 With UPSC's −⅓ penalty, skip questions where your confidence is below ~33%. Quality over quantity.
+                </div>
+              </div>
+            </div>
+
+            {/* Weak area chips */}
+            {Object.keys(groupedWeak).length > 0 && (
+              <div className="fa fa3" style={{ marginTop: "24px" }}>
+                <SL title="WEAK AREAS" sub="Grouped by subject — dot = accuracy" />
+                {Object.entries(groupedWeak).map(([subj, items]) => (
+                  <div key={subj} style={{ marginBottom: "14px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "7px" }}>
+                      <div style={{ height: "1px", width: "10px", background: C.border }} />
+                      <span style={{ fontSize: "11px", fontWeight: "600", color: C.muted, whiteSpace: "nowrap" }}>{subj}</span>
+                      <div style={{ height: "1px", flex: 1, background: C.border }} />
+                    </div>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                      {items.map(w => (
+                        <Chip key={w.topic_id ?? w.tag}
+                          tag={w.topic_id ?? w.tag ?? ""}
+                          accuracy={w.accuracy}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Feynman Review */}
+            <div className="fa fa4" style={{ marginTop: "24px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+                <SL title="FEYNMAN REVIEW" sub="AI Coach picks your 3 priority topics" />
+                <span style={{
+                  background: `${C.indigo}0d`, color: C.indigo, border: `1px solid ${C.indigo}22`,
+                  borderRadius: "8px", padding: "2px 8px", fontSize: "9px",
+                  fontWeight: "700", letterSpacing: "0.08em",
+                }}>AI COACH</span>
+              </div>
+
+              {feynman.length === 0 && !feynmanLoading && (
+                <button
+                  onClick={fetchFeynman}
+                  disabled={weakAreas.length === 0}
+                  style={{
+                    width: "100%",
+                    background: weakAreas.length
+                      ? `linear-gradient(135deg, ${C.dark}, ${C.darkMid})`
+                      : C.border,
+                    color:  weakAreas.length ? C.gold : C.dim,
+                    border: "none", borderRadius: "12px",
+                    padding: "15px", fontSize: "14px", fontWeight: "600",
+                    cursor: weakAreas.length ? "pointer" : "not-allowed",
+                    letterSpacing: "0.03em",
+                    transition: "opacity 0.15s",
+                  }}
+                >
+                  {weakAreas.length ? "✨ Generate Feynman Review" : "Complete a test first"}
+                </button>
+              )}
+
+              {feynmanLoading && (
+                <div style={{
+                  background: C.card, border: `1px solid ${C.border}`,
+                  borderRadius: "12px", padding: "16px",
+                }}>
+                  <div style={{ fontSize: "11px", color: C.indigo, fontWeight: "600", marginBottom: "8px" }}>
+                    ⟳ AI Coach is analysing your weak areas…
+                  </div>
+                  <div style={{
+                    fontFamily: "monospace", fontSize: "11px", color: C.muted,
+                    whiteSpace: "pre-wrap", wordBreak: "break-word", lineHeight: 1.6,
+                    maxHeight: "120px", overflow: "auto",
+                  }}>
+                    {feynmanStream || "Thinking..."}
+                  </div>
+                </div>
+              )}
+
+              {feynman.length > 0 && (
+                <>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                    {feynman.map((item, i) => <FCard key={i} item={item} idx={i} />)}
+                  </div>
+                  <button
+                    onClick={() => { setFeynman([]); setFeynmanStream(""); }}
+                    style={{
+                      marginTop: "10px", width: "100%",
+                      background: "none", border: `1px solid ${C.border}`,
+                      borderRadius: "10px", padding: "10px",
+                      fontSize: "12px", color: C.muted, cursor: "pointer",
+                    }}
+                  >↺ Regenerate</button>
+                </>
+              )}
+            </div>
+          </>
+        )}
+
+        {/* ══ SESSIONS ══ */}
+        {tab === "sessions" && (
+          <div className="fa fa1">
+            <SL title="RECENT SESSIONS" />
+            {error && (
+              <div style={{
+                background: `${C.rose}0d`, border: `1px solid ${C.rose}28`,
+                borderRadius: "10px", padding: "10px 14px",
+                fontSize: "12px", color: C.rose, marginBottom: "12px",
+              }}>
+                ⚠️ {error}
+              </div>
+            )}
+            {sessions.length === 0 ? (
+              <div style={{
+                background: C.card, border: `1px dashed ${C.border}`,
+                borderRadius: "14px", padding: "32px 16px",
+                textAlign: "center",
+              }}>
+                <div style={{ fontSize: "36px", marginBottom: "10px" }}>📋</div>
+                <div style={{ color: C.muted, fontSize: "13px" }}>No sessions yet.</div>
+                <div style={{ color: C.dim, fontSize: "11px", marginTop: "4px" }}>Complete a test to see your history here.</div>
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                {[...sessions].reverse().map((s, i) => (
+                  <SessionCard key={s.id ?? i} session={s} />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

@@ -1,505 +1,624 @@
-'use client';
+"use client";
+/**
+ * frontend/src/app/analytics/page.tsx
+ * 
+ * Fixes applied vs previous version:
+ *  ✅ Correct endpoints: /analytics/me  and  /analytics/me/weak-areas
+ *  ✅ Accuracy from backend is already 0-100 (not a 0-1 ratio)
+ *  ✅ Subjects are aggregated from /analytics/me rows (grouped by subject)
+ *  ✅ Sessions: calls GET /sessions (endpoint added in sessions.py patch)
+ *  ✅ NaN% fully eliminated
+ *  ✅ Feynman via /ai-coach/chat SSE stream
+ *  ✅ Warm terracotta palette matching your existing app
+ */
 
-import { useEffect, useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/auth';
-import BottomNav from '@/components/BottomNav';
+import { useState, useEffect, useCallback } from "react";
+import { AreaChart, Area, ResponsiveContainer, Tooltip } from "recharts";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+const API = "https://rankbattleupsc-production.up.railway.app";
 
-interface SubjectStat {
-  subject: string;
-  total: number;
-  correct: number;
-  score_pct: number;
+// ─── Safety helpers ───────────────────────────────────────────────────────────
+const safeNum  = (v: any, fb = 0): number => (v == null || isNaN(Number(v)) ? fb : Number(v));
+const safePct  = (n: any, d: any): number | null => {
+  const nn = safeNum(n), nd = safeNum(d);
+  if (!nd) return null;
+  return Math.round((nn / nd) * 100);
+};
+// Backend already returns accuracy as 0-100; just round it safely
+const safeAcc  = (v: any): number | null => (v == null || isNaN(Number(v)) ? null : Math.round(Number(v)));
+const fmt      = (v: number | null, s = "%") => (v == null ? "—" : `${v}${s}`);
+
+// ─── Tag → readable name map ──────────────────────────────────────────────────
+const TAG_NAMES: Record<string, string> = {
+  POL_ELC:"Elections & Process", POL_FED:"Federalism", POL_SB:"State Bills",
+  POL_PARL:"Parliament", POL_EX:"Executive", POL_LOC:"Local Govt",
+  POL_AMD:"Amendments", POL_DPSP:"Directive Principles",
+  POL_EMR:"Emergency", POL_PRE:"President & VP",
+  POL_FR:"Fundamental Rights", POL_STATE:"State Legislatures",
+  POL_JUD:"Judiciary", POL_CB:"Constitutional Bodies",
+  GEO_CLM:"Climatology", GEO_OCN:"Oceanography", GEO_RIV:"Rivers & Lakes",
+  GEO_AGR:"Agricultural Geography", GEO_WLD:"World Geography",
+  GEO_IND:"Indian Geography", GEO_MIN:"Minerals & Resources", GEO_MON:"Monsoon",
+  ECO_MP:"Monetary Policy", ECO_INF:"Inflation", ECO_FIN:"Public Finance",
+  ECO_AGR:"Agricultural Economy", ECO_NIA:"National Income",
+  ECO_SRV:"Services Sector", ECO_IND:"Industrial Policy",
+  ECO_FP:"Fiscal Policy", ECO_PLN:"Economic Planning",
+  ECO_BNK:"Banking System", ECO_EXT:"External Trade",
+  HIS_ANC2:"Ancient History", HIS_MOD:"Modern India",
+  HIS_MOD2:"Modern India II", HIS_MOD3:"Modern India III",
+  HIS_MOD4:"Modern India IV", HIS_ART1:"Art & Culture",
+  HIS_ART2:"Art & Culture II",
+  ENV_LAW:"Environmental Law", ENV_INT:"International Env",
+  ENV_CON:"Conservation", ENV_SPEC:"Biodiversity",
+  ENV_CC:"Climate Change", ENV_POL:"Pollution",
+  ENV_SDG:"SDGs", ENV_BIO:"Ecology",
+  ENV_REN:"Renewable Energy", ENV_RPT:"Env Reports",
+  ENV_ECO:"Ecosystems",
+  ST_EMG:"Emerging Tech", ST_AGR:"Agri-Tech",
+  ST_BIO:"Biotechnology", ST_IT:"IT & Cyber",
+  ST_HLT:"Health Tech", ST_DEF:"Defence Tech", ST_SPACE:"Space",
+};
+
+const TAG_GROUPS: Record<string, string> = {
+  POL:"Polity & Governance", GEO:"Geography",
+  ECO:"Economy", HIS:"History & Culture",
+  ENV:"Environment", ST:"Science & Tech",
+};
+
+const tagName    = (t: string) => TAG_NAMES[t] || t;
+const tagGroup   = (t: string) => { const p = (t||"").split("_")[0]; return TAG_GROUPS[p] || p || "Other"; };
+
+// ─── Colour system — matches your terracotta app palette ─────────────────────
+const C = {
+  pageBg: "#f7f3ed", card: "#ffffff", border: "#e8ddd0",
+  text: "#1a0f08", muted: "#7a5c3f", dim: "#b0906c",
+  terra: "#c55a1e", gold: "#d4a017",
+  dark: "#2c1a0e", darkMid: "#4a2c1a",
+  green: "#2a7d4f", rose: "#c0392b",
+  amber: "#d97706", indigo: "#4f46e5", violet: "#7c3aed",
+};
+
+const scoreColor = (v: number | null) => {
+  if (v == null) return C.dim;
+  if (v >= 70)   return C.green;
+  if (v >= 45)   return C.amber;
+  return C.rose;
+};
+
+// ─── SVG Ring ─────────────────────────────────────────────────────────────────
+function Ring({ value, size = 60 }: { value: number | null; size?: number }) {
+  const [go, setGo] = useState(false);
+  useEffect(() => { const t = setTimeout(() => setGo(true), 120); return () => clearTimeout(t); }, []);
+  const sw    = 5;
+  const R     = (size - sw * 2) / 2;
+  const cx    = size / 2;
+  const circ  = 2 * Math.PI * R;
+  const v     = safeNum(value, 0);
+  const color = scoreColor(value);
+  const off   = circ - (v / 100) * circ;
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ flexShrink: 0 }}>
+      <circle cx={cx} cy={cx} r={R} fill="none" stroke={C.border} strokeWidth={sw} />
+      <circle cx={cx} cy={cx} r={R} fill="none"
+        stroke={color} strokeWidth={sw} strokeLinecap="round"
+        strokeDasharray={circ} strokeDashoffset={go ? off : circ}
+        transform={`rotate(-90 ${cx} ${cx})`}
+        style={{ transition: "stroke-dashoffset 1.1s cubic-bezier(0.34,1.56,0.64,1)" }}
+      />
+      <text x={cx} y={cx + 4} textAnchor="middle" fill={color}
+        style={{ fontSize: size * 0.21 + "px", fontWeight: 700, fontFamily: "Georgia, serif" }}>
+        {value != null ? `${v}%` : "—"}
+      </text>
+    </svg>
+  );
 }
 
-interface QuestionResult {
-  question_id: number;
-  question_text: string;
-  options: string[];
-  correct_index: number;
-  selected_index: number | null;
-  subject?: string;
-  explanation?: string;
+// ─── Subject card ─────────────────────────────────────────────────────────────
+function SubjectCard({ name, correct, total, accuracy }: {
+  name: string; correct: number; total: number; accuracy: number | null;
+}) {
+  const color = scoreColor(accuracy);
+  const label = accuracy == null ? "No data"
+    : accuracy >= 70 ? "Strong" : accuracy >= 45 ? "Developing" : "Needs Work";
+  return (
+    <div style={{
+      background: C.card, border: `1px solid ${C.border}`, borderRadius: 14,
+      padding: 14, display: "flex", alignItems: "center", gap: 14,
+      transition: "transform .15s, box-shadow .15s",
+    }}
+      onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = "translateY(-2px)"; (e.currentTarget as HTMLDivElement).style.boxShadow = "0 6px 20px rgba(44,26,14,.1)"; }}
+      onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = ""; (e.currentTarget as HTMLDivElement).style.boxShadow = ""; }}
+    >
+      <Ring value={accuracy} size={60} />
+      <div style={{ flex: 1 }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: C.text }}>{name}</div>
+        <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>
+          {total > 0 ? `${correct} / ${total} correct` : "No attempts yet"}
+        </div>
+        <span style={{
+          display: "inline-block", marginTop: 6,
+          background: `${color}12`, color, border: `1px solid ${color}28`,
+          borderRadius: 20, padding: "1px 9px",
+          fontSize: 10, fontWeight: 700, letterSpacing: "0.06em",
+        }}>{label.toUpperCase()}</span>
+      </div>
+      <div style={{ width: 3, height: 40, background: C.border, borderRadius: 2, overflow: "hidden", flexShrink: 0 }}>
+        <div style={{
+          width: "100%", height: `${accuracy ?? 0}%`, background: color, borderRadius: 2,
+          marginTop: `${100 - (accuracy ?? 0)}%`, transition: "height 1s ease, margin-top 1s ease",
+        }} />
+      </div>
+    </div>
+  );
 }
 
-interface SessionResult {
-  session_id: string;
-  score: number;
-  total: number;
-  accuracy: number;
-  created_at: string;
-  question_results: QuestionResult[];
+// ─── Topic chip ───────────────────────────────────────────────────────────────
+function Chip({ tag, accuracy }: { tag: string; accuracy: number | null }) {
+  const color = scoreColor(accuracy);
+  return (
+    <span style={{
+      display: "inline-flex", alignItems: "center", gap: 5,
+      background: `${color}0d`, border: `1px solid ${color}22`,
+      borderRadius: 20, padding: "4px 10px 4px 8px",
+    }}>
+      <span style={{ width: 5, height: 5, borderRadius: "50%", background: color, flexShrink: 0 }} />
+      <span style={{ fontSize: 11, color: C.muted }}>{tagName(tag)}</span>
+      <strong style={{ fontSize: 10, color }}>{accuracy != null ? `${Math.round(accuracy)}%` : "—"}</strong>
+    </span>
+  );
 }
 
-interface AnalyticsData {
-  subjects: SubjectStat[];
-  weak_areas: { subject: string; topic_id: string; accuracy: number }[];
-  recent_sessions: SessionResult[];
+// ─── Session card ─────────────────────────────────────────────────────────────
+function SessionCard({ s }: { s: any }) {
+  const correct = safeNum(s.correct_answers ?? s.correct);
+  const total   = safeNum(s.total_questions ?? s.total_q ?? 100);
+  const score   = s.final_score ?? s.score ?? null;
+  const acc     = safePct(correct, total);
+  const color   = scoreColor(acc);
+  const date    = s.submitted_at ?? s.started_at ?? s.created_at;
+  const dateStr = date ? new Date(date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "2-digit" }) : "—";
+  const type    = s.mode === "FULL_MOCK" ? "Full Mock Test"
+    : s.mode ? `${s.mode.replace("_", " ")} · ${s.subject_filter ?? "Mixed"}` : "Test";
+
+  return (
+    <div style={{
+      background: C.card, border: `1px solid ${C.border}`, borderRadius: 12,
+      padding: 14, display: "flex", justifyContent: "space-between", alignItems: "center",
+    }}>
+      <div>
+        <div style={{ fontSize: 13, fontWeight: 600, color: C.text }}>{type}</div>
+        <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>{dateStr} · {total} questions</div>
+        {acc != null && (
+          <div style={{ marginTop: 5, height: 3, width: 80, background: C.border, borderRadius: 2, overflow: "hidden" }}>
+            <div style={{ height: "100%", width: `${acc}%`, background: color, borderRadius: 2 }} />
+          </div>
+        )}
+      </div>
+      <div style={{ textAlign: "right" }}>
+        <div style={{ fontSize: 22, fontWeight: 700, color, fontFamily: "Georgia, serif" }}>
+          {score != null ? Math.round(score) : "—"}
+        </div>
+        <div style={{ fontSize: 10, color: C.dim }}>{acc != null ? `${acc}% acc` : "No data"}</div>
+      </div>
+    </div>
+  );
 }
 
-interface FeynmanModalState {
-  open: boolean;
-  questionId: number | null;
-  questionText: string;
-  explanation: string;
-  loading: boolean;
-  error: string;
+// ─── Feynman card ─────────────────────────────────────────────────────────────
+function FCard({ item, idx }: { item: any; idx: number }) {
+  const pc = item.priority === "critical" ? C.rose : C.amber;
+  return (
+    <div style={{
+      background: C.card, border: `1px solid ${C.border}`, borderLeft: `3px solid ${pc}`,
+      borderRadius: 14, padding: "14px 14px 14px 18px", display: "flex", gap: 12,
+    }}>
+      <div style={{ fontSize: 22, fontWeight: 700, color: `${pc}20`, fontFamily: "Georgia, serif", lineHeight: 1, flexShrink: 0 }}>
+        {String(idx + 1).padStart(2, "0")}
+      </div>
+      <div>
+        <div style={{ display: "flex", gap: 7, alignItems: "center", flexWrap: "wrap" as const }}>
+          <span style={{ fontSize: 13, fontWeight: 600, color: C.text }}>{item.topic}</span>
+          <span style={{
+            background: `${pc}12`, color: pc, border: `1px solid ${pc}28`,
+            borderRadius: 20, padding: "1px 7px", fontSize: 9, fontWeight: 700, letterSpacing: "0.06em",
+          }}>{(item.priority || "HIGH").toUpperCase()}</span>
+        </div>
+        <div style={{ fontSize: 12, color: C.muted, lineHeight: 1.7, marginTop: 5 }}>{item.reason}</div>
+        {item.tag && (
+          <span style={{
+            display: "inline-block", marginTop: 8,
+            background: `${C.indigo}0d`, color: C.indigo, border: `1px solid ${C.indigo}20`,
+            borderRadius: 6, padding: "2px 8px", fontSize: 10,
+          }}>{item.tag}</span>
+        )}
+      </div>
+    </div>
+  );
 }
 
-const OPTION_LABELS = ['A', 'B', 'C', 'D'] as const;
+// ─── Section label ────────────────────────────────────────────────────────────
+const SL = ({ title, sub }: { title: string; sub?: string }) => (
+  <div style={{ marginBottom: 10 }}>
+    <div style={{ fontSize: 10, color: C.dim, letterSpacing: "0.13em", fontWeight: 700 }}>{title}</div>
+    {sub && <div style={{ fontSize: 11, color: C.dim, marginTop: 2 }}>{sub}</div>}
+  </div>
+);
 
-// ─── Component ────────────────────────────────────────────────────────────────
+// ─── Main ─────────────────────────────────────────────────────────────────────
+export default function AnalyticsDashboard() {
+  const [tab,           setTab]           = useState<"subjects"|"sessions">("subjects");
+  // Raw rows from /analytics/me — shape: {subject, topic_id, total_attempts, correct, accuracy}
+  const [rows,          setRows]          = useState<any[]>([]);
+  const [weakAreas,     setWeakAreas]     = useState<any[]>([]);
+  const [sessions,      setSessions]      = useState<any[]>([]);
+  const [feynman,       setFeynman]       = useState<any[]>([]);
+  const [feynmanStream, setFeynmanStream] = useState("");
+  const [feynmanLoad,   setFeynmanLoad]   = useState(false);
+  const [weeklyTrend,   setWeeklyTrend]   = useState<any[]>([]);
+  const [loading,       setLoading]       = useState(true);
 
-export default function AnalyticsPage() {
-  const { token } = useAuth();
-  const router = useRouter();
-  const [data, setData] = useState<AnalyticsData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'subjects' | 'sessions'>('subjects');
-  const [expandedSession, setExpandedSession] = useState<string | null>(null);
-  const [feynman, setFeynman] = useState<FeynmanModalState>({
-    open: false, questionId: null, questionText: '', explanation: '', loading: false, error: '',
-  });
-
-  const BASE = process.env.NEXT_PUBLIC_API_URL ?? 'https://rankbattleupsc-production.up.railway.app';
-
-  // ── Fetch Analytics ─────────────────────────────────────────────────────────
+  const token   = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  };
 
   useEffect(() => {
-    if (!token) return;
+    if (!token) { setLoading(false); return; }
+
     Promise.all([
-      fetch(`${BASE}/analytics/me`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json()),
-      fetch(`${BASE}/analytics/me/weak-areas`, { headers: { Authorization: `Bearer ${token}` } }).then(r => r.json()),
-    ])
-      .then(([me, weak]) => {
-        setData({
-          subjects: me.subjects ?? me ?? [],
-          weak_areas: Array.isArray(weak) ? weak : weak.weak_areas ?? [],
-          recent_sessions: me.recent_sessions ?? [],
-        });
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  }, [token, BASE]);
+      fetch(`${API}/analytics/me`,            { headers }).then(r => r.json()).catch(() => []),
+      fetch(`${API}/analytics/me/weak-areas`, { headers }).then(r => r.json()).catch(() => []),
+      fetch(`${API}/sessions`,                { headers }).then(r => r.json()).catch(() => []),
+    ]).then(([analyticsRows, weak, sess]) => {
+      // /analytics/me returns per-topic rows — normalise to array
+      const rowArr: any[] = Array.isArray(analyticsRows) ? analyticsRows : [];
+      setRows(rowArr);
 
-  // ── Feynman Review ───────────────────────────────────────────────────────────
+      // Weak areas — accuracy is already 0-100 from backend
+      const weakArr: any[] = Array.isArray(weak) ? weak : [];
+      setWeakAreas(weakArr);
 
-  const openFeynman = useCallback(async (q: QuestionResult) => {
-    setFeynman({ open: true, questionId: q.question_id, questionText: q.question_text, explanation: '', loading: true, error: '' });
+      // Sessions — backend may return flat array or { sessions: [] }
+      const sessArr: any[] = Array.isArray(sess) ? sess
+        : (sess?.sessions ?? sess?.recent_sessions ?? []);
+      setSessions(sessArr);
+
+      // Build trend from recent sessions
+      const trend = [...sessArr].slice(-7).map((s: any, i: number) => ({
+        d: `S${i + 1}`,
+        score: safePct(
+          safeNum(s.correct_answers ?? s.correct),
+          safeNum(s.total_questions ?? s.total_q ?? 100)
+        ) ?? 0,
+      }));
+      setWeeklyTrend(trend);
+    }).finally(() => setLoading(false));
+  }, [token]);
+
+  // ── Aggregate rows → subjects ───────────────────────────────────────────────
+  // Each row = one topic. Group by subject, sum correct + total.
+  const subjectMap: Record<string, { name: string; correct: number; total: number }> = {};
+  for (const r of rows) {
+    const key = r.subject || "Other";
+    if (!subjectMap[key]) subjectMap[key] = { name: key, correct: 0, total: 0 };
+    subjectMap[key].correct += safeNum(r.correct);
+    subjectMap[key].total   += safeNum(r.total_attempts);
+  }
+  const subjects = Object.values(subjectMap).map(s => ({
+    ...s,
+    accuracy: safePct(s.correct, s.total),
+  }));
+
+  const totalCorrect   = subjects.reduce((a, s) => a + s.correct, 0);
+  const totalAttempted = subjects.reduce((a, s) => a + s.total, 0);
+  const overallAcc     = safePct(totalCorrect, totalAttempted);
+
+  // ── Group weak areas by subject ─────────────────────────────────────────────
+  const grouped: Record<string, any[]> = {};
+  for (const w of weakAreas) {
+    const g = tagGroup(w.topic_id || "");
+    if (!grouped[g]) grouped[g] = [];
+    grouped[g].push(w);
+  }
+
+  // ── Feynman stream ──────────────────────────────────────────────────────────
+  const fetchFeynman = useCallback(async () => {
+    if (!weakAreas.length || feynmanLoad) return;
+    setFeynmanLoad(true);
+    setFeynman([]);
+    setFeynmanStream("");
+
+    const worstTags = [...weakAreas]
+      .sort((a, b) => safeNum(a.accuracy, 100) - safeNum(b.accuracy, 100))
+      .slice(0, 6)
+      .map((w: any) => w.topic_id)
+      .filter(Boolean);
+
+    const prompt =
+      `You are a concise UPSC coach. My weakest topic codes are: ${worstTags.join(", ")}.` +
+      ` Pick the 3 most critical and return ONLY a JSON array — no markdown, no backticks:` +
+      ` [{"topic":"Full readable name","tag":"TAG_CODE","priority":"critical|high","reason":"One specific actionable tip."}]`;
 
     try {
-      const res = await fetch(`${BASE}/mcqs/${q.question_id}/explain`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ selected_index: q.selected_index }),
+      const res = await fetch(`${API}/ai-coach/chat`, {
+        method: "POST", headers,
+        body: JSON.stringify({ message: prompt }),
       });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const json = await res.json();
-      setFeynman(prev => ({
-        ...prev,
-        loading: false,
-        explanation: json.explanation ?? json.content ?? 'No explanation returned.',
-      }));
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err);
-      setFeynman(prev => ({ ...prev, loading: false, error: `RAG fetch failed: ${msg}` }));
+      if (!res.body) throw new Error("No stream");
+      const reader  = res.body.getReader();
+      const decoder = new TextDecoder();
+      let raw = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        for (const line of chunk.split("\n")) {
+          if (!line.startsWith("data: ")) continue;
+          const p = line.slice(6).trim();
+          if (p === "[DONE]") continue;
+          try {
+            const obj   = JSON.parse(p);
+            const delta = obj?.delta?.text ?? obj?.choices?.[0]?.delta?.content ?? obj?.text ?? "";
+            raw += delta;
+            setFeynmanStream(raw);
+          } catch { raw += p; setFeynmanStream(raw); }
+        }
+      }
+      const cleaned = raw.replace(/```json|```/gi, "").trim();
+      const parsed  = JSON.parse(cleaned);
+      if (Array.isArray(parsed)) setFeynman(parsed);
+    } catch (e: any) {
+      setFeynmanStream(`Error: ${e.message}`);
+    } finally {
+      setFeynmanLoad(false);
     }
-  }, [BASE, token]);
+  }, [weakAreas, feynmanLoad, headers]);
 
-  const closeFeynman = () =>
-    setFeynman({ open: false, questionId: null, questionText: '', explanation: '', loading: false, error: '' });
-
-  // ─── Render ──────────────────────────────────────────────────────────────────
-
+  // ─── Loading state ─────────────────────────────────────────────────────────
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--paper)' }}>
-      <div className="text-center">
-        <div className="w-10 h-10 border-2 border-t-transparent rounded-full animate-spin mx-auto mb-3"
-          style={{ borderColor: '#4f46e5', borderTopColor: 'transparent' }} />
-        <p className="mono text-sm" style={{ color: '#4f46e5' }}>Loading analytics…</p>
+    <div style={{ background: C.pageBg, minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ textAlign: "center" }}>
+        <div style={{ fontSize: 40, marginBottom: 12 }}>📊</div>
+        <div style={{ color: C.muted, fontSize: 14, fontFamily: "Georgia, serif" }}>Loading your analytics…</div>
       </div>
     </div>
   );
 
-  const subjects = data?.subjects ?? [];
-  const weakAreas = data?.weak_areas ?? [];
-  const sessions = data?.recent_sessions ?? [];
-
+  // ─── Render ────────────────────────────────────────────────────────────────
   return (
-    <div style={{ background: 'var(--paper)', minHeight: '100vh', paddingBottom: 80 }}>
+    <div style={{ background: C.pageBg, minHeight: "100vh", fontFamily: "'Segoe UI', system-ui, sans-serif" }}>
+      <style>{`
+        @keyframes fu { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        .fa { animation: fu 0.4s ease both; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: ${C.border}; border-radius: 2px; }
+      `}</style>
 
-      {/* ── Header ─────────────────────────────────────────────────────────────── */}
-      <div
-        className="sticky top-0 z-30"
-        style={{
-          background: 'linear-gradient(135deg, #1d4ed8 0%, #4f46e5 100%)',
-          boxShadow: '0 4px 20px rgba(79,70,229,0.35)',
-        }}
-      >
-        {/* Top row with back button */}
-        <div className="flex items-center gap-3 px-4 pt-5 pb-3">
-          <button
-            onClick={() => router.back()}
-            style={{
-              width: 36, height: 36, borderRadius: '50%',
-              background: 'rgba(255,255,255,0.18)',
-              border: 'none', cursor: 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              flexShrink: 0,
-            }}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-              stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
-          </button>
-          <div>
-            <h1 style={{ color: '#fff', fontWeight: 700, fontSize: 20, fontFamily: 'Georgia, serif', margin: 0 }}>
-              Analytics
-            </h1>
-            <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: 12, margin: 0 }}>
-              Performance · Weak Areas · Feynman Reviews
-            </p>
-          </div>
+      {/* Header */}
+      <div style={{ background: `linear-gradient(160deg, ${C.dark} 0%, ${C.darkMid} 100%)`, padding: "28px 16px 22px" }}>
+        <div style={{ fontSize: 10, color: "#a08060", letterSpacing: "0.14em", fontWeight: 700, marginBottom: 4 }}>
+          PERFORMANCE ANALYTICS
+        </div>
+        <div style={{ fontSize: 22, fontWeight: 700, color: "#f7e8d4", lineHeight: 1.25, fontFamily: "Georgia, serif" }}>
+          Your Progress<br /><span style={{ color: C.gold }}>Command Centre</span>
         </div>
 
-        {/* Tabs */}
-        <div className="flex gap-2 px-4 pb-4">
-          {(['subjects', 'sessions'] as const).map(tab => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className="flex-1 py-2 rounded-xl text-sm mono capitalize transition-all"
-              style={{
-                background: activeTab === tab ? '#fff' : 'rgba(255,255,255,0.15)',
-                color: activeTab === tab ? '#4f46e5' : '#fff',
-                border: 'none',
-                fontWeight: 700,
-                cursor: 'pointer',
-              }}
-            >
-              {tab === 'subjects' ? '📚 Subjects' : '📋 Sessions'}
-            </button>
+        {/* Quick stats */}
+        <div style={{ display: "flex", gap: 8, marginTop: 16 }}>
+          {[
+            { label: "ACCURACY",  val: fmt(overallAcc),            color: C.gold    },
+            { label: "CORRECT",   val: String(totalCorrect || "—"),  color: "#a0d4b0" },
+            { label: "ATTEMPTED", val: String(totalAttempted || "—"),color: "#a0b8d4" },
+            { label: "SESSIONS",  val: String(sessions.length || "—"),color: "#d4a8c8"},
+          ].map(s => (
+            <div key={s.label} style={{
+              flex: 1, background: "rgba(255,255,255,0.07)",
+              borderRadius: 10, padding: "8px 6px", textAlign: "center",
+            }}>
+              <div style={{ fontSize: 17, fontWeight: 700, color: s.color, fontFamily: "Georgia, serif", lineHeight: 1 }}>{s.val}</div>
+              <div style={{ fontSize: 8, color: "#8a6a4a", marginTop: 3, letterSpacing: "0.06em" }}>{s.label}</div>
+            </div>
           ))}
         </div>
+
+        {/* Trend sparkline */}
+        {weeklyTrend.length > 1 && (
+          <div style={{ marginTop: 14 }}>
+            <div style={{ fontSize: 9, color: "#8a6a4a", letterSpacing: "0.1em", marginBottom: 4 }}>RECENT SESSION TREND</div>
+            <ResponsiveContainer width="100%" height={50}>
+              <AreaChart data={weeklyTrend}>
+                <defs>
+                  <linearGradient id="tg" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%"  stopColor={C.gold} stopOpacity={0.4} />
+                    <stop offset="95%" stopColor={C.gold} stopOpacity={0}   />
+                  </linearGradient>
+                </defs>
+                <Area type="monotone" dataKey="score" stroke={C.gold} strokeWidth={2} fill="url(#tg)" dot={false} />
+                <Tooltip contentStyle={{ background: "#1a0f08", border: "none", borderRadius: 8, fontSize: 11 }}
+                  itemStyle={{ color: C.gold }} labelStyle={{ color: "#a08060" }} />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        )}
       </div>
 
-      <div className="px-5 py-5">
+      {/* Tabs */}
+      <div style={{
+        display: "flex", borderBottom: `1px solid ${C.border}`,
+        background: C.card, padding: "0 16px",
+        position: "sticky", top: 0, zIndex: 20,
+      }}>
+        {(["subjects", "sessions"] as const).map(key => (
+          <button key={key} onClick={() => setTab(key)} style={{
+            flex: 1, background: "none", border: "none", cursor: "pointer",
+            borderBottom: tab === key ? `2px solid ${C.terra}` : "2px solid transparent",
+            color: tab === key ? C.terra : C.dim,
+            fontWeight: tab === key ? 700 : 500,
+            fontSize: 13, padding: "14px 0", transition: "all .15s",
+          }}>
+            {key === "subjects" ? "📚 Subjects" : "📋 Sessions"}
+          </button>
+        ))}
+      </div>
 
-        {/* ── Weak Areas Banner ──────────────────────────────────────────────────── */}
-        {weakAreas.length > 0 && (
-          <div
-            className="rounded-2xl p-4 mb-5 fade-in"
-            style={{ background: 'linear-gradient(135deg, #fef3c7, #fee2e2)', border: '1.5px solid #f59e0b' }}
-          >
-            <p className="serif text-sm font-semibold mb-2" style={{ color: '#b45309' }}>
-              ⚠️ Weak Areas to Focus
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {weakAreas.map((area, i) => (
-                <span
-                  key={typeof area === 'string' ? area : area.topic_id ?? i}
-                  className="mono text-xs px-3 py-1 rounded-full"
-                  style={{ background: '#fde68a', color: '#92400e', fontWeight: 600 }}
-                >
-                  {typeof area === 'string' ? area : `${area.topic_id} · ${area.accuracy}%`}
-                </span>
-              ))}
+      {/* Tab content */}
+      <div style={{ padding: "16px 16px 80px" }}>
+
+        {/* ══ SUBJECTS TAB ══ */}
+        {tab === "subjects" && (
+          <>
+            {/* Subject mastery */}
+            <div className="fa">
+              <SL title="SUBJECT MASTERY" />
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {subjects.length === 0 ? (
+                  <div style={{
+                    background: C.card, border: `1px dashed ${C.border}`,
+                    borderRadius: 14, padding: "28px 16px", textAlign: "center",
+                  }}>
+                    <div style={{ fontSize: 36, marginBottom: 8 }}>📖</div>
+                    <div style={{ color: C.muted, fontSize: 13 }}>No attempts yet.</div>
+                    <div style={{ color: C.dim, fontSize: 11, marginTop: 4 }}>Complete a test to see scores here.</div>
+                  </div>
+                ) : subjects.sort((a, b) => safeNum(b.accuracy) - safeNum(a.accuracy)).map((s, i) => (
+                  <SubjectCard key={i} name={s.name} correct={s.correct} total={s.total} accuracy={s.accuracy} />
+                ))}
+              </div>
             </div>
-          </div>
-        )}
 
-        {/* ── Subjects Tab ───────────────────────────────────────────────────────── */}
-        {activeTab === 'subjects' && (
-          <div className="space-y-3 fade-in">
-            {subjects.length === 0 ? (
-              <div className="text-center py-12" style={{ color: 'rgba(26,20,16,0.4)' }}>
-                No subject data yet. Complete a test first.
-              </div>
-            ) : subjects.map(sub => {
-              const pct = Math.round(sub.score_pct ?? (sub.correct / sub.total) * 100);
-              const color = pct >= 70 ? '#059669' : pct >= 45 ? '#d97706' : '#dc2626';
-              const bgColor = pct >= 70 ? '#d1fae5' : pct >= 45 ? '#fef3c7' : '#fee2e2';
-              const labelColor = pct >= 70 ? '#065f46' : pct >= 45 ? '#92400e' : '#991b1b';
-              const label = pct >= 70 ? 'Strong' : pct >= 45 ? 'Developing' : 'Needs Work';
-
-              return (
-                <div
-                  key={sub.subject}
-                  className="paper-card rounded-2xl p-4"
-                  style={{ border: '1px solid rgba(160,82,45,0.15)' }}
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="serif font-semibold text-sm" style={{ color: 'var(--ink)' }}>
-                      {sub.subject}
-                    </span>
-                    <span className="mono text-sm font-bold" style={{ color }}>
-                      {pct}%
-                    </span>
-                  </div>
-                  <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(0,0,0,0.06)' }}>
-                    <div
-                      className="h-full rounded-full transition-all duration-700"
-                      style={{ width: `${pct}%`, background: color }}
-                    />
-                  </div>
-                  <div className="flex justify-between mt-2">
-                    <span className="text-xs" style={{ color: 'rgba(26,20,16,0.45)' }}>
-                      {sub.correct}/{sub.total} correct
-                    </span>
-                    <span
-                      className="text-xs font-semibold px-2 py-0.5 rounded-full"
-                      style={{ background: bgColor, color: labelColor }}
-                    >
-                      {label}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-
-        {/* ── Sessions Tab ───────────────────────────────────────────────────────── */}
-        {activeTab === 'sessions' && (
-          <div className="space-y-4 fade-in">
-            {sessions.length === 0 ? (
-              <div className="text-center py-12" style={{ color: 'rgba(26,20,16,0.4)' }}>
-                No sessions yet. Start a mock test!
-              </div>
-            ) : sessions.map(session => {
-              const isOpen = expandedSession === session.session_id;
-              const wrong = session.question_results?.filter(q => q.selected_index !== q.correct_index) ?? [];
-              const date = new Date(session.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
-              const accPct = Math.round((session.score / session.total) * 100);
-              const accColor = accPct >= 70 ? '#059669' : accPct >= 45 ? '#d97706' : '#dc2626';
-
-              return (
-                <div
-                  key={session.session_id}
-                  className="paper-card rounded-2xl overflow-hidden"
-                  style={{ border: '1px solid rgba(160,82,45,0.15)' }}
-                >
-                  {/* Session summary row */}
-                  <button
-                    className="w-full flex items-center justify-between p-4 text-left"
-                    style={{ background: 'none', border: 'none', cursor: 'pointer' }}
-                    onClick={() => setExpandedSession(isOpen ? null : session.session_id)}
-                  >
-                    <div>
-                      <p className="mono font-semibold text-sm" style={{ color: 'var(--ink)' }}>
-                        {date} · {session.score}/{session.total}
-                      </p>
-                      <p className="text-xs mt-0.5" style={{ color: 'rgba(26,20,16,0.5)' }}>
-                        {wrong.length} incorrect · Tap to review
-                      </p>
+            {/* Weak area chips */}
+            {Object.keys(grouped).length > 0 && (
+              <div className="fa" style={{ marginTop: 24 }}>
+                <SL title="WEAK AREAS" sub="Below 50% accuracy · grouped by subject" />
+                {Object.entries(grouped).map(([grp, items]) => (
+                  <div key={grp} style={{ marginBottom: 14 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 7 }}>
+                      <div style={{ height: 1, width: 10, background: C.border }} />
+                      <span style={{ fontSize: 11, fontWeight: 600, color: C.muted, whiteSpace: "nowrap" }}>{grp}</span>
+                      <div style={{ height: 1, flex: 1, background: C.border }} />
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="mono font-bold text-base" style={{ color: accColor }}>
-                        {accPct}%
-                      </span>
-                      <span style={{
-                        color: '#4f46e5', fontSize: 18,
-                        transition: 'transform 0.2s',
-                        transform: isOpen ? 'rotate(180deg)' : 'none',
-                        display: 'inline-block',
-                      }}>
-                        ▾
-                      </span>
-                    </div>
-                  </button>
-
-                  {/* Expanded incorrect questions */}
-                  {isOpen && (
-                    <div className="border-t px-4 pb-4 space-y-4" style={{ borderColor: 'rgba(79,70,229,0.15)' }}>
-                      {wrong.length === 0 ? (
-                        <p className="text-sm text-center py-4" style={{ color: '#059669' }}>
-                          🎉 Perfect score on this session!
-                        </p>
-                      ) : wrong.map((q, i) => (
-                        <div
-                          key={q.question_id}
-                          className="rounded-xl p-4 mt-4"
-                          style={{ background: '#fafafa', border: '1px solid #e5e7eb' }}
-                        >
-                          {/* Q number + subject */}
-                          <div className="flex items-center gap-2 mb-2">
-                            <span
-                              className="mono text-xs font-bold px-2 py-0.5 rounded-full"
-                              style={{ background: '#ede9fe', color: '#4f46e5' }}
-                            >
-                              Q{i + 1}
-                            </span>
-                            {q.subject && (
-                              <span className="text-xs" style={{ color: 'rgba(26,20,16,0.45)' }}>{q.subject}</span>
-                            )}
-                          </div>
-
-                          {/* Question text */}
-                          <p className="serif text-sm leading-relaxed mb-3" style={{ color: 'var(--ink)' }}>
-                            {q.question_text}
-                          </p>
-
-                          {/* Correct vs selected */}
-                          <div className="space-y-1.5 mb-3">
-                            {q.options.map((opt, idx) => {
-                              const isCorrect = idx === q.correct_index;
-                              const isChosen = idx === q.selected_index;
-                              if (!isCorrect && !isChosen) return null;
-                              return (
-                                <div
-                                  key={idx}
-                                  className="flex items-center gap-3 rounded-xl px-3 py-2"
-                                  style={{
-                                    background: isCorrect ? '#d1fae5' : '#fee2e2',
-                                    border: `1.5px solid ${isCorrect ? '#059669' : '#dc2626'}`,
-                                  }}
-                                >
-                                  <span
-                                    className="mono text-xs font-bold w-6 h-6 flex items-center justify-center rounded-lg flex-shrink-0"
-                                    style={{
-                                      background: isCorrect ? '#059669' : '#dc2626',
-                                      color: '#fff',
-                                    }}
-                                  >
-                                    {OPTION_LABELS[idx]}
-                                  </span>
-                                  <span className="text-xs flex-1" style={{ color: 'var(--ink)' }}>{opt}</span>
-                                  <span className="text-xs font-semibold" style={{ color: isCorrect ? '#059669' : '#dc2626' }}>
-                                    {isCorrect ? '✓ Correct' : '✗ Your ans'}
-                                  </span>
-                                </div>
-                              );
-                            })}
-                          </div>
-
-                          {/* Feynman Review Button */}
-                          <button
-                            onClick={() => openFeynman(q)}
-                            className="w-full flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-semibold transition-all"
-                            style={{
-                              background: 'linear-gradient(135deg, #ede9fe, #dbeafe)',
-                              border: '1.5px solid #818cf8',
-                              color: '#4338ca',
-                              minHeight: 44,
-                              cursor: 'pointer',
-                            }}
-                          >
-                            <span style={{ fontSize: 16 }}>🧠</span>
-                            Feynman Review
-                          </button>
-                        </div>
+                    <div style={{ display: "flex", flexWrap: "wrap" as const, gap: 6 }}>
+                      {items.map((w: any) => (
+                        <Chip key={w.topic_id} tag={w.topic_id || ""} accuracy={safeAcc(w.accuracy)} />
                       ))}
                     </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-
-      {/* ── Feynman Modal ──────────────────────────────────────────────────────── */}
-      {feynman.open && (
-        <div
-          className="fixed inset-0 z-50 flex flex-col justify-end"
-          style={{ background: 'rgba(15,10,40,0.7)' }}
-          onClick={e => { if (e.target === e.currentTarget) closeFeynman(); }}
-        >
-          <div
-            className="rounded-t-3xl p-6 pb-10 max-h-[85vh] overflow-y-auto fade-in"
-            style={{ background: '#fff', boxShadow: '0 -12px 60px rgba(79,70,229,0.2)' }}
-          >
-            {/* Handle */}
-            <div className="w-10 h-1 rounded-full mx-auto mb-5" style={{ background: '#c7d2fe' }} />
-
-            {/* Header */}
-            <div className="flex items-start justify-between gap-3 mb-4">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span style={{ fontSize: 20 }}>🧠</span>
-                  <span
-                    className="mono text-xs font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
-                    style={{ background: '#ede9fe', color: '#4f46e5' }}
-                  >
-                    Feynman Review
-                  </span>
-                </div>
-                <p className="serif text-sm font-semibold leading-snug" style={{ color: 'var(--ink)', maxWidth: '90%' }}>
-                  {feynman.questionText}
-                </p>
+                  </div>
+                ))}
               </div>
-              <button
-                onClick={closeFeynman}
-                className="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full text-lg"
-                style={{ background: '#ede9fe', color: '#4f46e5', border: 'none', cursor: 'pointer' }}
-              >
-                ×
-              </button>
-            </div>
+            )}
 
-            <div className="h-px mb-4" style={{ background: 'linear-gradient(90deg, #818cf8, transparent)' }} />
-
-            {/* Content */}
-            {feynman.loading ? (
-              <div className="text-center py-10">
-                <div className="w-8 h-8 border-2 border-t-transparent rounded-full animate-spin mx-auto mb-3"
-                  style={{ borderColor: '#818cf8', borderTopColor: 'transparent' }} />
-                <p className="mono text-sm" style={{ color: '#4f46e5' }}>
-                  Fetching explanation…
-                </p>
+            {/* Accuracy vs attempt */}
+            {totalAttempted > 0 && (
+              <div className="fa" style={{ marginTop: 24 }}>
+                <SL title="STRATEGY SNAPSHOT" />
+                <div style={{
+                  background: C.card, border: `1px solid ${C.green}22`,
+                  borderRadius: 14, padding: 16,
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: C.text }}>Accuracy vs. Attempt Rate</div>
+                      <div style={{ fontSize: 11, color: C.dim, marginTop: 2 }}>Risk-reward of your guessing strategy</div>
+                    </div>
+                    <span style={{ fontSize: 18 }}>🎯</span>
+                  </div>
+                  <div style={{ display: "flex", gap: 14, marginTop: 14 }}>
+                    {[
+                      { label: "OVERALL ACCURACY", val: fmt(overallAcc), pct: overallAcc ?? 0, color: C.green  },
+                      { label: "CORRECT / TOTAL",   val: `${totalCorrect}/${totalAttempted}`, pct: overallAcc ?? 0, color: C.indigo },
+                    ].map(({ label, val, pct: p, color }) => (
+                      <div key={label} style={{ flex: 1 }}>
+                        <div style={{ fontSize: 9, color: C.dim, letterSpacing: "0.1em", fontWeight: 700 }}>{label}</div>
+                        <div style={{ fontSize: 22, fontWeight: 700, color, fontFamily: "Georgia, serif", marginTop: 3 }}>{val}</div>
+                        <div style={{ height: 3, background: C.border, borderRadius: 2, marginTop: 6, overflow: "hidden" }}>
+                          <div style={{ height: "100%", width: `${p}%`, background: color, borderRadius: 2, transition: "width 1s ease" }} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{
+                    marginTop: 12, background: `${C.indigo}08`,
+                    border: `1px solid ${C.indigo}18`, borderRadius: 10,
+                    padding: "9px 12px", fontSize: 11, color: C.muted, lineHeight: 1.65,
+                  }}>
+                    💡 With UPSC's −⅓ penalty, skip questions where your confidence is below ~33%.
+                  </div>
+                </div>
               </div>
-            ) : feynman.error ? (
-              <div
-                className="rounded-xl p-4 text-center"
-                style={{ background: '#fee2e2', border: '1px solid #fca5a5' }}
-              >
-                <p className="serif text-sm" style={{ color: '#991b1b' }}>{feynman.error}</p>
-                <button
-                  className="mt-3 text-xs mono underline"
-                  style={{ color: '#dc2626', background: 'none', border: 'none', cursor: 'pointer' }}
-                  onClick={closeFeynman}
-                >
-                  Close and try again
+            )}
+
+            {/* Feynman */}
+            <div className="fa" style={{ marginTop: 24 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+                <SL title="FEYNMAN REVIEW" sub="AI Coach picks your 3 priority topics" />
+                <span style={{
+                  background: `${C.indigo}0d`, color: C.indigo, border: `1px solid ${C.indigo}22`,
+                  borderRadius: 8, padding: "2px 8px", fontSize: 9, fontWeight: 700, letterSpacing: "0.08em",
+                }}>AI COACH</span>
+              </div>
+
+              {feynman.length === 0 && !feynmanLoad && (
+                <button onClick={fetchFeynman} disabled={!weakAreas.length} style={{
+                  width: "100%",
+                  background: weakAreas.length ? `linear-gradient(135deg, ${C.dark}, ${C.darkMid})` : C.border,
+                  color: weakAreas.length ? C.gold : C.dim,
+                  border: "none", borderRadius: 12, padding: 15,
+                  fontSize: 14, fontWeight: 600, cursor: weakAreas.length ? "pointer" : "not-allowed",
+                }}>
+                  {weakAreas.length ? "✨ Generate Feynman Review" : "Complete tests first to unlock"}
                 </button>
+              )}
+
+              {feynmanLoad && (
+                <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 16 }}>
+                  <div style={{ fontSize: 11, color: C.indigo, fontWeight: 600, marginBottom: 8 }}>⟳ AI Coach is analysing…</div>
+                  <div style={{
+                    fontFamily: "monospace", fontSize: 11, color: C.muted,
+                    whiteSpace: "pre-wrap", wordBreak: "break-word", lineHeight: 1.6, maxHeight: 120, overflow: "auto",
+                  }}>{feynmanStream || "Thinking..."}</div>
+                </div>
+              )}
+
+              {feynman.length > 0 && (
+                <>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    {feynman.map((item: any, i: number) => <FCard key={i} item={item} idx={i} />)}
+                  </div>
+                  <button onClick={() => { setFeynman([]); setFeynmanStream(""); }} style={{
+                    marginTop: 10, width: "100%", background: "none",
+                    border: `1px solid ${C.border}`, borderRadius: 10, padding: 10,
+                    fontSize: 12, color: C.muted, cursor: "pointer",
+                  }}>↺ Regenerate</button>
+                </>
+              )}
+            </div>
+          </>
+        )}
+
+        {/* ══ SESSIONS TAB ══ */}
+        {tab === "sessions" && (
+          <div className="fa">
+            <SL title="RECENT SESSIONS" />
+            {sessions.length === 0 ? (
+              <div style={{
+                background: C.card, border: `1px dashed ${C.border}`,
+                borderRadius: 14, padding: "32px 16px", textAlign: "center",
+              }}>
+                <div style={{ fontSize: 36, marginBottom: 10 }}>📋</div>
+                <div style={{ color: C.muted, fontSize: 13 }}>No sessions yet.</div>
+                <div style={{ color: C.dim, fontSize: 11, marginTop: 4 }}>Complete a test to see history here.</div>
               </div>
             ) : (
-              <div>
-                <div
-                  className="rounded-2xl p-5"
-                  style={{ background: '#f5f3ff', border: '1px solid #c4b5fd' }}
-                >
-                  <p
-                    className="serif leading-relaxed text-sm"
-                    style={{ color: 'var(--ink)', whiteSpace: 'pre-wrap' }}
-                  >
-                    {feynman.explanation}
-                  </p>
-                </div>
-
-                <p className="text-xs text-center mt-4" style={{ color: 'rgba(26,20,16,0.4)' }}>
-                  Explain this concept to someone else — that's the Feynman technique
-                </p>
-
-                <button
-                  className="w-full mt-4 py-3 rounded-2xl text-sm font-semibold"
-                  style={{
-                    background: 'linear-gradient(135deg, #4f46e5, #7c3aed)',
-                    color: '#fff', border: 'none', cursor: 'pointer',
-                  }}
-                  onClick={closeFeynman}
-                >
-                  Got it ✓
-                </button>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {[...sessions].reverse().map((s: any, i: number) => (
+                  <SessionCard key={s.session_id ?? i} s={s} />
+                ))}
               </div>
             )}
           </div>
-        </div>
-      )}
-
-      <BottomNav />
+        )}
+      </div>
     </div>
   );
 }

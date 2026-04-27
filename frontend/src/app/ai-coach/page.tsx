@@ -134,31 +134,33 @@ export default function AICoachPage() {
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let accumulated = '';
+      let buffer = '';
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split('\n');
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() ?? '';
 
         for (const line of lines) {
           if (!line.startsWith('data: ')) continue;
           const data = line.slice(6).trim();
           if (data === '[DONE]') break;
-
           try {
             const parsed = JSON.parse(data);
             if (parsed.error) throw new Error(parsed.error);
             if (parsed.chunk) {
               accumulated += parsed.chunk;
+              const final = accumulated;
               setMessages(prev => {
                 const updated = [...prev];
-                updated[assistantIdx] = { role: 'assistant', content: accumulated };
+                updated[assistantIdx] = { role: 'assistant', content: final };
                 return updated;
               });
             }
-          } catch { /* skip malformed chunks */ }
+          } catch { /* skip */ }
         }
       }
     } catch {

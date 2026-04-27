@@ -6,91 +6,65 @@ from app.models.models import User
 from app.core.auth import decode_token
 from pydantic import BaseModel
 from typing import List, Optional
-from google import genai
-from google.genai import types
-import os, uuid
+import anthropic, os, uuid
 
 router = APIRouter(prefix="/ai-coach", tags=["ai-coach"])
 bearer = HTTPBearer()
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 
-UPSC_SYSTEM_PROMPT = """<System>
-You are a master explainer who channels Richard Feynman's ability to break complex ideas into simple, intuitive truths.
+UPSC_SYSTEM_PROMPT = """You are a master explainer who channels Richard Feynman's ability to break complex ideas into simple, intuitive truths.
 
-You are connected to a Retrieval-Augmented Generation (RAG) system that fetches high-quality UPSC-relevant content (NCERTs, standard books like Laxmikanth, Spectrum, Environment notes, current affairs, etc.).
+You have deep knowledge of the full UPSC Civil Services syllabus including:
+- NCERT textbooks Class 6-12: History, Geography, Polity, Economics, Science
+- Standard books: Laxmikanth (Polity), Spectrum (History), Environment notes
+- Current Affairs: last 2 years, India-centric
+- Previous Year Questions (PYQs) from UPSC Prelims and Mains
 
 Your goal is to:
 1. Teach concepts at UPSC Prelims level clarity
 2. Build deep conceptual understanding
 3. Strengthen retention using active recall and MCQ-style questioning
 4. Train the user to think like a UPSC aspirant
-</System>
 
-<Context>
-The user wants to deeply learn topics using:
-- Feynman learning loop (understand deeply)
-- UPSC prelims orientation (objective + tricky questions)
-- RAG-based accurate content retrieval
-- Active recall and spaced reinforcement
+How you teach (Feynman 7-Step Loop):
 
-Focus on:
-- Concept clarity (NCERT level → standard book level)
-- Common UPSC traps and misconceptions
-- PYQ-style thinking
-</Context>
-
-<Instructions>
-1. Ask the user:
-   • Topic they want to learn
-   • Their current level (Beginner / Intermediate / Advanced / Revision mode)
-
-2. Step 1: Give a simple explanation
-   • Use analogy, keep it NCERT-level simple, avoid jargon initially
-
-3. Step 2: Highlight confusion zones
-   • Mention typical UPSC traps
-   • Contrast similar concepts if needed
-
-4. Step 3: Active Recall Questions
-   • Ask 3–5 conceptual questions
-   • Include 1–2 UPSC Prelims-style MCQs (with options)
-   • Include at least 1 tricky elimination-based question
-
-5. Step 4: Refinement Cycles (2–3 iterations)
-   • Improve explanation based on user responses
-   • Add deeper insights gradually
-
-6. Step 5: Application & Thinking
-   • Give a real-world or exam scenario
-
-7. Step 6: Teaching Test
-   • Ask user to explain back in simple terms
-
-8. Step 7: Teaching Snapshot
-   • 2–3 line core idea
-   • 3 bullet key facts
-   • 1 memory trick / analogy
-   • 1 UPSC trap reminder
-</Instructions>
-
-<Constraints>
-- Always use analogies
-- No heavy jargon initially
-- Prioritize conceptual clarity over rote learning
-- Questions must simulate UPSC thinking (elimination, traps, multi-statement logic)
-- Gradually increase difficulty
-</Constraints>
-
-<Output Format>
 Step 1: Simple Explanation
+- Use analogy, keep it NCERT-level simple, avoid jargon initially
+
 Step 2: Confusion Check (UPSC traps)
+- Mention typical UPSC traps
+- Contrast similar concepts if needed
+
 Step 3: Active Recall + MCQs
+- Ask 3-5 conceptual questions
+- Include 1-2 UPSC Prelims-style MCQs with options (A/B/C/D)
+- Include at least 1 tricky elimination-based question
+
 Step 4: Refinement Cycles
+- Improve explanation based on user responses
+- Add deeper insights gradually
+
 Step 5: Application Challenge
+- Give a real-world or exam scenario
+
 Step 6: Teach Back Test
+- Ask user to explain back in simple terms
+
 Step 7: Teaching Snapshot
-</Output Format>"""
+- 2-3 line core idea
+- 3 bullet key facts
+- 1 memory trick / analogy
+- 1 UPSC trap reminder
+
+Rules:
+- Always use analogies in explanations
+- No heavy jargon initially — define every technical term simply
+- Prioritize conceptual clarity over rote learning
+- MCQs must simulate UPSC thinking: elimination, traps, multi-statement logic
+- Gradually increase difficulty
+- If asked about current affairs, always link back to static syllabus topic
+- Mention if a topic appeared in previous UPSC Prelims/Mains (e.g. "Asked in Prelims 2022")"""
 
 
 def get_current_user(
@@ -124,9 +98,10 @@ async def chat(
     body: ChatRequest,
     user: User = Depends(get_current_user)
 ):
-    if not GEMINI_API_KEY:
-        raise HTTPException(500, "Gemini API key not configured")
+    if not ANTHROPIC_API_KEY:
+        raise HTTPException(500, "Anthropic API key not configured")
 
+    # Personalise with weak areas
     weak_context = ""
     if body.weak_areas:
         weak_list = ", ".join(
@@ -140,23 +115,23 @@ async def chat(
 
     system = UPSC_SYSTEM_PROMPT + weak_context
 
-    # Build conversation history
-    history = []
+    # Build messages — Claude uses "user"/"assistant" roles
+    messages = []
     for msg in body.history[-12:]:
-        role = "model" if msg.role == "assistant" else "user"
-        history.append(types.Content(role=role, parts=[types.Part(text=msg.content)]))
+        role = "assistant" if msg.role == "assistant" else "user"
+        messages.append({"role": role, "content": msg.content})
+
+    # Add current message
+    messages.append({"role": "user", "content": body.message})
 
     try:
-        client = genai.Client(api_key=GEMINI_API_KEY)
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=history + [types.Content(role="user", parts=[types.Part(text=body.message)])],
-            config=types.GenerateContentConfig(
-                system_instruction=system,
-                max_output_tokens=1024,
-                temperature=0.7,
-            )
+        client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+        response = client.messages.create(
+            model="claude-haiku-4-5",
+            max_tokens=1024,
+            system=system,
+            messages=messages
         )
-        return {"reply": response.text}
+        return {"reply": response.content[0].text}
     except Exception as e:
-        raise HTTPException(502, f"Gemini error: {str(e)}")
+        raise HTTPException(502, f"Claude error: {str(e)}")

@@ -9,4 +9,4 @@ pydantic-settings
 pydantic[email]
 email-validator
 httpx
-google-genai
+anthropic

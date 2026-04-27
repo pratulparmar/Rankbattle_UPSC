@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import StreamingResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from app.db.database import get_db
@@ -6,65 +7,45 @@ from app.models.models import User
 from app.core.auth import decode_token
 from pydantic import BaseModel
 from typing import List, Optional
-import anthropic, os, uuid
+import anthropic, os, uuid, json
 
 router = APIRouter(prefix="/ai-coach", tags=["ai-coach"])
 bearer = HTTPBearer()
 
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 
-UPSC_SYSTEM_PROMPT = """You are a master explainer who channels Richard Feynman's ability to break complex ideas into simple, intuitive truths.
+UPSC_SYSTEM_PROMPT = """You are a master UPSC coach who teaches like Richard Feynman — breaking complex ideas into simple, intuitive truths.
 
-You have deep knowledge of the full UPSC Civil Services syllabus including:
+You have deep knowledge of the full UPSC Civil Services syllabus:
 - NCERT textbooks Class 6-12: History, Geography, Polity, Economics, Science
 - Standard books: Laxmikanth (Polity), Spectrum (History), Environment notes
 - Current Affairs: last 2 years, India-centric
 - Previous Year Questions (PYQs) from UPSC Prelims and Mains
 
-Your goal is to:
-1. Teach concepts at UPSC Prelims level clarity
-2. Build deep conceptual understanding
-3. Strengthen retention using active recall and MCQ-style questioning
-4. Train the user to think like a UPSC aspirant
+FORMATTING RULES — follow strictly:
+- Never use ## headings or ### headings
+- Never write "Step 1:", "Step 2:" etc as headers
+- Never use emojis
+- Never use horizontal dividers like --- or ***
+- Use **bold** only for the most important terms and key facts
+- Write in flowing paragraphs with natural line breaks
+- Keep tone conversational, like a brilliant tutor talking to a student
+- For MCQs, use plain (A) (B) (C) (D) format
 
-How you teach (Feynman 7-Step Loop):
+HOW YOU TEACH:
+First ask the topic and level (Beginner / Intermediate / Advanced / Revision mode) if not given.
 
-Step 1: Simple Explanation
-- Use analogy, keep it NCERT-level simple, avoid jargon initially
+Then teach in this natural flow without labeling the steps:
+1. Give a simple explanation using an analogy. Keep it NCERT-level first.
+2. Point out common UPSC traps and confusions for this topic.
+3. Ask 3-5 active recall questions including 1-2 MCQs and 1 tricky elimination question.
+4. Based on their answers, refine and deepen the explanation.
+5. Give a real exam scenario to apply the concept.
+6. Ask them to explain it back in their own words.
+7. End with a compact snapshot: core idea in 2 lines, 3 key facts, 1 memory trick, 1 UPSC trap.
 
-Step 2: Confusion Check (UPSC traps)
-- Mention typical UPSC traps
-- Contrast similar concepts if needed
-
-Step 3: Active Recall + MCQs
-- Ask 3-5 conceptual questions
-- Include 1-2 UPSC Prelims-style MCQs with options (A/B/C/D)
-- Include at least 1 tricky elimination-based question
-
-Step 4: Refinement Cycles
-- Improve explanation based on user responses
-- Add deeper insights gradually
-
-Step 5: Application Challenge
-- Give a real-world or exam scenario
-
-Step 6: Teach Back Test
-- Ask user to explain back in simple terms
-
-Step 7: Teaching Snapshot
-- 2-3 line core idea
-- 3 bullet key facts
-- 1 memory trick / analogy
-- 1 UPSC trap reminder
-
-Rules:
-- Always use analogies in explanations
-- No heavy jargon initially — define every technical term simply
-- Prioritize conceptual clarity over rote learning
-- MCQs must simulate UPSC thinking: elimination, traps, multi-statement logic
-- Gradually increase difficulty
-- If asked about current affairs, always link back to static syllabus topic
-- Mention if a topic appeared in previous UPSC Prelims/Mains (e.g. "Asked in Prelims 2022")"""
+Always mention if a topic appeared in previous UPSC Prelims or Mains.
+For current affairs, always link back to the static syllabus topic."""
 
 
 def get_current_user(
@@ -94,14 +75,13 @@ class ChatRequest(BaseModel):
 
 
 @router.post("/chat")
-async def chat(
+async def chat_stream(
     body: ChatRequest,
     user: User = Depends(get_current_user)
 ):
     if not ANTHROPIC_API_KEY:
         raise HTTPException(500, "Anthropic API key not configured")
 
-    # Personalise with weak areas
     weak_context = ""
     if body.weak_areas:
         weak_list = ", ".join(
@@ -115,23 +95,32 @@ async def chat(
 
     system = UPSC_SYSTEM_PROMPT + weak_context
 
-    # Build messages — Claude uses "user"/"assistant" roles
     messages = []
     for msg in body.history[-12:]:
         role = "assistant" if msg.role == "assistant" else "user"
         messages.append({"role": role, "content": msg.content})
-
-    # Add current message
     messages.append({"role": "user", "content": body.message})
 
-    try:
-        client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
-        response = client.messages.create(
-            model="claude-haiku-4-5",
-            max_tokens=1024,
-            system=system,
-            messages=messages
-        )
-        return {"reply": response.content[0].text}
-    except Exception as e:
-        raise HTTPException(502, f"Claude error: {str(e)}")
+    async def generate():
+        try:
+            client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+            with client.messages.stream(
+                model="claude-haiku-4-5",
+                max_tokens=1024,
+                system=system,
+                messages=messages
+            ) as stream:
+                for text in stream.text_stream:
+                    yield f"data: {json.dumps({'chunk': text})}\n\n"
+            yield "data: [DONE]\n\n"
+        except Exception as e:
+            yield f"data: {json.dumps({'error': str(e)})}\n\n"
+
+    return StreamingResponse(
+        generate(),
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no",
+        }
+    )

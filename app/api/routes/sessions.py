@@ -94,3 +94,73 @@ def submit_session(session_id: str, req: SessionSubmitRequest,
         skipped=skipped, raw_score=raw_score, final_score=final_score,
         accuracy=accuracy, time_taken_mins=time_taken
     )
+
+
+@router.get("/{session_id}/results")
+def get_session_results(
+    session_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user)
+):
+    session = db.query(MockSession).filter(
+        MockSession.session_id == session_id,
+        MockSession.user_id == user.user_id
+    ).first()
+    if not session:
+        raise HTTPException(404, "Session not found")
+
+    attempts = db.query(Attempt).filter(Attempt.session_id == session_id).all()
+    attempt_map = {str(a.mcq_id): a for a in attempts}
+    mcq_ids = [a.mcq_id for a in attempts]
+    mcqs = db.query(MCQ).filter(MCQ.mcq_id.in_(mcq_ids)).all()
+
+    results = []
+    for mcq in mcqs:
+        attempt = attempt_map.get(str(mcq.mcq_id))
+        results.append({
+            "mcq_id":        str(mcq.mcq_id),
+            "question_text": mcq.stem,
+            "options":       mcq.options,
+            "correct_index": mcq.correct_index,
+            "selected_index": attempt.selected_index if attempt else None,
+            "is_correct":    attempt.is_correct if attempt else None,
+            "subject":       mcq.subject,
+            "topic_id":      mcq.topic_id,
+        })
+
+    return {"session_id": str(session_id), "question_results": results}
+
+
+@router.get("/{session_id}/results")
+def get_session_results(
+    session_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user)
+):
+    session = db.query(MockSession).filter(
+        MockSession.session_id == session_id,
+        MockSession.user_id == user.user_id
+    ).first()
+    if not session:
+        raise HTTPException(404, "Session not found")
+
+    attempts = db.query(Attempt).filter(Attempt.session_id == session_id).all()
+    attempt_map = {str(a.mcq_id): a for a in attempts}
+    mcq_ids = [a.mcq_id for a in attempts]
+    mcqs = db.query(MCQ).filter(MCQ.mcq_id.in_(mcq_ids)).all()
+
+    results = []
+    for mcq in mcqs:
+        attempt = attempt_map.get(str(mcq.mcq_id))
+        results.append({
+            "mcq_id":        str(mcq.mcq_id),
+            "question_text": mcq.stem,
+            "options":       mcq.options,
+            "correct_index": mcq.correct_index,
+            "selected_index": attempt.selected_index if attempt else None,
+            "is_correct":    attempt.is_correct if attempt else None,
+            "subject":       mcq.subject,
+            "topic_id":      mcq.topic_id,
+        })
+
+    return {"session_id": str(session_id), "question_results": results}

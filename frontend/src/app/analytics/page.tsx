@@ -35,7 +35,7 @@ interface SessionResult {
 
 interface AnalyticsData {
   subjects: SubjectStat[];
-  weak_areas: string[];
+  weak_areas: { subject: string; topic_id: string; accuracy: number }[];
   recent_sessions: SessionResult[];
 }
 
@@ -198,13 +198,13 @@ export default function AnalyticsPage() {
               ⚠️ Weak Areas to Focus
             </p>
             <div className="flex flex-wrap gap-2">
-              {weakAreas.map((area: string) => (
+              {weakAreas.map((area, i) => (
                 <span
-                  key={area}
+                  key={typeof area === 'string' ? area : area.topic_id ?? i}
                   className="mono text-xs px-3 py-1 rounded-full"
                   style={{ background: '#fde68a', color: '#92400e', fontWeight: 600 }}
                 >
-                  {area}
+                  {typeof area === 'string' ? area : `${area.topic_id} · ${area.accuracy}%`}
                 </span>
               ))}
             </div>

@@ -29,7 +29,7 @@ const SUGGESTED = [
 ];
 
 export default function AICoachPage() {
-  const { token } = useAuth();
+  const { token, isLoading } = useAuth();
   const router = useRouter();
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -40,7 +40,7 @@ export default function AICoachPage() {
   const [weakAreas, setWeakAreas] = useState<WeakArea[]>([]);
 
   useEffect(() => {
-    if (!token) { router.push('/login'); return; }
+    if (!isLoading && !token) { router.push('/login'); return; }
     fetch(`${API}/analytics/me/weak-areas`, {
       headers: { Authorization: `Bearer ${token}` }
     })

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
 
@@ -46,7 +46,7 @@ const MARKING = [
   { label: 'Not Attempted',    marks: '0',       color: '#64748b', bg: '#f8fafc', border: '#e2e8f0' },
 ];
 
-export default function TestStartPage() {
+function TestStartInner() {
   const router       = useRouter();
   const params       = useSearchParams();
   const { token }    = useAuth();
@@ -273,3 +273,17 @@ const secondaryBtn: React.CSSProperties = {
   border: '1.5px solid #e2e8f0',
   fontSize: 14, fontWeight: 600, cursor: 'pointer',
 };
+export default function TestStartPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ width: 36, height: 36, border: '3px solid #2563eb', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
+          <p style={{ color: '#64748b', fontSize: 14 }}>Loading test…</p>
+        </div>
+      </div>
+    }>
+      <TestStartInner />
+    </Suspense>
+  );
+}

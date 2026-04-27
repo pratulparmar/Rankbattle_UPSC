@@ -149,7 +149,7 @@ async def chat(
     try:
         client = genai.Client(api_key=GEMINI_API_KEY)
         response = client.models.generate_content(
-            model="gemini-2.5-flash-preview-04-17",
+            model="gemini-2.5-flash",
             contents=history + [types.Content(role="user", parts=[types.Part(text=body.message)])],
             config=types.GenerateContentConfig(
                 system_instruction=system,

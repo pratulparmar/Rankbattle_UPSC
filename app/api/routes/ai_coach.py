@@ -6,7 +6,8 @@ from app.models.models import User
 from app.core.auth import decode_token
 from pydantic import BaseModel
 from typing import List, Optional
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 import os, uuid
 
 router = APIRouter(prefix="/ai-coach", tags=["ai-coach"])
@@ -44,51 +45,41 @@ Focus on:
    • Topic they want to learn
    • Their current level (Beginner / Intermediate / Advanced / Revision mode)
 
-2. Retrieve core concepts from RAG aligned to UPSC syllabus
+2. Step 1: Give a simple explanation
+   • Use analogy, keep it NCERT-level simple, avoid jargon initially
 
-3. Step 1: Give a simple explanation
-   • Use analogy
-   • Keep it NCERT-level simple
-   • Avoid jargon initially
-
-4. Step 2: Highlight confusion zones
+3. Step 2: Highlight confusion zones
    • Mention typical UPSC traps
    • Contrast similar concepts if needed
 
-5. Step 3: Active Recall Questions
+4. Step 3: Active Recall Questions
    • Ask 3–5 conceptual questions
    • Include 1–2 UPSC Prelims-style MCQs (with options)
    • Include at least 1 tricky elimination-based question
 
-6. Step 4: Refinement Cycles (2–3 iterations)
-   • Improve explanation based on user's responses
-   • Make it more intuitive and interconnected
-   • Add deeper insights gradually (link static + current if relevant)
+5. Step 4: Refinement Cycles (2–3 iterations)
+   • Improve explanation based on user responses
+   • Add deeper insights gradually
 
-7. Step 5: Application & Thinking
+6. Step 5: Application & Thinking
    • Give a real-world or exam scenario
-   • Ask user to apply concept
 
-8. Step 6: Teaching Test
+7. Step 6: Teaching Test
    • Ask user to explain back in simple terms
-   • Identify gaps and correct them
 
-9. Step 7: Teaching Snapshot
-   • Compress into:
-     - 2–3 line core idea
-     - 3 bullet key facts
-     - 1 memory trick / analogy
-     - 1 UPSC trap reminder
+8. Step 7: Teaching Snapshot
+   • 2–3 line core idea
+   • 3 bullet key facts
+   • 1 memory trick / analogy
+   • 1 UPSC trap reminder
 </Instructions>
 
 <Constraints>
-- Always use analogies in explanation
+- Always use analogies
 - No heavy jargon initially
-- Define every technical term simply
 - Prioritize conceptual clarity over rote learning
 - Questions must simulate UPSC thinking (elimination, traps, multi-statement logic)
 - Gradually increase difficulty
-- Keep explanations concise but powerful
 </Constraints>
 
 <Output Format>
@@ -119,7 +110,7 @@ def get_current_user(
 
 
 class Message(BaseModel):
-    role: str        # "user" or "assistant"
+    role: str
     content: str
 
 class ChatRequest(BaseModel):
@@ -136,9 +127,6 @@ async def chat(
     if not GEMINI_API_KEY:
         raise HTTPException(500, "Gemini API key not configured")
 
-    genai.configure(api_key=GEMINI_API_KEY)
-
-    # Personalise with weak areas
     weak_context = ""
     if body.weak_areas:
         weak_list = ", ".join(
@@ -146,29 +134,29 @@ async def chat(
             for w in body.weak_areas[:5]
         )
         weak_context = (
-            f"\n\nThis student's current weak areas: {weak_list}. "
-            "If these topics come up, use simpler analogies and extra MCQ practice."
+            f"\n\nThis student's weak areas: {weak_list}. "
+            "Use simpler analogies and extra MCQ practice for these topics."
         )
 
     system = UPSC_SYSTEM_PROMPT + weak_context
 
-    # Build history in Gemini format (role must be "user" or "model")
+    # Build conversation history
     history = []
     for msg in body.history[-12:]:
-        history.append({
-            "role": "model" if msg.role == "assistant" else "user",
-            "parts": [msg.content]
-        })
-
-    model = genai.GenerativeModel(
-        model_name="gemini-1.5-flash",
-        system_instruction=system
-    )
-
-    chat_session = model.start_chat(history=history)
+        role = "model" if msg.role == "assistant" else "user"
+        history.append(types.Content(role=role, parts=[types.Part(text=msg.content)]))
 
     try:
-        response = chat_session.send_message(body.message)
+        client = genai.Client(api_key=GEMINI_API_KEY)
+        response = client.models.generate_content(
+            model="gemini-2.0-flash",
+            contents=history + [types.Content(role="user", parts=[types.Part(text=body.message)])],
+            config=types.GenerateContentConfig(
+                system_instruction=system,
+                max_output_tokens=1024,
+                temperature=0.7,
+            )
+        )
         return {"reply": response.text}
     except Exception as e:
         raise HTTPException(502, f"Gemini error: {str(e)}")

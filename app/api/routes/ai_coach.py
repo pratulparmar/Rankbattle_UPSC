@@ -103,14 +103,14 @@ async def chat_stream(
 
     async def generate():
         try:
-            client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
-            with client.messages.stream(
+            async_client = anthropic.AsyncAnthropic(api_key=ANTHROPIC_API_KEY)
+            async with async_client.messages.stream(
                 model="claude-haiku-4-5",
                 max_tokens=1024,
                 system=system,
                 messages=messages
             ) as stream:
-                for text in stream.text_stream:
+                async for text in stream.text_stream:
                     yield f"data: {json.dumps({'chunk': text})}\n\n"
             yield "data: [DONE]\n\n"
         except Exception as e:

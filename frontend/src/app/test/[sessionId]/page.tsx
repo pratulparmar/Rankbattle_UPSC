@@ -37,18 +37,11 @@ function extractQuestions(data: unknown): Question[] {
   if (!data || typeof data !== 'object') return [];
   const d = data as Record<string, unknown>;
 
-  // Shape A: array at root
-  if (Array.isArray(data)) return normalizeQuestions(data);
-
-  // Shape B: { questions: [...] }
-  if (Array.isArray(d.questions)) return normalizeQuestions(d.questions as unknown[]);
-
-  // Shape C: { session: { questions: [...] } }
+  if (Array.isArray(data))                return normalizeQuestions(data);
+  if (Array.isArray(d.questions))         return normalizeQuestions(d.questions as unknown[]);
   const session = d.session as Record<string, unknown> | undefined;
   if (session && Array.isArray(session.questions)) return normalizeQuestions(session.questions as unknown[]);
-
-  // Shape D: { data: [...] }
-  if (Array.isArray(d.data)) return normalizeQuestions(d.data as unknown[]);
+  if (Array.isArray(d.data))              return normalizeQuestions(d.data as unknown[]);
 
   return [];
 }
@@ -58,7 +51,6 @@ function normalizeQuestions(arr: unknown[]): Question[] {
     .filter(Boolean)
     .map((q: unknown) => {
       const item = q as Record<string, unknown>;
-      // options may be array or object {A:..., B:..., C:..., D:...}
       let options: string[] = [];
       if (Array.isArray(item.options)) {
         options = (item.options as unknown[]).map(String);
@@ -100,54 +92,56 @@ export default function TestSessionPage() {
 
   const timerRef  = useRef<NodeJS.Timeout | null>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
-  const BASE      = process.env.NEXT_PUBLIC_API_URL ?? 'https://rankbattleupsc-production.up.railway.app';
+
+  // ── Per-question timer refs ──────────────────────────────────────────────────
+  // qStartRef   : timestamp (ms) when the user arrived on the current question
+  // timePerQ    : accumulated seconds spent on each question index
+  const qStartRef = useRef<number>(Date.now());
+  const timePerQ  = useRef<number[]>([]);
+
+  const BASE = process.env.NEXT_PUBLIC_API_URL ?? 'https://rankbattleupsc-production.up.railway.app';
+
+  // ── Helper: bank time for current question then move ─────────────────────────
+  // Call this every time `current` is about to change.
+  const bankAndGo = useCallback((newIdx: number) => {
+    const elapsed = Math.round((Date.now() - qStartRef.current) / 1000);
+    timePerQ.current[current] = (timePerQ.current[current] ?? 0) + elapsed;
+    qStartRef.current = Date.now();
+    setCurrent(newIdx);
+  }, [current]);
 
   // ── Load questions ────────────────────────────────────────────────────────────
   useEffect(() => {
     if (!token || !sessionId) return;
 
     async function load() {
-      // ① Try sessionStorage first (set by test-start-page when session was created)
       try {
         const cached = sessionStorage.getItem(`session_${sessionId}`);
         if (cached) {
           const parsed = JSON.parse(cached);
           const qs = normalizeQuestions(Array.isArray(parsed) ? parsed : []);
-          if (qs.length > 0) {
-            init(qs);
-            return;
-          }
+          if (qs.length > 0) { init(qs); return; }
         }
       } catch { /* ignore parse errors */ }
 
-      // ② Try multiple endpoints — we don't know which one the backend exposes
       const endpoints = [
-        `${BASE}/sessions/${sessionId}`,            // most likely: full session object
-        `${BASE}/sessions/${sessionId}/questions`,  // explicit questions endpoint
-        `${BASE}/mcqs/session/${sessionId}`,        // alternative mcq route
+        `${BASE}/sessions/${sessionId}`,
+        `${BASE}/sessions/${sessionId}/questions`,
+        `${BASE}/mcqs/session/${sessionId}`,
       ];
 
       for (const url of endpoints) {
         try {
-          const res = await fetch(url, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
           if (!res.ok) continue;
           const data = await res.json();
           const qs   = extractQuestions(data);
-          if (qs.length > 0) {
-            console.log(`[TestSession] Loaded ${qs.length} questions from ${url}`);
-            init(qs);
-            return;
-          } else {
-            console.warn(`[TestSession] ${url} returned no parseable questions:`, data);
-          }
+          if (qs.length > 0) { init(qs); return; }
         } catch (e) {
           console.warn(`[TestSession] fetch failed for ${url}:`, e);
         }
       }
 
-      // ③ All endpoints failed
       setErrorMsg(
         'Could not load questions. The session may have expired or the questions endpoint is unreachable. ' +
         `(Session ID: ${sessionId})`
@@ -163,10 +157,13 @@ export default function TestSessionPage() {
     setQuestions(qs);
     setAnswers(qs.map(() => ({ ...EMPTY_A })));
     setTimeLeft(getTimerSeconds(qs.length));
+    // ── Initialise per-question timers ──
+    timePerQ.current  = qs.map(() => 0);
+    qStartRef.current = Date.now();
     setStatus('ready');
   }
 
-  // ── Timer ────────────────────────────────────────────────────────────────────
+  // ── Global countdown timer ────────────────────────────────────────────────────
   useEffect(() => {
     if (status !== 'ready' || timeLeft <= 0) return;
     timerRef.current = setInterval(() => {
@@ -185,6 +182,11 @@ export default function TestSessionPage() {
     if (!auto && !confirm('Submit test? This cannot be undone.')) return;
     setSubmitting(true);
     clearInterval(timerRef.current!);
+
+    // Bank time for the question the user is currently on
+    const elapsed = Math.round((Date.now() - qStartRef.current) / 1000);
+    timePerQ.current[current] = (timePerQ.current[current] ?? 0) + elapsed;
+
     try {
       const res = await fetch(`${BASE}/sessions/${sessionId}/submit`, {
         method:  'POST',
@@ -193,19 +195,21 @@ export default function TestSessionPage() {
           attempts: answers.map((a, i) => ({
             mcq_id:          questions[i]?.id,
             selected_index:  a.selected_index,
-            time_spent_secs: 0,
+            // ── NOW SENDS REAL TIME instead of hardcoded 0 ──
+            time_spent_secs: timePerQ.current[i] ?? 0,
             marked_review:   a.marked_review,
             rag_viewed:      a.rag_viewed,
           })),
         }),
       });
+
       if (!res.ok) {
         const errBody = await res.json().catch(() => ({}));
         console.error('[Submit error]', JSON.stringify(errBody, null, 2));
         throw new Error(`Submit failed: ${res.status}`);
       }
+
       const result = await res.json();
-      // Save result + full question+answer data for the results page
       sessionStorage.setItem(`result_${sessionId}`, JSON.stringify({
         ...result,
         question_results: questions.map((q, i) => ({
@@ -214,8 +218,6 @@ export default function TestSessionPage() {
           options:        q.options,
           subject:        q.subject,
           selected_index: answers[i]?.selected_index ?? null,
-          // correct_index comes from MCQWithAnswer — not in session questions
-          // results page will mark correctness from result.correct count
         })),
         answers_map: Object.fromEntries(
           answers.map((a, i) => [questions[i]?.id, a.selected_index])
@@ -228,7 +230,7 @@ export default function TestSessionPage() {
       setErrorMsg('Submission failed. Try again.');
       setSubmitting(false);
     }
-  }, [answers, questions, sessionId, token, submitting, router, BASE]);
+  }, [answers, questions, sessionId, token, submitting, current, router, BASE]);
 
   // ── Answer helpers ────────────────────────────────────────────────────────────
   const selectOption = (idx: number) =>
@@ -276,7 +278,6 @@ export default function TestSessionPage() {
   // ─── Loading skeleton ─────────────────────────────────────────────────────────
   if (status === 'loading') return (
     <div style={S.page}>
-      {/* Fake header */}
       <div style={S.header}>
         <div style={S.headerInner}>
           <Skeleton w={90} h={36} r={10} />
@@ -286,16 +287,14 @@ export default function TestSessionPage() {
         <div style={{ height: 3, background: '#e2e8f0' }} />
       </div>
       <div style={{ padding: 20, maxWidth: 720, margin: '0 auto' }}>
-        {/* Question card skeleton */}
         <Skeleton w="100%" h={120} r={16} mb={16} />
-        {/* Option skeletons */}
         {[1,2,3,4].map(i => <Skeleton key={i} w="100%" h={52} r={12} mb={10} />)}
       </div>
       <style>{CSS}</style>
     </div>
   );
 
-  // ─── Error state ───────────────────────────────────────────────────────────────
+  // ─── Error state ──────────────────────────────────────────────────────────────
   if (status === 'error') return (
     <div style={{ ...S.page, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
       <div style={{ background: '#fff', borderRadius: 20, padding: 32, maxWidth: 420, width: '100%', textAlign: 'center', boxShadow: '0 4px 24px rgba(0,0,0,0.08)', border: '1px solid #e2e8f0' }}>
@@ -350,7 +349,7 @@ export default function TestSessionPage() {
           </button>
         </div>
 
-        {/* Progress */}
+        {/* Progress bar */}
         <div style={{ height: 3, background: '#e2e8f0' }}>
           <div style={{ height: '100%', width: `${progress}%`, background: 'linear-gradient(90deg,#2563eb,#7c3aed)', transition: 'width 1s linear' }} />
         </div>
@@ -373,18 +372,16 @@ export default function TestSessionPage() {
 
         {/* Question card */}
         <div style={S.qCard}>
-          {q?.question_text ? (
-            <p style={S.qText}>{q.question_text}</p>
-          ) : (
-            // Guard: q exists but text is empty — show skeleton
-            <Skeleton w="100%" h={60} r={8} />
-          )}
+          {q?.question_text
+            ? <p style={S.qText}>{q.question_text}</p>
+            : <Skeleton w="100%" h={60} r={8} />
+          }
         </div>
 
         {/* Options */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 }}>
           {(q?.options?.length ? q.options : ['', '', '', '']).map((opt, idx) => {
-            const sel = cur.selected_index === idx;
+            const sel     = cur.selected_index === idx;
             const isEmpty = !opt;
             return (
               <button
@@ -409,21 +406,33 @@ export default function TestSessionPage() {
 
         {/* Bottom nav */}
         <div style={{ display: 'flex', gap: 10 }}>
-          <button onClick={() => setCurrent(c => Math.max(0, c - 1))} disabled={current === 0}
-            style={{ ...S.navBtn, flex: 1, background: '#fff', color: '#475569', border: '1.5px solid #e2e8f0', opacity: current === 0 ? 0.35 : 1 }}>
+          {/* ── Prev: banks time before navigating ── */}
+          <button
+            onClick={() => bankAndGo(Math.max(0, current - 1))}
+            disabled={current === 0}
+            style={{ ...S.navBtn, flex: 1, background: '#fff', color: '#475569', border: '1.5px solid #e2e8f0', opacity: current === 0 ? 0.35 : 1 }}
+          >
             ← Prev
           </button>
-          <button onClick={toggleReview}
-            style={{ ...S.navBtn, flex: 1, background: cur.marked_review ? '#fffbeb' : '#fff', color: cur.marked_review ? '#d97706' : '#64748b', border: `1.5px solid ${cur.marked_review ? '#fcd34d' : '#e2e8f0'}` }}>
+
+          <button
+            onClick={toggleReview}
+            style={{ ...S.navBtn, flex: 1, background: cur.marked_review ? '#fffbeb' : '#fff', color: cur.marked_review ? '#d97706' : '#64748b', border: `1.5px solid ${cur.marked_review ? '#fcd34d' : '#e2e8f0'}` }}
+          >
             {cur.marked_review ? '★ Marked' : '☆ Review'}
           </button>
-          <button onClick={() => setCurrent(c => Math.min(questions.length - 1, c + 1))} disabled={current === questions.length - 1}
-            style={{ ...S.navBtn, flex: 1, background: '#2563eb', color: '#fff', border: 'none', opacity: current === questions.length - 1 ? 0.35 : 1 }}>
+
+          {/* ── Next: banks time before navigating ── */}
+          <button
+            onClick={() => bankAndGo(Math.min(questions.length - 1, current + 1))}
+            disabled={current === questions.length - 1}
+            style={{ ...S.navBtn, flex: 1, background: '#2563eb', color: '#fff', border: 'none', opacity: current === questions.length - 1 ? 0.35 : 1 }}
+          >
             Next →
           </button>
         </div>
 
-        {/* Error banner (non-fatal) */}
+        {/* Error banner */}
         {errorMsg && (
           <div style={{ marginTop: 12, background: '#fef2f2', border: '1px solid #fca5a5', borderRadius: 10, padding: '10px 14px' }}>
             <p style={{ color: '#dc2626', fontSize: 13, margin: 0 }}>⚠ {errorMsg}</p>
@@ -431,19 +440,21 @@ export default function TestSessionPage() {
         )}
       </main>
 
-      {/* ── Drawer ─────────────────────────────────────────────────────────────── */}
+      {/* ── Question Palette Drawer ─────────────────────────────────────────────── */}
       {drawer && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 50, background: 'rgba(15,23,42,0.55)', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
-          onClick={e => { if (e.target === e.currentTarget) setDrawer(false); }}>
+        <div
+          style={{ position: 'fixed', inset: 0, zIndex: 50, background: 'rgba(15,23,42,0.55)', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+          onClick={e => { if (e.target === e.currentTarget) setDrawer(false); }}
+        >
           <div ref={drawerRef} style={S.drawerSheet}>
             <div style={{ width: 40, height: 4, borderRadius: 99, background: '#e2e8f0', margin: '0 auto 20px' }} />
 
-            {/* Stats */}
+            {/* Stats row */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, marginBottom: 20 }}>
               {[
-                { label: 'Answered',   val: answered,                              color: '#16a34a', bg: '#f0fdf4', br: '#bbf7d0' },
-                { label: 'Unanswered', val: questions.length - answered - reviewed, color: '#64748b', bg: '#f8fafc', br: '#e2e8f0' },
-                { label: 'Review',     val: reviewed,                               color: '#d97706', bg: '#fffbeb', br: '#fde68a' },
+                { label: 'Answered',   val: answered,                               color: '#16a34a', bg: '#f0fdf4', br: '#bbf7d0' },
+                { label: 'Unanswered', val: questions.length - answered - reviewed,  color: '#64748b', bg: '#f8fafc', br: '#e2e8f0' },
+                { label: 'Review',     val: reviewed,                                color: '#d97706', bg: '#fffbeb', br: '#fde68a' },
               ].map(s => (
                 <div key={s.label} style={{ background: s.bg, border: `1px solid ${s.br}`, borderRadius: 12, padding: '10px 6px', textAlign: 'center' }}>
                   <div style={{ fontSize: 22, fontWeight: 800, color: s.color }}>{s.val}</div>
@@ -457,13 +468,16 @@ export default function TestSessionPage() {
               <button onClick={() => setDrawer(false)} style={{ background: '#f1f5f9', border: 'none', borderRadius: 8, width: 28, height: 28, cursor: 'pointer', color: '#64748b', fontSize: 16 }}>×</button>
             </div>
 
-            {/* 5-col grid */}
+            {/* 5-col grid — banks time when jumping to a question ── */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 8 }}>
               {questions.map((_, idx) => {
                 const p = pColor(idx);
                 return (
-                  <button key={idx} onClick={() => { setCurrent(idx); setDrawer(false); }}
-                    style={{ minHeight: 44, borderRadius: 10, fontWeight: 700, fontSize: 13, cursor: 'pointer', background: p.bg, color: p.fg, border: `1.5px solid ${p.br}`, transition: 'all 0.12s', fontFamily: 'monospace' }}>
+                  <button
+                    key={idx}
+                    onClick={() => { bankAndGo(idx); setDrawer(false); }}
+                    style={{ minHeight: 44, borderRadius: 10, fontWeight: 700, fontSize: 13, cursor: 'pointer', background: p.bg, color: p.fg, border: `1.5px solid ${p.br}`, transition: 'all 0.12s', fontFamily: 'monospace' }}
+                  >
                     {idx + 1}
                   </button>
                 );
@@ -505,18 +519,18 @@ function Tag({ bg, color, border, children }: { bg: string; color: string; borde
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 const S = {
-  page:       { minHeight: '100vh', background: '#f8fafc', fontFamily: 'Inter, system-ui, sans-serif' } as React.CSSProperties,
-  header:     { position: 'sticky' as const, top: 0, zIndex: 40, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(8px)', borderBottom: '1px solid #e2e8f0', boxShadow: '0 1px 8px rgba(0,0,0,0.06)' },
-  headerInner:{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 20px', gap: 12 } as React.CSSProperties,
-  timerPill:  { display: 'flex', alignItems: 'center', gap: 7, borderRadius: 10, padding: '7px 13px', border: '1.5px solid', transition: 'all 0.3s', fontSize: 14 } as React.CSSProperties,
-  timerText:  { fontFamily: 'monospace', fontWeight: 700, fontSize: 16, letterSpacing: '0.05em' } as React.CSSProperties,
-  paletteBtn: { display: 'flex', alignItems: 'center', gap: 6, background: '#fff', border: '1.5px solid #e2e8f0', borderRadius: 10, padding: '6px 12px', cursor: 'pointer', fontSize: 13, fontWeight: 600, color: '#475569' } as React.CSSProperties,
-  qCard:      { background: '#fff', borderRadius: 16, padding: '22px 20px', marginBottom: 16, border: '1px solid #e2e8f0', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' } as React.CSSProperties,
-  qText:      { fontSize: 16, fontWeight: 500, lineHeight: 1.6, color: '#1e293b', margin: 0 } as React.CSSProperties,
-  optionBtn:  { width: '100%', minHeight: 48, display: 'flex', alignItems: 'center', gap: 14, padding: '12px 16px', borderRadius: 12, textAlign: 'left' as const, transition: 'all 0.15s ease', outline: 'none' },
-  optLabel:   { width: 32, height: 32, borderRadius: 8, flexShrink: 0 as unknown as number, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'monospace', fontWeight: 700, fontSize: 13, transition: 'all 0.15s' },
-  navBtn:     { minHeight: 48, borderRadius: 12, fontWeight: 600, fontSize: 14, cursor: 'pointer', transition: 'all 0.15s' } as React.CSSProperties,
-  drawerSheet:{ width: '100%', maxWidth: 480, background: '#fff', borderRadius: '24px 24px 0 0', padding: '20px 20px 36px', boxShadow: '0 -8px 40px rgba(0,0,0,0.15)', maxHeight: '82vh', overflowY: 'auto' as const },
+  page:        { minHeight: '100vh', background: '#f8fafc', fontFamily: 'Inter, system-ui, sans-serif' } as React.CSSProperties,
+  header:      { position: 'sticky' as const, top: 0, zIndex: 40, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(8px)', borderBottom: '1px solid #e2e8f0', boxShadow: '0 1px 8px rgba(0,0,0,0.06)' },
+  headerInner: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 20px', gap: 12 } as React.CSSProperties,
+  timerPill:   { display: 'flex', alignItems: 'center', gap: 7, borderRadius: 10, padding: '7px 13px', border: '1.5px solid', transition: 'all 0.3s', fontSize: 14 } as React.CSSProperties,
+  timerText:   { fontFamily: 'monospace', fontWeight: 700, fontSize: 16, letterSpacing: '0.05em' } as React.CSSProperties,
+  paletteBtn:  { display: 'flex', alignItems: 'center', gap: 6, background: '#fff', border: '1.5px solid #e2e8f0', borderRadius: 10, padding: '6px 12px', cursor: 'pointer', fontSize: 13, fontWeight: 600, color: '#475569' } as React.CSSProperties,
+  qCard:       { background: '#fff', borderRadius: 16, padding: '22px 20px', marginBottom: 16, border: '1px solid #e2e8f0', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' } as React.CSSProperties,
+  qText:       { fontSize: 16, fontWeight: 500, lineHeight: 1.6, color: '#1e293b', margin: 0 } as React.CSSProperties,
+  optionBtn:   { width: '100%', minHeight: 48, display: 'flex', alignItems: 'center', gap: 14, padding: '12px 16px', borderRadius: 12, textAlign: 'left' as const, transition: 'all 0.15s ease', outline: 'none' },
+  optLabel:    { width: 32, height: 32, borderRadius: 8, flexShrink: 0 as unknown as number, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'monospace', fontWeight: 700, fontSize: 13, transition: 'all 0.15s' },
+  navBtn:      { minHeight: 48, borderRadius: 12, fontWeight: 600, fontSize: 14, cursor: 'pointer', transition: 'all 0.15s' } as React.CSSProperties,
+  drawerSheet: { width: '100%', maxWidth: 480, background: '#fff', borderRadius: '24px 24px 0 0', padding: '20px 20px 36px', boxShadow: '0 -8px 40px rgba(0,0,0,0.15)', maxHeight: '82vh', overflowY: 'auto' as const },
 };
 
 const CSS = `

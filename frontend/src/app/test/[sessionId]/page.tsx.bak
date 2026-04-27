@@ -1,0 +1,404 @@
+'use client';
+
+import { useEffect, useState, useCallback, useRef } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { useAuth } from '@/lib/auth';
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+interface Question {
+  id: number;
+  question_text: string;
+  options: string[];
+  subject?: string;
+}
+
+interface AnswerState {
+  selected_index: number | null;
+  marked_review: boolean;
+  rag_viewed: boolean;
+}
+
+// ─── Constants ────────────────────────────────────────────────────────────────
+const LABELS = ['A', 'B', 'C', 'D'] as const;
+const EMPTY: AnswerState = { selected_index: null, marked_review: false, rag_viewed: false };
+
+function getTimerSeconds(total: number) {
+  // 25-question topic test → 30 min | 100-question full mock → 120 min
+  return total <= 25 ? 30 * 60 : 120 * 60;
+}
+
+function fmt(secs: number) {
+  const h = Math.floor(secs / 3600);
+  const m = Math.floor((secs % 3600) / 60).toString().padStart(2, '0');
+  const s = (secs % 60).toString().padStart(2, '0');
+  return h > 0 ? `${h}:${m}:${s}` : `${m}:${s}`;
+}
+
+// ─── Component ────────────────────────────────────────────────────────────────
+export default function TestSessionPage() {
+  const { sessionId } = useParams<{ sessionId: string }>();
+  const router        = useRouter();
+  const { token }     = useAuth();
+
+  const [questions,  setQuestions]  = useState<Question[]>([]);
+  const [answers,    setAnswers]    = useState<AnswerState[]>([]);
+  const [current,    setCurrent]    = useState(0);
+  const [timeLeft,   setTimeLeft]   = useState(0);
+  const [loading,    setLoading]    = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [drawer,     setDrawer]     = useState(false);
+  const [error,      setError]      = useState('');
+
+  const timerRef  = useRef<NodeJS.Timeout | null>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const BASE      = process.env.NEXT_PUBLIC_API_URL ?? 'https://rankbattleupsc-production.up.railway.app';
+
+  // ── Fetch ────────────────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (!token) return;
+    fetch(`${BASE}/sessions/${sessionId}/questions`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(r => r.json())
+      .then(data => {
+        const qs: Question[] = Array.isArray(data) ? data : (data.questions ?? []);
+        setQuestions(qs);
+        setAnswers(qs.map(() => ({ ...EMPTY })));
+        setTimeLeft(getTimerSeconds(qs.length));
+        setLoading(false);
+      })
+      .catch(() => { setError('Failed to load questions.'); setLoading(false); });
+  }, [sessionId, token, BASE]);
+
+  // ── Timer ────────────────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (loading || timeLeft <= 0) return;
+    timerRef.current = setInterval(() => {
+      setTimeLeft(t => {
+        if (t <= 1) { clearInterval(timerRef.current!); handleSubmit(true); return 0; }
+        return t - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timerRef.current!);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
+
+  // ── Submit ───────────────────────────────────────────────────────────────────
+  const handleSubmit = useCallback(async (auto = false) => {
+    if (submitting) return;
+    if (!auto && !confirm('Submit test? This cannot be undone.')) return;
+    setSubmitting(true);
+    clearInterval(timerRef.current!);
+    try {
+      const res = await fetch(`${BASE}/sessions/${sessionId}/submit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+          responses: answers.map((a, i) => ({
+            question_id:    questions[i]?.id,
+            selected_index: a.selected_index,
+            marked_review:  a.marked_review,
+            rag_viewed:     a.rag_viewed,
+          })),
+        }),
+      });
+      if (!res.ok) throw new Error();
+      router.push(`/results/${sessionId}`);
+    } catch {
+      setError('Submission failed. Try again.');
+      setSubmitting(false);
+    }
+  }, [answers, questions, sessionId, token, submitting, router, BASE]);
+
+  // ── Interactions ─────────────────────────────────────────────────────────────
+  const selectOption = (idx: number) =>
+    setAnswers(prev => {
+      const next = [...prev];
+      const cur  = next[current] ?? { ...EMPTY };
+      next[current] = { ...cur, selected_index: cur.selected_index === idx ? null : idx };
+      return next;
+    });
+
+  const toggleReview = () =>
+    setAnswers(prev => {
+      const next = [...prev];
+      const cur  = next[current] ?? { ...EMPTY };
+      next[current] = { ...cur, marked_review: !cur.marked_review };
+      return next;
+    });
+
+  // ── Drawer outside-click close ────────────────────────────────────────────────
+  useEffect(() => {
+    const h = (e: MouseEvent) => {
+      if (drawerRef.current && !drawerRef.current.contains(e.target as Node)) setDrawer(false);
+    };
+    if (drawer) document.addEventListener('mousedown', h);
+    return () => document.removeEventListener('mousedown', h);
+  }, [drawer]);
+
+  // ── Derived ───────────────────────────────────────────────────────────────────
+  const cur      = answers[current] ?? { ...EMPTY };
+  const q        = questions[current];
+  const answered = answers.filter(a => a.selected_index !== null).length;
+  const reviewed = answers.filter(a => a.marked_review).length;
+  const isLow    = timeLeft > 0 && timeLeft <= 300;
+  const totalSec = questions.length > 0 ? getTimerSeconds(questions.length) : 1;
+  const progress = ((totalSec - timeLeft) / totalSec) * 100;
+
+  const paletteStyle = (idx: number) => {
+    const a = answers[idx] ?? EMPTY;
+    if (idx === current)           return { bg: '#2563eb', color: '#fff',     border: '#2563eb' };
+    if (a.marked_review)           return { bg: '#fffbeb', color: '#d97706',  border: '#fcd34d' };
+    if (a.selected_index !== null) return { bg: '#f0fdf4', color: '#16a34a',  border: '#86efac' };
+    return                                { bg: '#f8fafc', color: '#94a3b8',  border: '#e2e8f0' };
+  };
+
+  // ─── Loading / Error ──────────────────────────────────────────────────────────
+  if (loading) return (
+    <div style={S.center}>
+      <div style={{ ...S.spinner }} />
+      <p style={{ color: '#64748b', fontSize: 14, marginTop: 12 }}>Loading questions…</p>
+      <style>{CSS}</style>
+    </div>
+  );
+
+  if (error) return (
+    <div style={S.center}>
+      <div style={S.card}>
+        <p style={{ color: '#ef4444', marginBottom: 16 }}>{error}</p>
+        <button style={S.btnPrimary} onClick={() => router.back()}>← Go Back</button>
+      </div>
+      <style>{CSS}</style>
+    </div>
+  );
+
+  // ─── Main ─────────────────────────────────────────────────────────────────────
+  return (
+    <div style={{ minHeight: '100vh', background: '#f8fafc', fontFamily: 'Inter, system-ui, sans-serif' }}>
+
+      {/* ── Sticky Header ──────────────────────────────────────────────────────── */}
+      <header style={S.header}>
+        <div style={S.headerInner}>
+
+          {/* Timer pill */}
+          <div style={{ ...S.timerPill, background: isLow ? '#fef2f2' : '#eff6ff', borderColor: isLow ? '#fca5a5' : '#bfdbfe' }}>
+            <span>{isLow ? '⚠️' : '⏱'}</span>
+            <span style={{ ...S.timerText, color: isLow ? '#dc2626' : '#2563eb', animation: isLow ? 'pulse 1s infinite' : 'none' }}>
+              {fmt(timeLeft)}
+            </span>
+          </div>
+
+          {/* Q counter — center */}
+          <div style={{ textAlign: 'center', lineHeight: 1.2 }}>
+            <div style={{ fontWeight: 700, color: '#1e293b', fontSize: 15 }}>
+              Q. {current + 1}<span style={{ color: '#94a3b8', fontWeight: 400 }}>/{questions.length}</span>
+            </div>
+            <div style={{ fontSize: 11, color: '#94a3b8' }}>
+              {questions.length <= 25 ? 'Topic Test · 30 min' : 'Full Mock · 120 min'}
+            </div>
+          </div>
+
+          {/* Submit — top-right */}
+          <button
+            onClick={() => handleSubmit(false)}
+            disabled={submitting}
+            style={{ ...S.btnSubmit, opacity: submitting ? 0.7 : 1, cursor: submitting ? 'not-allowed' : 'pointer' }}
+          >
+            {submitting ? 'Submitting…' : 'Submit'}
+          </button>
+        </div>
+
+        {/* Progress bar */}
+        <div style={{ height: 3, background: '#e2e8f0' }}>
+          <div style={{ height: '100%', width: `${progress}%`, background: 'linear-gradient(90deg,#2563eb,#7c3aed)', transition: 'width 1s linear' }} />
+        </div>
+      </header>
+
+      {/* ── Main ───────────────────────────────────────────────────────────────── */}
+      <main style={{ padding: 20, maxWidth: 720, margin: '0 auto' }}>
+
+        {/* Meta row */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {q?.subject && <span style={S.badge('#eff6ff', '#2563eb', '#bfdbfe')}>{q.subject}</span>}
+            {cur.marked_review && <span style={S.badge('#fffbeb', '#d97706', '#fde68a')}>★ Marked</span>}
+          </div>
+          {/* Palette toggle */}
+          <button onClick={() => setDrawer(true)} style={S.paletteBtn}>
+            <span>⊞</span>
+            <span>Palette</span>
+            <span style={S.answeredBadge}>{answered}</span>
+          </button>
+        </div>
+
+        {/* Question card */}
+        <div style={S.qCard}>
+          <p style={S.qText}>{q?.question_text}</p>
+        </div>
+
+        {/* Options */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 20 }}>
+          {(q?.options ?? []).map((opt, idx) => {
+            const sel = cur.selected_index === idx;
+            return (
+              <button
+                key={idx}
+                onClick={() => selectOption(idx)}
+                style={{
+                  ...S.optionBtn,
+                  border:     sel ? '2px solid #2563eb'  : '1.5px solid #e2e8f0',
+                  background: sel ? '#eff6ff'             : '#fff',
+                  boxShadow:  sel ? '0 0 0 4px rgba(37,99,235,0.08)' : '0 1px 4px rgba(0,0,0,0.04)',
+                }}
+                onMouseEnter={e => { if (!sel) (e.currentTarget as HTMLButtonElement).style.borderColor = '#93c5fd'; }}
+                onMouseLeave={e => { if (!sel) (e.currentTarget as HTMLButtonElement).style.borderColor = '#e2e8f0'; }}
+              >
+                <span style={{ ...S.optionLabel, background: sel ? '#2563eb' : '#f1f5f9', color: sel ? '#fff' : '#64748b' }}>
+                  {LABELS[idx]}
+                </span>
+                <span style={{ flex: 1, fontSize: 15, lineHeight: 1.6, color: sel ? '#1e40af' : '#374151', fontWeight: sel ? 500 : 400 }}>
+                  {opt}
+                </span>
+                {sel && <span style={{ color: '#2563eb', fontSize: 18, fontWeight: 700, flexShrink: 0 }}>✓</span>}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Bottom nav — Prev | Mark | Next */}
+        <div style={{ display: 'flex', gap: 10 }}>
+          <button
+            onClick={() => setCurrent(c => Math.max(0, c - 1))}
+            disabled={current === 0}
+            style={{ ...S.navBtn('ghost'), opacity: current === 0 ? 0.35 : 1 }}
+          >
+            ← Prev
+          </button>
+          <button
+            onClick={toggleReview}
+            style={{
+              ...S.navBtn('ghost'),
+              borderColor: cur.marked_review ? '#d97706' : '#e2e8f0',
+              background:  cur.marked_review ? '#fffbeb' : '#fff',
+              color:       cur.marked_review ? '#d97706' : '#64748b',
+            }}
+          >
+            {cur.marked_review ? '★ Marked' : '☆ Review'}
+          </button>
+          <button
+            onClick={() => setCurrent(c => Math.min(questions.length - 1, c + 1))}
+            disabled={current === questions.length - 1}
+            style={{ ...S.navBtn('primary'), opacity: current === questions.length - 1 ? 0.35 : 1 }}
+          >
+            Next →
+          </button>
+        </div>
+      </main>
+
+      {/* ── Drawer (bottom-sheet mobile / side on desktop) ─────────────────────── */}
+      {drawer && (
+        <div
+          style={{ position: 'fixed', inset: 0, zIndex: 50, background: 'rgba(15,23,42,0.55)', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}
+          onClick={e => { if (e.target === e.currentTarget) setDrawer(false); }}
+        >
+          <div ref={drawerRef} style={S.drawerSheet}>
+            <div style={S.drawerHandle} />
+
+            {/* Stats */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10, marginBottom: 20 }}>
+              {[
+                { label: 'Answered',   val: answered,                                  color: '#16a34a', bg: '#f0fdf4', border: '#bbf7d0' },
+                { label: 'Unanswered', val: questions.length - answered - reviewed,     color: '#64748b', bg: '#f8fafc', border: '#e2e8f0' },
+                { label: 'For Review', val: reviewed,                                   color: '#d97706', bg: '#fffbeb', border: '#fde68a' },
+              ].map(s => (
+                <div key={s.label} style={{ background: s.bg, border: `1px solid ${s.border}`, borderRadius: 12, padding: '10px 6px', textAlign: 'center' }}>
+                  <div style={{ fontSize: 22, fontWeight: 800, color: s.color }}>{s.val}</div>
+                  <div style={{ fontSize: 11, color: '#64748b', marginTop: 2 }}>{s.label}</div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+              <span style={{ fontWeight: 700, color: '#1e293b' }}>Question Palette</span>
+              <button onClick={() => setDrawer(false)} style={{ background: '#f1f5f9', border: 'none', borderRadius: 8, width: 28, height: 28, cursor: 'pointer', color: '#64748b', fontSize: 16 }}>×</button>
+            </div>
+
+            {/* 5-col grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 8 }}>
+              {questions.map((_, idx) => {
+                const ps = paletteStyle(idx);
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => { setCurrent(idx); setDrawer(false); }}
+                    style={{ minHeight: 44, borderRadius: 10, fontWeight: 700, fontSize: 13, cursor: 'pointer', background: ps.bg, color: ps.color, border: `1.5px solid ${ps.border}`, transition: 'all 0.12s', fontFamily: 'monospace' }}
+                  >
+                    {idx + 1}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Legend */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 16, justifyContent: 'center' }}>
+              {[['#2563eb','Current'],['#16a34a','Answered'],['#d97706','Review'],['#94a3b8','Unvisited']].map(([c,l]) => (
+                <div key={l} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                  <div style={{ width: 10, height: 10, borderRadius: 3, background: c }} />
+                  <span style={{ fontSize: 11, color: '#64748b' }}>{l}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style>{CSS}</style>
+    </div>
+  );
+}
+
+// ─── Inline style objects ─────────────────────────────────────────────────────
+const S = {
+  center: { minHeight: '100vh', display: 'flex', flexDirection: 'column' as const, alignItems: 'center', justifyContent: 'center', background: '#f8fafc', fontFamily: 'Inter, system-ui, sans-serif', padding: 20 },
+  card:   { background: '#fff', borderRadius: 16, padding: 32, maxWidth: 360, width: '100%', textAlign: 'center' as const, boxShadow: '0 4px 24px rgba(0,0,0,0.08)' },
+  spinner:{ width: 40, height: 40, border: '3px solid #bfdbfe', borderTopColor: '#2563eb', borderRadius: '50%', animation: 'spin 0.8s linear infinite' },
+
+  header: { position: 'sticky' as const, top: 0, zIndex: 40, background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(8px)', borderBottom: '1px solid #e2e8f0', boxShadow: '0 1px 8px rgba(0,0,0,0.06)' },
+  headerInner: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 20px', gap: 12 },
+
+  timerPill: { display: 'flex', alignItems: 'center', gap: 7, borderRadius: 10, padding: '7px 13px', border: '1.5px solid', transition: 'all 0.3s', fontSize: 15 },
+  timerText: { fontFamily: "'JetBrains Mono','Courier New',monospace", fontWeight: 700, fontSize: 16, letterSpacing: '0.05em' },
+
+  btnSubmit: { background: '#dc2626', color: '#fff', border: 'none', borderRadius: 10, padding: '8px 16px', fontWeight: 700, fontSize: 14, minHeight: 38 },
+  btnPrimary: { background: '#2563eb', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 24px', cursor: 'pointer', fontWeight: 600, fontSize: 14 },
+
+  badge: (bg: string, color: string, border: string) => ({ background: bg, color, border: `1px solid ${border}`, fontSize: 12, fontWeight: 600, padding: '3px 10px', borderRadius: 20 }),
+
+  paletteBtn: { display: 'flex', alignItems: 'center', gap: 6, background: '#fff', border: '1.5px solid #e2e8f0', borderRadius: 10, padding: '6px 12px', cursor: 'pointer', fontSize: 13, fontWeight: 600, color: '#475569' },
+  answeredBadge: { background: '#2563eb', color: '#fff', borderRadius: 99, fontSize: 11, fontWeight: 700, padding: '1px 7px', marginLeft: 2 },
+
+  qCard: { background: '#fff', borderRadius: 16, padding: '24px 20px', marginBottom: 16, border: '1px solid #e2e8f0', boxShadow: '0 2px 12px rgba(0,0,0,0.04)' },
+  qText: { fontSize: 16, fontWeight: 500, lineHeight: 1.6, color: '#1e293b', margin: 0 },
+
+  optionBtn: { width: '100%', minHeight: 48, display: 'flex', alignItems: 'center', gap: 14, padding: '12px 16px', borderRadius: 12, textAlign: 'left' as const, cursor: 'pointer', transition: 'all 0.15s ease', outline: 'none' },
+  optionLabel:{ width: 32, height: 32, borderRadius: 8, flexShrink: 0 as unknown as number, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'monospace', fontWeight: 700, fontSize: 13, transition: 'all 0.15s' },
+
+  navBtn: (v: 'primary' | 'ghost') => ({
+    flex: 1, minHeight: 48, borderRadius: 12, fontWeight: 600, fontSize: 14, cursor: 'pointer',
+    border: v === 'primary' ? 'none' : '1.5px solid #e2e8f0',
+    background: v === 'primary' ? '#2563eb' : '#fff',
+    color: v === 'primary' ? '#fff' : '#475569',
+    transition: 'all 0.15s',
+  }),
+
+  drawerSheet: { width: '100%', maxWidth: 480, background: '#fff', borderRadius: '24px 24px 0 0', padding: '20px 20px 36px', boxShadow: '0 -8px 40px rgba(0,0,0,0.15)', maxHeight: '80vh', overflowY: 'auto' as const },
+  drawerHandle:{ width: 40, height: 4, borderRadius: 99, background: '#e2e8f0', margin: '0 auto 20px' },
+};
+
+const CSS = `
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  @keyframes spin  { to { transform: rotate(360deg); } }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  button:focus-visible { outline: 3px solid #2563eb; outline-offset: 2px; }
+  * { box-sizing: border-box; }
+`;

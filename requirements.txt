@@ -8,3 +8,5 @@ python-multipart
 pydantic-settings
 pydantic[email]
 email-validator
+httpx
+google-generativeai

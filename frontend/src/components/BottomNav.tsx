@@ -3,7 +3,7 @@ import { useRouter, usePathname } from 'next/navigation'
 
 const NAV = [
   {
-    id: 'home', label: 'Home', href: '/dashboard',
+    id: 'home', label: 'Home', href: '/ai-coach',
     icon: (active: boolean) => (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active ? '#A0522D' : '#9A8070'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
@@ -31,7 +31,7 @@ const NAV = [
     )
   },
   {
-    id: 'ai', label: 'AI Coach', href: '/dashboard',
+    id: 'ai', label: 'AI Coach', href: '/ai-coach',
     icon: (active: boolean) => (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active ? '#A0522D' : '#9A8070'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>

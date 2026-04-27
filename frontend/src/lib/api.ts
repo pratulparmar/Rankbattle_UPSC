@@ -67,3 +67,16 @@ export const getDailyContent = () => api.get('/daily')
 export const getDailyPreview = () => api.get('/daily/preview')
 
 export default api
+export const getFeynmanExplanation = async (
+  questionId: number,
+  selectedIndex: number | null,
+  token: string
+): Promise<{ explanation: string }> => {
+  const res = await api.post(
+    `/mcqs/${questionId}/explain`,
+    { selected_index: selectedIndex },
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  return res.data;
+};
+ 

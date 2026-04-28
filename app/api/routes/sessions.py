@@ -125,7 +125,7 @@ def get_session_results(
             "selected_index": attempt.selected_index if attempt else None,
             "is_correct":    attempt.is_correct if attempt else None,
             "subject":       mcq.subject,
-            "topic_id":      mcq.topic_id,,
+            "topic_id":      mcq.topic_id,
             "explanation":    mcq.explanation,
         })
 

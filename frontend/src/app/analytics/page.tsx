@@ -529,46 +529,6 @@ export default function AnalyticsDashboard() {
               </div>
             )}
 
-            {/* Accuracy vs attempt */}
-            {totalAttempted > 0 && (
-              <div className="fa" style={{ marginTop: 24 }}>
-                <SL title="STRATEGY SNAPSHOT" />
-                <div style={{
-                  background: C.card, border: `1px solid ${C.green}22`,
-                  borderRadius: 14, padding: 16,
-                }}>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <div>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: C.text }}>Accuracy vs. Attempt Rate</div>
-                      <div style={{ fontSize: 11, color: C.dim, marginTop: 2 }}>Risk-reward of your guessing strategy</div>
-                    </div>
-                    <span style={{ fontSize: 18 }}>🎯</span>
-                  </div>
-                  <div style={{ display: "flex", gap: 14, marginTop: 14 }}>
-                    {[
-                      { label: "OVERALL ACCURACY", val: fmt(overallAcc), pct: overallAcc ?? 0, color: C.green  },
-                      { label: "CORRECT / TOTAL",   val: `${totalCorrect}/${totalAttempted}`, pct: overallAcc ?? 0, color: C.indigo },
-                    ].map(({ label, val, pct: p, color }) => (
-                      <div key={label} style={{ flex: 1 }}>
-                        <div style={{ fontSize: 9, color: C.dim, letterSpacing: "0.1em", fontWeight: 700 }}>{label}</div>
-                        <div style={{ fontSize: 22, fontWeight: 700, color, fontFamily: "Georgia, serif", marginTop: 3 }}>{val}</div>
-                        <div style={{ height: 3, background: C.border, borderRadius: 2, marginTop: 6, overflow: "hidden" }}>
-                          <div style={{ height: "100%", width: `${p}%`, background: color, borderRadius: 2, transition: "width 1s ease" }} />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <div style={{
-                    marginTop: 12, background: `${C.indigo}08`,
-                    border: `1px solid ${C.indigo}18`, borderRadius: 10,
-                    padding: "9px 12px", fontSize: 11, color: C.muted, lineHeight: 1.65,
-                  }}>
-                    💡 With UPSC's −⅓ penalty, skip questions where your confidence is below ~33%.
-                  </div>
-                </div>
-              </div>
-            )}
-
             {/* Feynman Review */}
             <div className="fa" style={{ marginTop: 24 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
@@ -624,6 +584,46 @@ export default function AnalyticsDashboard() {
             </div>
           </>
         )}
+            {/* Accuracy vs attempt */}
+            {totalAttempted > 0 && (
+              <div className="fa" style={{ marginTop: 24 }}>
+                <SL title="STRATEGY SNAPSHOT" />
+                <div style={{
+                  background: C.card, border: `1px solid ${C.green}22`,
+                  borderRadius: 14, padding: 16,
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: C.text }}>Accuracy vs. Attempt Rate</div>
+                      <div style={{ fontSize: 11, color: C.dim, marginTop: 2 }}>Risk-reward of your guessing strategy</div>
+                    </div>
+                    <span style={{ fontSize: 18 }}>🎯</span>
+                  </div>
+                  <div style={{ display: "flex", gap: 14, marginTop: 14 }}>
+                    {[
+                      { label: "OVERALL ACCURACY", val: fmt(overallAcc), pct: overallAcc ?? 0, color: C.green  },
+                      { label: "CORRECT / TOTAL",   val: `${totalCorrect}/${totalAttempted}`, pct: overallAcc ?? 0, color: C.indigo },
+                    ].map(({ label, val, pct: p, color }) => (
+                      <div key={label} style={{ flex: 1 }}>
+                        <div style={{ fontSize: 9, color: C.dim, letterSpacing: "0.1em", fontWeight: 700 }}>{label}</div>
+                        <div style={{ fontSize: 22, fontWeight: 700, color, fontFamily: "Georgia, serif", marginTop: 3 }}>{val}</div>
+                        <div style={{ height: 3, background: C.border, borderRadius: 2, marginTop: 6, overflow: "hidden" }}>
+                          <div style={{ height: "100%", width: `${p}%`, background: color, borderRadius: 2, transition: "width 1s ease" }} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div style={{
+                    marginTop: 12, background: `${C.indigo}08`,
+                    border: `1px solid ${C.indigo}18`, borderRadius: 10,
+                    padding: "9px 12px", fontSize: 11, color: C.muted, lineHeight: 1.65,
+                  }}>
+                    💡 With UPSC's −⅓ penalty, skip questions where your confidence is below ~33%.
+                  </div>
+                </div>
+              </div>
+            )}
+
 
         {/* ══ SESSIONS TAB ══ */}
         {tab === "sessions" && (

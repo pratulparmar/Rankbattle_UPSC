@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import BottomNav from '@/components/BottomNav';
+import { QuestionBody } from '@/lib/parseQuestionText';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Explanation {
@@ -308,9 +309,10 @@ function QuestionCard({ q, idx }: { q: QuestionResult; idx: number }) {
 
       <div style={{ padding: '14px 16px' }}>
         {/* Question text */}
-        <p style={{ fontSize: 15, lineHeight: 1.65, color: '#1e293b', margin: '0 0 14px', fontWeight: 500 }}>
-          {q.question_text}
-        </p>
+        <QuestionBody
+          text={q.question_text}
+          style={{ marginBottom: 14 }}
+        />
 
         {/* Options */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>

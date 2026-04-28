@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
+import { QuestionBody } from '@/lib/parseQuestionText';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Question {
@@ -373,7 +374,7 @@ export default function TestSessionPage() {
         {/* Question card */}
         <div style={S.qCard}>
           {q?.question_text
-            ? <p style={S.qText}>{q.question_text}</p>
+            ? <QuestionBody text={q.question_text} style={S.qText} />
             : <Skeleton w="100%" h={60} r={8} />
           }
         </div>

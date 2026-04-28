@@ -254,8 +254,11 @@ export default function AnalyticsDashboard() {
   const [rows,          setRows]          = useState<any[]>([]);
   const [weakAreas,     setWeakAreas]     = useState<any[]>([]);
   const [sessions,      setSessions]      = useState<any[]>([]);
-  const [feynman,       setFeynman]       = useState<any[]>([]);
-  const [feynmanStream, setFeynmanStream] = useState("");
+  const [feynmanText,  setFeynmanText]  = useState("");
+  const [feynmanLoad,  setFeynmanLoad]  = useState(false);
+  const [feynmanDone,  setFeynmanDone]  = useState(false);
+  const [feynmanError, setFeynmanError] = useState("");
+  const [showFeynman,  setShowFeynman]  = useState(false);
   const [weeklyTrend,   setWeeklyTrend]   = useState<any[]>([]);
   const [loading,       setLoading]       = useState(true);
 

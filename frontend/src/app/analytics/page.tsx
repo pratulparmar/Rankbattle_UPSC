@@ -13,6 +13,8 @@
  */
 
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import BottomNav from "@/components/BottomNav";
 import { AreaChart, Area, ResponsiveContainer, Tooltip } from "recharts";
 
 const API = "https://rankbattleupsc-production.up.railway.app";
@@ -246,6 +248,7 @@ const SL = ({ title, sub }: { title: string; sub?: string }) => (
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 export default function AnalyticsDashboard() {
+  const router = useRouter();
   const [tab,           setTab]           = useState<"subjects"|"sessions">("subjects");
   // Raw rows from /analytics/me — shape: {subject, topic_id, total_attempts, correct, accuracy}
   const [rows,          setRows]          = useState<any[]>([]);
@@ -397,6 +400,7 @@ export default function AnalyticsDashboard() {
 
       {/* Header */}
       <div style={{ background: `linear-gradient(160deg, ${C.dark} 0%, ${C.darkMid} 100%)`, padding: "28px 16px 22px" }}>
+        <button onClick={() => window.history.length > 1 ? router.back() : router.push("/dashboard")} style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 10, width: 36, height: 36, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
         <div style={{ fontSize: 10, color: "#a08060", letterSpacing: "0.14em", fontWeight: 700, marginBottom: 4 }}>
           PERFORMANCE ANALYTICS
         </div>
@@ -619,6 +623,7 @@ export default function AnalyticsDashboard() {
           </div>
         )}
       </div>
+      <BottomNav /> 
     </div>
   );
 }

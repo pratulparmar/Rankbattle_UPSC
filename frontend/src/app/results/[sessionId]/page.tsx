@@ -2,34 +2,44 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import BottomNav from '@/components/BottomNav';
+
+// ─── Types ────────────────────────────────────────────────────────────────────
+interface Explanation {
+  correct_reason?: string;
+  common_trap?:    string;
+  key_fact?:       string;
+  [key: string]:   string | undefined;
+}
 
 interface QuestionResult {
-  mcq_id: string;
-  question_text: string;
-  options: string[];
-  correct_index: number;
+  mcq_id:         string;
+  question_text:  string;
+  options:        string[];
+  correct_index:  number;
   selected_index: number | null;
-  is_correct: boolean | null;
-  subject?: string;
-  topic_id?: string;
+  is_correct:     boolean | null;
+  subject?:       string;
+  topic_id?:      string;
+  explanation?:   Explanation | null;
 }
 
 interface StoredResult {
-  session_id: string;
-  total_q: number;
-  attempted: number;
-  correct: number;
-  wrong: number;
-  skipped: number;
-  raw_score: number;
-  final_score: number;
-  accuracy: number;
-  time_taken_mins: number;
+  session_id:       string;
+  total_q:          number;
+  attempted:        number;
+  correct:          number;
+  wrong:            number;
+  skipped:          number;
+  raw_score:        number;
+  final_score:      number;
+  accuracy:         number;
+  time_taken_mins:  number;
   question_results: QuestionResult[];
 }
 
 const LABELS = ['A', 'B', 'C', 'D'] as const;
-const API = process.env.NEXT_PUBLIC_API_URL || 'https://rankbattleupsc-production.up.railway.app';
+const API    = process.env.NEXT_PUBLIC_API_URL || 'https://rankbattleupsc-production.up.railway.app';
 
 function grade(pct: number) {
   if (pct >= 80) return { label: 'Excellent',  color: '#16a34a', bg: '#f0fdf4', border: '#86efac' };
@@ -38,66 +48,226 @@ function grade(pct: number) {
   return               { label: 'Needs Work',   color: '#dc2626', bg: '#fef2f2', border: '#fecaca' };
 }
 
+// ─── Question Review Card ─────────────────────────────────────────────────────
+function QuestionCard({ q, idx }: { q: QuestionResult; idx: number }) {
+  const [open, setOpen] = useState(false);
+  const hasCorrect = q.correct_index !== undefined && q.correct_index !== null;
+  const skipped    = q.selected_index === null;
+
+  // Status badge
+  const badge = skipped
+    ? { text: 'Skipped', bg: '#f1f5f9', color: '#64748b', border: '#e2e8f0' }
+    : q.is_correct
+      ? { text: '✓ Correct', bg: '#d1fae5', color: '#065f46', border: '#6ee7b7' }
+      : { text: '✗ Wrong',   bg: '#fee2e2', color: '#991b1b', border: '#fca5a5' };
+
+  const exp: Explanation = q.explanation ?? {};
+  const hasExplanation = exp.correct_reason || exp.common_trap || exp.key_fact;
+
+  return (
+    <div style={{
+      background: '#fff',
+      borderRadius: 16,
+      border: '1px solid #e2e8f0',
+      overflow: 'hidden',
+      // Left accent line: green=correct, red=wrong, grey=skipped
+      borderLeft: `3px solid ${skipped ? '#e2e8f0' : q.is_correct ? '#059669' : '#dc2626'}`,
+    }}>
+      {/* ── Question header ── */}
+      <div style={{ padding: '10px 14px', borderBottom: '1px solid #f1f5f9', display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+        <span style={{ background: badge.bg, color: badge.color, border: `1px solid ${badge.border}`, borderRadius: 6, fontSize: 12, fontWeight: 700, padding: '2px 8px', flexShrink: 0 }}>
+          {badge.text}
+        </span>
+        <span style={{ fontSize: 12, fontWeight: 700, color: '#94a3b8' }}>Q{idx + 1}</span>
+        {q.subject && (
+          <span style={{ fontSize: 11, color: '#94a3b8', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 20, padding: '1px 8px' }}>
+            {q.subject}
+          </span>
+        )}
+      </div>
+
+      <div style={{ padding: '14px 16px' }}>
+        {/* ── Question text ── */}
+        <p style={{ fontSize: 15, lineHeight: 1.65, color: '#1e293b', margin: '0 0 14px', fontWeight: 500 }}>
+          {q.question_text}
+        </p>
+
+        {/* ── Options with colour-coded highlighting ── */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+          {q.options?.map((opt, i) => {
+            const isCorrect  = hasCorrect && i === q.correct_index;
+            const isChosen   = i === q.selected_index;
+            const isWrong    = isChosen && !isCorrect;
+            // User chose wrong AND this is the right answer → show both
+            const missedThis = !isChosen && isCorrect && !q.is_correct && !skipped;
+
+            let bg      = '#f8fafc';
+            let border  = '#e2e8f0';
+            let lbg     = '#e2e8f0';
+            let lcolor  = '#64748b';
+            let badge2  = '';
+
+            if (isCorrect && isChosen) {
+              // ✅ User picked correctly
+              bg = '#d1fae5'; border = '#059669'; lbg = '#059669'; lcolor = '#fff'; badge2 = '✓ Your answer';
+            } else if (isWrong) {
+              // ❌ User picked wrong
+              bg = '#fee2e2'; border = '#dc2626'; lbg = '#dc2626'; lcolor = '#fff'; badge2 = '✗ Your choice';
+            } else if (missedThis) {
+              // 💡 Correct answer user missed
+              bg = '#fefce8'; border = '#ca8a04'; lbg = '#ca8a04'; lcolor = '#fff'; badge2 = '✓ Correct answer';
+            } else if (isCorrect && skipped) {
+              // User skipped — just show correct
+              bg = '#d1fae5'; border = '#059669'; lbg = '#059669'; lcolor = '#fff'; badge2 = '✓ Correct answer';
+            }
+
+            return (
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, padding: '10px 12px', borderRadius: 10, background: bg, border: `1.5px solid ${border}` }}>
+                <span style={{ width: 28, height: 28, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', background: lbg, color: lcolor, fontWeight: 700, fontSize: 12, flexShrink: 0 }}>
+                  {LABELS[i]}
+                </span>
+                <span style={{ flex: 1, fontSize: 14, color: '#1e293b', lineHeight: 1.5 }}>{opt}</span>
+                {badge2 && (
+                  <span style={{ fontSize: 11, fontWeight: 700, color: lbg, flexShrink: 0, whiteSpace: 'nowrap' }}>
+                    {badge2}
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* ── Expert Insight accordion ── */}
+        {hasExplanation && (
+          <div style={{ marginTop: 12 }}>
+            <button
+              onClick={() => setOpen(o => !o)}
+              style={{
+                width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                background: '#fafaff', border: '1px solid #e0e7ff', borderRadius: 10,
+                padding: '10px 14px', cursor: 'pointer',
+                fontSize: 13, fontWeight: 600, color: '#4338ca',
+                transition: 'all 0.15s',
+              }}
+            >
+              <span>🎓 Expert Insight</span>
+              <span style={{ fontSize: 16, transition: 'transform 0.2s', transform: open ? 'rotate(180deg)' : 'none' }}>▾</span>
+            </button>
+
+            {open && (
+              <div style={{
+                background: '#fafaff', border: '1px solid #e0e7ff', borderTop: 'none',
+                borderRadius: '0 0 10px 10px', padding: '14px',
+                display: 'flex', flexDirection: 'column', gap: 10,
+              }}>
+                {/* Why the correct answer is right */}
+                {exp.correct_reason && (
+                  <div style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 8, padding: '10px 12px' }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: '#059669', letterSpacing: '0.08em', marginBottom: 5 }}>
+                      WHY IT'S CORRECT
+                    </div>
+                    <p style={{ fontSize: 13, color: '#1e293b', lineHeight: 1.65, margin: 0 }}>
+                      {exp.correct_reason}
+                    </p>
+                  </div>
+                )}
+
+                {/* Common trap */}
+                {exp.common_trap && (
+                  <div style={{ background: '#fef9c3', border: '1px solid #fde047', borderRadius: 8, padding: '10px 12px' }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: '#ca8a04', letterSpacing: '0.08em', marginBottom: 5 }}>
+                      ⚠ COMMON TRAP
+                    </div>
+                    <p style={{ fontSize: 13, color: '#1e293b', lineHeight: 1.65, margin: 0 }}>
+                      {exp.common_trap}
+                    </p>
+                  </div>
+                )}
+
+                {/* Key fact */}
+                {exp.key_fact && (
+                  <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 8, padding: '10px 12px' }}>
+                    <div style={{ fontSize: 10, fontWeight: 700, color: '#2563eb', letterSpacing: '0.08em', marginBottom: 5 }}>
+                      📌 KEY FACT
+                    </div>
+                    <p style={{ fontSize: 13, color: '#1e293b', lineHeight: 1.65, margin: 0 }}>
+                      {exp.key_fact}
+                    </p>
+                  </div>
+                )}
+
+                {/* Catch-all for other explanation keys */}
+                {Object.entries(exp)
+                  .filter(([k]) => !['correct_reason','common_trap','key_fact'].includes(k))
+                  .filter(([, v]) => v)
+                  .map(([k, v]) => (
+                    <div key={k} style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: '10px 12px' }}>
+                      <div style={{ fontSize: 10, fontWeight: 700, color: '#64748b', letterSpacing: '0.08em', marginBottom: 5 }}>
+                        {k.replace(/_/g, ' ').toUpperCase()}
+                      </div>
+                      <p style={{ fontSize: 13, color: '#1e293b', lineHeight: 1.65, margin: 0 }}>{v}</p>
+                    </div>
+                  ))
+                }
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Main page ────────────────────────────────────────────────────────────────
 export default function ResultsPage() {
   const { sessionId } = useParams<{ sessionId: string }>();
   const router = useRouter();
 
-  const [result, setResult]         = useState<StoredResult | null>(null);
-  const [tab, setTab]               = useState<'summary' | 'review'>('summary');
-  const [loadingReview, setLoadingReview] = useState(false);
-  const [reviewError, setReviewError]     = useState('');
+  const [result,       setResult]       = useState<StoredResult | null>(null);
+  const [tab,          setTab]          = useState<'summary' | 'review'>('summary');
+  const [loadingReview,setLoadingReview]= useState(false);
+  const [reviewError,  setReviewError]  = useState('');
 
-  // ── Load base result from sessionStorage ─────────────────────────────────────
+  // ── Load from sessionStorage ──────────────────────────────────────────────────
   useEffect(() => {
     const raw = sessionStorage.getItem(`result_${sessionId}`);
-    if (raw) {
-      try { setResult(JSON.parse(raw)); } catch { /* ignore */ }
-    }
+    if (raw) { try { setResult(JSON.parse(raw)); } catch { /* ignore */ } }
   }, [sessionId]);
 
-  // ── When user taps Review tab, fetch correct_index from backend ──────────────
+  // ── Fetch detailed review (correct_index + explanation) ───────────────────────
   const handleReviewTab = async () => {
     setTab('review');
     if (!result) return;
-
-    // Check if we already have correct_index data
     const alreadyHas = result.question_results?.some(q => q.correct_index !== undefined);
     if (alreadyHas) return;
 
     setLoadingReview(true);
     setReviewError('');
     try {
-      const token = localStorage.getItem('token') ||
-        sessionStorage.getItem('token') || '';
-      const res = await fetch(`${API}/sessions/${sessionId}/results`, {
+      const token = localStorage.getItem('token') ?? '';
+      const res   = await fetch(`${API}/sessions/${sessionId}/results`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-
-      // Merge correct_index into existing result
-      const merged: StoredResult = {
-        ...result,
-        question_results: data.question_results ?? [],
-      };
+      const merged: StoredResult = { ...result, question_results: data.question_results ?? [] };
       setResult(merged);
       sessionStorage.setItem(`result_${sessionId}`, JSON.stringify(merged));
-    } catch (e) {
+    } catch {
       setReviewError('Could not load answer review. Try again.');
     } finally {
       setLoadingReview(false);
     }
   };
 
-  // ── No result found ───────────────────────────────────────────────────────────
+  // ── Filter controls ───────────────────────────────────────────────────────────
+  const [filter, setFilter] = useState<'all' | 'wrong' | 'correct' | 'skipped'>('all');
+
   if (!result) return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc', fontFamily: 'Inter, system-ui, sans-serif', flexDirection: 'column', gap: 16, padding: 24 }}>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc', flexDirection: 'column', gap: 16, padding: 24, fontFamily: 'Inter, system-ui, sans-serif' }}>
       <div style={{ fontSize: 40 }}>⚠️</div>
-      <p style={{ color: '#64748b', textAlign: 'center', maxWidth: 320, lineHeight: 1.6 }}>
-        Result data not found. This can happen if you refreshed the page.
-      </p>
-      <button onClick={() => router.push('/dashboard')}
-        style={{ background: '#2563eb', color: '#fff', border: 'none', borderRadius: 12, padding: '12px 28px', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>
+      <p style={{ color: '#64748b', textAlign: 'center', maxWidth: 320, lineHeight: 1.6 }}>Result data not found. This can happen if you refreshed the page.</p>
+      <button onClick={() => router.push('/dashboard')} style={{ background: '#2563eb', color: '#fff', border: 'none', borderRadius: 12, padding: '12px 28px', fontWeight: 700, fontSize: 15, cursor: 'pointer' }}>
         Back to Dashboard
       </button>
     </div>
@@ -108,7 +278,6 @@ export default function ResultsPage() {
   const pct      = maxScore > 0 ? Math.round((raw_score / maxScore) * 100) : 0;
   const g        = grade(pct);
 
-  // Subject breakdown
   const subjectMap: Record<string, { correct: number; total: number }> = {};
   question_results?.forEach(q => {
     const sub = q.subject ?? 'General';
@@ -117,28 +286,29 @@ export default function ResultsPage() {
     if (q.is_correct) subjectMap[sub].correct++;
   });
 
-  const reviewQs = question_results ?? [];
+  const allQs = question_results ?? [];
+  const filteredQs = filter === 'all'     ? allQs
+    : filter === 'wrong'   ? allQs.filter(q => q.is_correct === false)
+    : filter === 'correct' ? allQs.filter(q => q.is_correct === true)
+    : allQs.filter(q => q.selected_index === null);
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f8fafc', fontFamily: 'Inter, system-ui, sans-serif', paddingBottom: 80 }}>
+    <div style={{ minHeight: '100vh', background: '#f8fafc', fontFamily: 'Inter, system-ui, sans-serif', paddingBottom: 40 }}>
 
-      {/* Header */}
+      {/* ── Header ── */}
       <header style={{ background: '#fff', borderBottom: '1px solid #e2e8f0', padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: 0, zIndex: 30 }}>
         <div>
           <h1 style={{ fontWeight: 800, fontSize: 20, color: '#1e293b', margin: 0 }}>Test Results</h1>
-          <p style={{ fontSize: 12, color: '#94a3b8', margin: '2px 0 0' }}>
-            {total_q} Questions · {time_taken_mins.toFixed(1)} mins
-          </p>
+          <p style={{ fontSize: 12, color: '#94a3b8', margin: '2px 0 0' }}>{total_q} Questions · {time_taken_mins.toFixed(1)} mins</p>
         </div>
-        <button onClick={() => router.push('/dashboard')}
-          style={{ background: '#eff6ff', color: '#2563eb', border: '1.5px solid #bfdbfe', borderRadius: 10, padding: '8px 16px', fontWeight: 600, fontSize: 14, cursor: 'pointer' }}>
+        <button onClick={() => router.push('/dashboard')} style={{ background: '#eff6ff', color: '#2563eb', border: '1.5px solid #bfdbfe', borderRadius: 10, padding: '8px 16px', fontWeight: 600, fontSize: 14, cursor: 'pointer' }}>
           Dashboard →
         </button>
       </header>
 
       <div style={{ padding: 20, maxWidth: 720, margin: '0 auto' }}>
 
-        {/* Score Card */}
+        {/* ── Score card ── */}
         <div style={{ background: '#fff', borderRadius: 20, border: '1px solid #e2e8f0', boxShadow: '0 4px 24px rgba(0,0,0,0.07)', overflow: 'hidden', marginBottom: 20 }}>
           <div style={{ background: 'linear-gradient(135deg,#1e40af,#4f46e5)', padding: '28px 24px', textAlign: 'center', color: '#fff' }}>
             <div style={{ fontSize: 12, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.75, marginBottom: 6 }}>
@@ -153,7 +323,7 @@ export default function ResultsPage() {
             </div>
           </div>
 
-          {/* Formula breakdown */}
+          {/* Score breakdown */}
           <div style={{ padding: '18px 20px', borderBottom: '1px solid #f1f5f9' }}>
             <p style={{ margin: '0 0 12px', fontSize: 12, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Score Breakdown</p>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
@@ -190,21 +360,19 @@ export default function ResultsPage() {
           </div>
         </div>
 
-        {/* Subject breakdown */}
+        {/* ── Subject breakdown ── */}
         {Object.keys(subjectMap).length > 0 && (
           <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', padding: 20, marginBottom: 20 }}>
-            <p style={{ margin: '0 0 14px', fontSize: 12, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-              Subject Breakdown
-            </p>
+            <p style={{ margin: '0 0 14px', fontSize: 12, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Subject Breakdown</p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
               {Object.entries(subjectMap).map(([sub, s]) => {
-                const spct = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
+                const spct   = s.total > 0 ? Math.round((s.correct / s.total) * 100) : 0;
                 const scolor = spct >= 70 ? '#059669' : spct >= 45 ? '#d97706' : '#dc2626';
                 return (
                   <div key={sub}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
                       <span style={{ fontSize: 14, fontWeight: 500, color: '#1e293b' }}>{sub}</span>
-                      <span style={{ fontSize: 13, fontWeight: 700, color: scolor }}>{s.correct}/{s.total} correct</span>
+                      <span style={{ fontSize: 13, fontWeight: 700, color: scolor }}>{s.correct}/{s.total}</span>
                     </div>
                     <div style={{ height: 7, background: '#f1f5f9', borderRadius: 99, overflow: 'hidden' }}>
                       <div style={{ height: '100%', width: `${spct}%`, background: scolor, borderRadius: 99, transition: 'width 0.7s ease' }} />
@@ -216,11 +384,11 @@ export default function ResultsPage() {
           </div>
         )}
 
-        {/* Tabs */}
+        {/* ── Tabs ── */}
         <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
           {([
             { id: 'summary', label: '📊 Summary' },
-            { id: 'review',  label: `📋 Answer Review (${reviewQs.length})` },
+            { id: 'review',  label: `📋 Review (${allQs.length})` },
           ] as const).map(t => (
             <button key={t.id}
               onClick={() => t.id === 'review' ? handleReviewTab() : setTab('summary')}
@@ -230,7 +398,7 @@ export default function ResultsPage() {
           ))}
         </div>
 
-        {/* Summary tab */}
+        {/* ── Summary tab ── */}
         {tab === 'summary' && (
           <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', padding: 20 }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 10 }}>
@@ -254,95 +422,66 @@ export default function ResultsPage() {
           </div>
         )}
 
-        {/* Review tab — all questions with correct/wrong */}
+        {/* ── Review tab ── */}
         {tab === 'review' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
 
             {loadingReview && (
               <div style={{ background: '#fff', borderRadius: 16, padding: 32, textAlign: 'center' }}>
                 <div style={{ width: 32, height: 32, border: '3px solid #2563eb', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
-                <p style={{ color: '#64748b', fontSize: 14 }}>Loading answer review…</p>
+                <p style={{ color: '#64748b', fontSize: 14 }}>Loading review…</p>
               </div>
             )}
 
             {reviewError && (
               <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: 12, padding: '14px 18px', textAlign: 'center' }}>
-                <p style={{ color: '#dc2626', margin: 0, fontSize: 14 }}>{reviewError}</p>
-                <button onClick={handleReviewTab} style={{ marginTop: 10, background: '#dc2626', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 18px', cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>Retry</button>
+                <p style={{ color: '#dc2626', margin: '0 0 10px', fontSize: 14 }}>{reviewError}</p>
+                <button onClick={handleReviewTab} style={{ background: '#dc2626', color: '#fff', border: 'none', borderRadius: 8, padding: '8px 18px', cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>Retry</button>
               </div>
             )}
 
-            {!loadingReview && !reviewError && reviewQs.length === 0 && (
+            {/* Filter chips */}
+            {!loadingReview && allQs.length > 0 && (
+              <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
+                {([
+                  { id: 'all',     label: `All (${allQs.length})`,                               color: '#2563eb' },
+                  { id: 'wrong',   label: `Wrong (${allQs.filter(q => q.is_correct === false).length})`,  color: '#dc2626' },
+                  { id: 'correct', label: `Correct (${allQs.filter(q => q.is_correct === true).length})`, color: '#059669' },
+                  { id: 'skipped', label: `Skipped (${allQs.filter(q => q.selected_index === null).length})`, color: '#64748b' },
+                ] as const).map(f => (
+                  <button key={f.id} onClick={() => setFilter(f.id)}
+                    style={{ padding: '5px 12px', borderRadius: 20, fontSize: 12, fontWeight: 600, cursor: 'pointer', border: `1.5px solid ${filter === f.id ? f.color : '#e2e8f0'}`, background: filter === f.id ? f.color : '#fff', color: filter === f.id ? '#fff' : '#64748b' }}>
+                    {f.label}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {!loadingReview && !reviewError && filteredQs.length === 0 && (
               <div style={{ background: '#f8fafc', borderRadius: 16, padding: 32, textAlign: 'center', color: '#64748b' }}>
-                No questions to review.
+                No questions in this filter.
               </div>
             )}
 
-            {!loadingReview && reviewQs.map((q, i) => {
-              const hasCorrectData = q.correct_index !== undefined && q.correct_index !== null;
-              return (
-                <div key={q.mcq_id ?? i} style={{ background: '#fff', borderRadius: 16, border: '1px solid #e2e8f0', overflow: 'hidden' }}>
-                  {/* Q header */}
-                  <div style={{ padding: '10px 16px', borderBottom: '1px solid #f1f5f9', display: 'flex', gap: 8, alignItems: 'center' }}>
-                    <span style={{ background: q.is_correct ? '#d1fae5' : q.selected_index === null ? '#f1f5f9' : '#fee2e2', color: q.is_correct ? '#065f46' : q.selected_index === null ? '#64748b' : '#991b1b', border: `1px solid ${q.is_correct ? '#6ee7b7' : q.selected_index === null ? '#e2e8f0' : '#fca5a5'}`, borderRadius: 6, fontSize: 12, fontWeight: 700, padding: '2px 8px' }}>
-                      {q.is_correct ? '✓' : q.selected_index === null ? '—' : '✗'} Q{i + 1}
-                    </span>
-                    {q.subject && <span style={{ fontSize: 12, color: '#94a3b8' }}>{q.subject}</span>}
-                  </div>
-
-                  <div style={{ padding: '14px 16px' }}>
-                    <p style={{ fontSize: 15, lineHeight: 1.6, color: '#1e293b', margin: '0 0 14px', fontWeight: 500 }}>{q.question_text}</p>
-
-                    {/* All options with correct/wrong highlighting */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                      {q.options?.map((opt, idx) => {
-                        const isCorrect = hasCorrectData && idx === q.correct_index;
-                        const isChosen  = idx === q.selected_index;
-                        const isWrong   = isChosen && !isCorrect;
-
-                        let bg = '#f8fafc', border = '#e2e8f0', labelBg = '#e2e8f0', labelColor = '#64748b';
-                        if (isCorrect) { bg = '#d1fae5'; border = '#059669'; labelBg = '#059669'; labelColor = '#fff'; }
-                        else if (isWrong) { bg = '#fee2e2'; border = '#dc2626'; labelBg = '#dc2626'; labelColor = '#fff'; }
-                        else if (isChosen && !hasCorrectData) { bg = '#eff6ff'; border = '#2563eb'; labelBg = '#2563eb'; labelColor = '#fff'; }
-
-                        return (
-                          <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px', borderRadius: 10, background: bg, border: `1.5px solid ${border}`, transition: 'all 0.2s' }}>
-                            <span style={{ width: 28, height: 28, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', background: labelBg, color: labelColor, fontWeight: 700, fontSize: 12, flexShrink: 0 }}>
-                              {LABELS[idx]}
-                            </span>
-                            <span style={{ flex: 1, fontSize: 14, color: '#1e293b', lineHeight: 1.4 }}>{opt}</span>
-                            {isCorrect && <span style={{ fontSize: 12, fontWeight: 700, color: '#059669', flexShrink: 0 }}>✓ Correct</span>}
-                            {isWrong   && <span style={{ fontSize: 12, fontWeight: 700, color: '#dc2626', flexShrink: 0 }}>✗ Wrong</span>}
-                            {isChosen && !hasCorrectData && <span style={{ fontSize: 12, fontWeight: 700, color: '#2563eb', flexShrink: 0 }}>Your answer</span>}
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    {q.selected_index === null && (
-                      <div style={{ marginTop: 10, padding: '8px 12px', background: '#f8fafc', borderRadius: 8, fontSize: 13, color: '#94a3b8' }}>
-                        ⏭ Skipped
-                      </div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
+            {/* Question cards */}
+            {!loadingReview && filteredQs.map((q, i) => (
+              <QuestionCard key={q.mcq_id ?? i} q={q} idx={allQs.indexOf(q)} />
+            ))}
           </div>
         )}
 
-        {/* CTAs */}
+        {/* ── CTAs ── */}
         <div style={{ display: 'flex', gap: 10, marginTop: 24 }}>
-          <button onClick={() => router.push('/test/start')}
-            style={{ flex: 1, minHeight: 48, borderRadius: 12, fontWeight: 700, fontSize: 15, cursor: 'pointer', background: '#2563eb', color: '#fff', border: 'none' }}>
+          <button onClick={() => router.push('/test/start')} style={{ flex: 1, minHeight: 48, borderRadius: 12, fontWeight: 700, fontSize: 15, cursor: 'pointer', background: '#2563eb', color: '#fff', border: 'none' }}>
             New Test
           </button>
-          <button onClick={() => router.push('/analytics')}
-            style={{ flex: 1, minHeight: 48, borderRadius: 12, fontWeight: 700, fontSize: 15, cursor: 'pointer', background: '#fff', color: '#475569', border: '1.5px solid #e2e8f0' }}>
+          <button onClick={() => router.push('/analytics')} style={{ flex: 1, minHeight: 48, borderRadius: 12, fontWeight: 700, fontSize: 15, cursor: 'pointer', background: '#fff', color: '#475569', border: '1.5px solid #e2e8f0' }}>
             Analytics
           </button>
         </div>
       </div>
+
+      <BottomNav />
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');

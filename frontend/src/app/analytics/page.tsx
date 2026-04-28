@@ -256,7 +256,6 @@ export default function AnalyticsDashboard() {
   const [sessions,      setSessions]      = useState<any[]>([]);
   const [feynman,       setFeynman]       = useState<any[]>([]);
   const [feynmanStream, setFeynmanStream] = useState("");
-  const [feynmanLoad,   setFeynmanLoad]   = useState(false);
   const [weeklyTrend,   setWeeklyTrend]   = useState<any[]>([]);
   const [loading,       setLoading]       = useState(true);
 
@@ -327,52 +326,67 @@ export default function AnalyticsDashboard() {
 
   // ── Feynman stream ──────────────────────────────────────────────────────────
   const fetchFeynman = useCallback(async () => {
-    if (!weakAreas.length || feynmanLoad) return;
+    if (feynmanLoad) return;
+    if (!weakAreas.length) {
+      setFeynmanError("Keep practising to unlock your Feynman Review!");
+      setTimeout(() => setFeynmanError(""), 3500);
+      return;
+    }
     setFeynmanLoad(true);
-    setFeynman([]);
-    setFeynmanStream("");
+    setFeynmanDone(false);
+    setFeynmanText("");
+    setFeynmanError("");
+    setShowFeynman(true);
 
-    const worstTags = [...weakAreas]
-      .sort((a, b) => safeNum(a.accuracy, 100) - safeNum(b.accuracy, 100))
+    const worstTopics = [...weakAreas]
+      .sort((a: any, b: any) => safeNum(a.accuracy, 100) - safeNum(b.accuracy, 100))
       .slice(0, 6)
-      .map((w: any) => w.topic_id)
-      .filter(Boolean);
+      .map((w: any) => `${tagName(w.topic_id || "")} (${Math.round(safeNum(w.accuracy, 0))}% accuracy)`)
+      .join(", ");
 
     const prompt =
-      `You are a concise UPSC coach. My weakest topic codes are: ${worstTags.join(", ")}.` +
-      ` Pick the 3 most critical and return ONLY a JSON array — no markdown, no backticks:` +
-      ` [{"topic":"Full readable name","tag":"TAG_CODE","priority":"critical|high","reason":"One specific actionable tip."}]`;
+      `My weakest UPSC topics right now are: ${worstTopics}.\n\n` +
+      `Pick the 3 most critical ones. For each topic give me:\n` +
+      `1. A Feynman Explanation — explain it so simply that a 10-year-old could understand it. Use a real-life analogy from everyday Indian life.\n` +
+      `2. One Pro Tip — a specific trap UPSC sets in Prelims for this topic and how to avoid it.\n\n` +
+      `Keep each explanation to 3-4 sentences. Be direct, warm, and practical.`;
 
     try {
       const res = await fetch(`${API}/ai-coach/chat`, {
         method: "POST", headers,
-        body: JSON.stringify({ message: prompt }),
+        body: JSON.stringify({ message: prompt, weak_areas: weakAreas.slice(0, 5) }),
       });
-      if (!res.body) throw new Error("No stream");
+      if (!res.ok) throw new Error(`Server error ${res.status}`);
+      if (!res.body) throw new Error("No stream received");
+
       const reader  = res.body.getReader();
       const decoder = new TextDecoder();
       let raw = "";
+
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
         const chunk = decoder.decode(value, { stream: true });
         for (const line of chunk.split("\n")) {
           if (!line.startsWith("data: ")) continue;
-          const p = line.slice(6).trim();
-          if (p === "[DONE]") continue;
+          const payload = line.slice(6).trim();
+          if (payload === "[DONE]") continue;
           try {
-            const obj   = JSON.parse(p);
-            const delta = obj?.delta?.text ?? obj?.choices?.[0]?.delta?.content ?? obj?.text ?? "";
-            raw += delta;
-            setFeynmanStream(raw);
-          } catch { raw += p; setFeynmanStream(raw); }
+            const obj  = JSON.parse(payload);
+            if (obj?.error) throw new Error(obj.error);
+            const text = obj?.chunk ?? obj?.delta?.text ?? obj?.text ?? "";
+            raw += text;
+            setFeynmanText(raw);
+          } catch { /* skip non-JSON lines */ }
         }
       }
-      const cleaned = raw.replace(/```json|```/gi, "").trim();
-      const parsed  = JSON.parse(cleaned);
-      if (Array.isArray(parsed)) setFeynman(parsed);
+      if (!raw.trim()) throw new Error("Empty response");
+      setFeynmanDone(true);
     } catch (e: any) {
-      setFeynmanStream(`Error: ${e.message}`);
+      setFeynmanText("");
+      setFeynmanError("Coach is busy, try again in a moment.");
+      setShowFeynman(false);
+      setTimeout(() => setFeynmanError(""), 3500);
     } finally {
       setFeynmanLoad(false);
     }
@@ -552,49 +566,57 @@ export default function AnalyticsDashboard() {
               </div>
             )}
 
-            {/* Feynman */}
+            {/* Feynman Review */}
             <div className="fa" style={{ marginTop: 24 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                <SL title="FEYNMAN REVIEW" sub="AI Coach picks your 3 priority topics" />
-                <span style={{
-                  background: `${C.indigo}0d`, color: C.indigo, border: `1px solid ${C.indigo}22`,
-                  borderRadius: 8, padding: "2px 8px", fontSize: 9, fontWeight: 700, letterSpacing: "0.08em",
-                }}>AI COACH</span>
+                <SL title="FEYNMAN REVIEW" sub="AI Coach simplifies your weak topics" />
+                <span style={{ background: `${C.indigo}0d`, color: C.indigo, border: `1px solid ${C.indigo}22`, borderRadius: 8, padding: "2px 8px", fontSize: 9, fontWeight: 700, letterSpacing: "0.08em" }}>AI COACH</span>
               </div>
 
-              {feynman.length === 0 && !feynmanLoad && (
-                <button onClick={fetchFeynman} disabled={!weakAreas.length} style={{
-                  width: "100%",
-                  background: weakAreas.length ? `linear-gradient(135deg, ${C.dark}, ${C.darkMid})` : C.border,
-                  color: weakAreas.length ? C.gold : C.dim,
-                  border: "none", borderRadius: 12, padding: 15,
-                  fontSize: 14, fontWeight: 600, cursor: weakAreas.length ? "pointer" : "not-allowed",
-                }}>
-                  {weakAreas.length ? "✨ Generate Feynman Review" : "Complete tests first to unlock"}
-                </button>
-              )}
-
-              {feynmanLoad && (
-                <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 12, padding: 16 }}>
-                  <div style={{ fontSize: 11, color: C.indigo, fontWeight: 600, marginBottom: 8 }}>⟳ AI Coach is analysing…</div>
-                  <div style={{
-                    fontFamily: "monospace", fontSize: 11, color: C.muted,
-                    whiteSpace: "pre-wrap", wordBreak: "break-word", lineHeight: 1.6, maxHeight: 120, overflow: "auto",
-                  }}>{feynmanStream || "Thinking..."}</div>
+              {feynmanError && (
+                <div style={{ background: "#fef2f2", border: "1px solid #fca5a5", borderRadius: 10, padding: "10px 14px", marginBottom: 10, fontSize: 12, color: "#dc2626", display: "flex", alignItems: "center", gap: 8 }}>
+                  <span>⚠️</span> {feynmanError}
                 </div>
               )}
 
-              {feynman.length > 0 && (
-                <>
-                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                    {feynman.map((item: any, i: number) => <FCard key={i} item={item} idx={i} />)}
+              {!feynmanDone && !feynmanLoad && !showFeynman && (
+                <button onClick={fetchFeynman} style={{ width: "100%", background: weakAreas.length ? `linear-gradient(135deg, ${C.dark}, ${C.darkMid})` : C.border, color: weakAreas.length ? C.gold : C.dim, border: "none", borderRadius: 12, padding: 15, fontSize: 14, fontWeight: 600, cursor: weakAreas.length ? "pointer" : "not-allowed" }}>
+                  {weakAreas.length ? "✨ Generate Feynman Review" : "Keep practising to unlock your Feynman Review!"}
+                </button>
+              )}
+
+              {showFeynman && (
+                <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 16, overflow: "hidden", boxShadow: "0 4px 24px rgba(44,26,14,0.08)" }}>
+                  <div style={{ background: `linear-gradient(135deg, ${C.dark}, ${C.darkMid})`, padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: C.gold }}>{feynmanDone ? "Your Feynman Review" : "⟳ AI Coach is thinking…"}</div>
+                      <div style={{ fontSize: 10, color: "#a08060", marginTop: 2 }}>{feynmanDone ? "Simplified explanations for your weakest topics" : "Streaming live…"}</div>
+                    </div>
+                    <button onClick={() => { setShowFeynman(false); setFeynmanDone(false); setFeynmanText(""); }} style={{ background: "rgba(255,255,255,0.1)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 8, width: 28, height: 28, cursor: "pointer", color: "white", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
                   </div>
-                  <button onClick={() => { setFeynman([]); setFeynmanStream(""); }} style={{
-                    marginTop: 10, width: "100%", background: "none",
-                    border: `1px solid ${C.border}`, borderRadius: 10, padding: 10,
-                    fontSize: 12, color: C.muted, cursor: "pointer",
-                  }}>↺ Regenerate</button>
-                </>
+
+                  <div style={{ padding: 16, maxHeight: 480, overflowY: "auto" as const }}>
+                    {feynmanText ? (
+                      <div style={{ fontSize: 13, color: C.text, lineHeight: 1.85, whiteSpace: "pre-wrap" }}>
+                        {feynmanText.split(/(\*\*[^*]+\*\*)/).map((part: string, i: number) =>
+                          part.startsWith("**") && part.endsWith("**")
+                            ? <strong key={i} style={{ color: C.terra }}>{part.slice(2, -2)}</strong>
+                            : <span key={i}>{part}</span>
+                        )}
+                        {!feynmanDone && <span style={{ display: "inline-block", width: 2, height: 14, background: C.terra, marginLeft: 2, verticalAlign: "middle", animation: "pulse 0.8s infinite" }} />}
+                      </div>
+                    ) : (
+                      <div style={{ color: C.dim, fontSize: 12, textAlign: "center", padding: "20px 0" }}>Thinking...</div>
+                    )}
+                  </div>
+
+                  {feynmanDone && (
+                    <div style={{ padding: "12px 16px", borderTop: `1px solid ${C.border}`, display: "flex", gap: 8 }}>
+                      <button onClick={() => { setShowFeynman(false); setFeynmanDone(false); setFeynmanText(""); }} style={{ flex: 1, background: "none", border: `1px solid ${C.border}`, borderRadius: 10, padding: 10, fontSize: 12, color: C.muted, cursor: "pointer" }}>Close</button>
+                      <button onClick={() => { setFeynmanDone(false); setFeynmanText(""); fetchFeynman(); }} style={{ flex: 1, background: `linear-gradient(135deg, ${C.dark}, ${C.darkMid})`, border: "none", borderRadius: 10, padding: 10, fontSize: 12, color: C.gold, fontWeight: 600, cursor: "pointer" }}>↺ Regenerate</button>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
           </>

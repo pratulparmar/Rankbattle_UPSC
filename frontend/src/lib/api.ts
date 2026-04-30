@@ -80,3 +80,4 @@ export const getFeynmanExplanation = async (
   return res.data;
 };
  
+export const guestLogin = () => api.post('/auth/guest')

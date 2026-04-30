@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth'
-import { login } from '@/lib/api'
+import { login, guestLogin } from '@/lib/api'
 
 export default function Login() {
   const router = useRouter()
@@ -10,6 +10,7 @@ export default function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [guestLoading, setGuestLoading] = useState(false)
   const [error, setError] = useState('')
 
   const handleLogin = async () => {
@@ -17,7 +18,6 @@ export default function Login() {
     try {
       const res = await login(email, password)
       const token = res.data.access_token
-      // Decode JWT to get user info
       const payload = JSON.parse(atob(token.split('.')[1]))
       setToken(token)
       setUser({ id: payload.sub, email: email, name: payload.name || email.split('@')[0] })
@@ -25,6 +25,20 @@ export default function Login() {
     } catch {
       setError('Invalid credentials. Please try again.')
     } finally { setLoading(false) }
+  }
+
+  const handleGuest = async () => {
+    setGuestLoading(true); setError('')
+    try {
+      const res = await guestLogin()
+      const token = res.data.access_token
+      const payload = JSON.parse(atob(token.split('.')[1]))
+      setToken(token)
+      setUser({ id: payload.sub, email: 'guest@rankbattle.demo', name: 'Guest Aspirant' })
+      router.push('/dashboard')
+    } catch {
+      setError('Could not start guest session. Please try again.')
+    } finally { setGuestLoading(false) }
   }
 
   return (
@@ -54,6 +68,29 @@ export default function Login() {
         <p className="serif" style={{ fontSize: 22, fontWeight: 600, color: 'var(--ink)', marginBottom: 6 }}>Welcome back</p>
         <p style={{ fontSize: 13, color: 'var(--ink-faint)', marginBottom: 28 }}>Sign in to your war room</p>
 
+        {/* Guest button — prominent, at top */}
+        <button
+          onClick={handleGuest}
+          disabled={guestLoading || loading}
+          style={{
+            width: '100%', padding: '14px', fontSize: 15, fontWeight: 600,
+            borderRadius: 14, border: '2px dashed rgba(160,82,45,0.35)',
+            background: 'rgba(160,82,45,0.06)', color: 'var(--terra)',
+            cursor: 'pointer', marginBottom: 20, letterSpacing: 0.3,
+            transition: 'all 0.2s',
+          }}
+          onMouseEnter={e => (e.currentTarget.style.background = 'rgba(160,82,45,0.12)')}
+          onMouseLeave={e => (e.currentTarget.style.background = 'rgba(160,82,45,0.06)')}
+        >
+          {guestLoading ? 'Starting session...' : '👁 Explore as Guest'}
+        </button>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+          <div style={{ flex: 1, height: 1, background: 'rgba(160,82,45,0.15)' }}/>
+          <span style={{ fontSize: 11, color: 'var(--ink-faint)', fontWeight: 600, letterSpacing: 1 }}>OR SIGN IN</span>
+          <div style={{ flex: 1, height: 1, background: 'rgba(160,82,45,0.15)' }}/>
+        </div>
+
         <div style={{ marginBottom: 16 }}>
           <label style={{ fontSize: 11, fontWeight: 600, letterSpacing: 1.5, color: 'var(--ink-soft)', display: 'block', marginBottom: 8 }}>EMAIL</label>
           <input type="email" value={email} onChange={e => setEmail(e.target.value)}
@@ -81,7 +118,7 @@ export default function Login() {
           </div>
         )}
 
-        <button className="btn-terra" onClick={handleLogin} disabled={loading}
+        <button className="btn-terra" onClick={handleLogin} disabled={loading || guestLoading}
           style={{ width: '100%', padding: '16px', fontSize: 16, letterSpacing: 0.5 }}>
           {loading ? 'Signing in...' : 'Enter the War Room →'}
         </button>

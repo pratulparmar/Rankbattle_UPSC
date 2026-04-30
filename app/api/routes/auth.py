@@ -28,3 +28,24 @@ def login(req: LoginRequest, db: Session = Depends(get_db)):
     if not user or not verify_password(req.password, user.password):
         raise HTTPException(401, "Invalid credentials")
     return {"access_token": create_access_token({"sub": str(user.user_id)})}
+
+@router.post("/guest", response_model=TokenResponse)
+def guest_login(db: Session = Depends(get_db)):
+    """One-click guest access for demos. Reuses a single shared guest account."""
+    GUEST_EMAIL = "guest@rankbattle.demo"
+    GUEST_NAME = "Guest Aspirant"
+
+    user = db.query(User).filter(User.email == GUEST_EMAIL).first()
+    if not user:
+        user = User(
+            email=GUEST_EMAIL,
+            name=GUEST_NAME,
+            password=hash_password("guest_demo_2024"),
+            created_at=datetime.utcnow(),
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+
+    token = create_access_token({"sub": str(user.user_id), "name": GUEST_NAME, "guest": True})
+    return {"access_token": token}

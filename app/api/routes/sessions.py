@@ -25,7 +25,7 @@ def get_current_user(creds: HTTPAuthorizationCredentials = Depends(bearer), db: 
 @router.post("/start", response_model=SessionOut)
 def start_session(req: SessionStartRequest, db: Session = Depends(get_db),
                   user: User = Depends(get_current_user)):
-    q = db.query(MCQ).filter(MCQ.verification_passed == True)
+    q = db.query(MCQ).filter(MCQ.verification_passed == True).filter((MCQ.audit == None) | (MCQ.audit["verdict"].astext != "RETIRED"))
     if req.subject_filter: q = q.filter(MCQ.subject == req.subject_filter)
     if req.topic_filter:   q = q.filter(MCQ.topic_id == req.topic_filter)
     if req.tier_filter:    q = q.filter(MCQ.probability_tier == req.tier_filter)

@@ -8,8 +8,8 @@ import { QuestionBody } from '@/lib/parseQuestionText';
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Explanation {
   concept_anchor?:  string;
-  statement_wise?:  string[];
-  why_others_wrong?: string[];
+  statement_wise?:  Record<string, string> | string[];
+  why_others_wrong?: string | string[];
   common_trap?:     string;
   elimination_hint?: string;
   trap_analysis?:   string;
@@ -57,12 +57,23 @@ function ExpertAnalysis({ exp, isWrong }: { exp: Explanation | null | undefined;
   const [open, setOpen] = useState(isWrong); // auto-expand for wrong answers
 
   const conceptAnchor  = exp?.concept_anchor  || null;
-  const statementWise  = exp?.statement_wise  || [];
-  const whyOthers      = exp?.why_others_wrong || [];
+  // Handle both old array format and new object/string format
+  const statementWise: Record<string, string> = (() => {
+    const sw = exp?.statement_wise;
+    if (!sw) return {};
+    if (Array.isArray(sw)) return Object.fromEntries(sw.map((v, i) => [String(i+1), v]));
+    return sw as Record<string, string>;
+  })();
+  const whyOthers: string = (() => {
+    const wo = exp?.why_others_wrong;
+    if (!wo) return '';
+    if (Array.isArray(wo)) return wo.join(' ');
+    return wo as string;
+  })();
   const trap           = exp?.common_trap || exp?.trap_analysis || null;
   const elimHint       = exp?.elimination_hint || null;
 
-  const hasContent = conceptAnchor || statementWise.length > 0 || whyOthers.length > 0;
+  const hasContent = conceptAnchor || Object.keys(statementWise).length > 0 || whyOthers.length > 0;
 
   return (
     <div style={{ marginTop: 10 }}>
@@ -123,7 +134,7 @@ function ExpertAnalysis({ exp, isWrong }: { exp: Explanation | null | undefined;
           </div>
 
           {/* Statement-wise analysis */}
-          {statementWise.length > 0 && (
+          {Object.keys(statementWise).length > 0 && (
             <div style={{
               background: '#eff6ff',
               border: '1px solid #bfdbfe',
@@ -137,11 +148,11 @@ function ExpertAnalysis({ exp, isWrong }: { exp: Explanation | null | undefined;
                 📋 STATEMENT-WISE BREAKDOWN
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                {statementWise.map((s, i) => {
-                  const isCorrectStmt  = s.toLowerCase().includes('correct');
-                  const isIncorrect = s.toLowerCase().includes('incorrect') || s.toLowerCase().includes('wrong');
+                {Object.entries(statementWise).map(([k, s]) => {
+                  const isCorrectStmt  = s.toUpperCase().startsWith('TRUE');
+                  const isIncorrect = s.toUpperCase().startsWith('FALSE');
                   return (
-                    <div key={i} style={{
+                    <div key={k} style={{
                       display: 'flex',
                       gap: 8,
                       alignItems: 'flex-start',
@@ -207,7 +218,7 @@ function ExpertAnalysis({ exp, isWrong }: { exp: Explanation | null | undefined;
           )}
 
           {/* Why Others Wrong / Elimination Strategy */}
-          {whyOthers.length > 0 && (
+          {whyOthers && (
             <div style={{
               background: '#fff7ed',
               border: '1px solid #fed7aa',
@@ -221,8 +232,8 @@ function ExpertAnalysis({ exp, isWrong }: { exp: Explanation | null | undefined;
                 🔍 ELIMINATION STRATEGY
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-                {whyOthers.map((w, i) => (
-                  <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+                {[whyOthers].map((w, i) => (
+                  <div key={k} style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
                     <span style={{ fontSize: 11, color: '#ea580c', flexShrink: 0, marginTop: 2 }}>×</span>
                     <span style={{ fontSize: 12, color: '#374151', lineHeight: 1.6 }}>{w}</span>
                   </div>
@@ -335,7 +346,7 @@ function QuestionCard({ q, idx }: { q: QuestionResult; idx: number }) {
             }
 
             return (
-              <div key={i} style={{
+              <div key={k} style={{
                 display: 'flex', alignItems: 'flex-start', gap: 10,
                 padding: '10px 12px', borderRadius: 10,
                 background: bg, border: `1.5px solid ${border}`,

@@ -38,10 +38,19 @@ const NAV = [
       </svg>
     )
   },
+  {
+    id: 'profile', label: 'Profile', href: '/profile',
+    icon: (active: boolean) => (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={active ? '#A0522D' : '#9A8070'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+      </svg>
+    )
+  },
 ]
 
 export default function BottomNav() {
-  const router = useRouter()
+  const router   = useRouter()
   const pathname = usePathname()
 
   return (
@@ -60,9 +69,9 @@ export default function BottomNav() {
           <button key={id} onClick={() => router.push(href)}
             style={{
               display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
-              cursor: 'pointer', padding: '6px 18px', borderRadius: 14, border: 'none',
+              cursor: 'pointer', padding: '6px 16px', borderRadius: 14, border: 'none',
               background: active ? 'rgba(160,82,45,0.1)' : 'transparent',
-              transition: 'all 0.2s ease', minWidth: 64,
+              transition: 'all 0.2s ease', minWidth: 56,
             }}>
             {icon(active)}
             <span style={{

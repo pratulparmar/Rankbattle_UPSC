@@ -1,9 +1,9 @@
-
 import uuid
 from sqlalchemy import Column, Text, SmallInteger, Float, Boolean, Integer, Date, ForeignKey, TIMESTAMP
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.orm import relationship
 from app.db.database import Base
+
 
 class MCQ(Base):
     __tablename__ = "mcq_bank"
@@ -26,17 +26,33 @@ class MCQ(Base):
     verification_passed = Column(Boolean)
     testable_unit_id    = Column(Text)
     created_at          = Column(TIMESTAMP)
+    audit               = Column(JSONB)
+
 
 class User(Base):
     __tablename__ = "users"
-    user_id     = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    email       = Column(Text, unique=True, nullable=False)
-    name        = Column(Text)
-    password    = Column(Text, nullable=False)
-    created_at  = Column(TIMESTAMP)
-    streak      = Column(Integer, default=0)
-    last_active = Column(Date)
-    sessions    = relationship("MockSession", back_populates="user")
+    user_id          = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    email            = Column(Text, unique=True, nullable=False)
+    name             = Column(Text)
+    password         = Column(Text, nullable=False)
+    created_at       = Column(TIMESTAMP)
+    streak           = Column(Integer, default=0)
+    last_active      = Column(Date)
+    # Google OAuth
+    google_id        = Column(Text, unique=True, nullable=True)
+    avatar_url       = Column(Text, nullable=True)
+    # Profile
+    phone            = Column(Text, nullable=True)
+    target_year      = Column(Integer, default=2026)
+    state            = Column(Text, nullable=True)
+    optional_subject = Column(Text, nullable=True)
+    # Subscription
+    is_subscribed    = Column(Boolean, default=False)
+    subscribed_at    = Column(TIMESTAMP, nullable=True)
+    subscription_id  = Column(Text, nullable=True)
+
+    sessions = relationship("MockSession", back_populates="user")
+
 
 class MockSession(Base):
     __tablename__ = "mock_sessions"
@@ -54,6 +70,7 @@ class MockSession(Base):
     user            = relationship("User", back_populates="sessions")
     attempts        = relationship("Attempt", back_populates="session")
 
+
 class Attempt(Base):
     __tablename__ = "attempts"
     attempt_id      = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -67,12 +84,13 @@ class Attempt(Base):
     rag_viewed      = Column(Boolean, default=False)
     session         = relationship("MockSession", back_populates="attempts")
 
+
 class SubjectAnalytics(Base):
     __tablename__ = "subject_analytics"
-    user_id         = Column(UUID(as_uuid=True), ForeignKey("users.user_id"), primary_key=True)
-    subject         = Column(Text)
-    topic_id        = Column(Text, primary_key=True)
-    total_attempts  = Column(Integer, default=0)
-    correct         = Column(Integer, default=0)
-    avg_time_secs   = Column(Float, default=0)
-    last_updated    = Column(TIMESTAMP)
+    user_id       = Column(UUID(as_uuid=True), ForeignKey("users.user_id"), primary_key=True)
+    subject       = Column(Text)
+    topic_id      = Column(Text, primary_key=True)
+    total_attempts = Column(Integer, default=0)
+    correct       = Column(Integer, default=0)
+    avg_time_secs = Column(Float, default=0)
+    last_updated  = Column(TIMESTAMP)

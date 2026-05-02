@@ -1,8 +1,8 @@
 'use client'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth'
-import { login, guestLogin } from '@/lib/api'
+import { login } from '@/lib/api'
 import {
   signInWithGoogle,
   sendOTP,
@@ -17,35 +17,27 @@ export default function Login() {
   const router = useRouter()
   const { setToken, setUser } = useAuth()
 
-  // Email/password
-  const [email, setEmail]       = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading]   = useState(false)
-
-  // Google
   const [googleLoading, setGoogleLoading] = useState(false)
-
-  // Phone OTP
-  const [showPhone, setShowPhone]             = useState(false)
-  const [phone, setPhone]                     = useState('')
-  const [otp, setOtp]                         = useState('')
-  const [otpSent, setOtpSent]                 = useState(false)
-  const [phoneLoading, setPhoneLoading]       = useState(false)
-  const [confirmResult, setConfirmResult]     = useState<ConfirmationResult | null>(null)
+  const [showPhone, setShowPhone] = useState(false)
+  const [phone, setPhone] = useState('')
+  const [otp, setOtp] = useState('')
+  const [otpSent, setOtpSent] = useState(false)
+  const [phoneLoading, setPhoneLoading] = useState(false)
+  const [confirmResult, setConfirmResult] = useState<ConfirmationResult | null>(null)
   const recaptchaRef = useRef<ReturnType<typeof setupRecaptcha> | null>(null)
-
-  // Guest
-  const [guestLoading, setGuestLoading] = useState(false)
-
+  const [showEmail, setShowEmail] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const anyLoading = loading || googleLoading || phoneLoading || guestLoading
 
-  // ── Helper: exchange Firebase ID token for our JWT ──────────────────────────
+  const anyLoading = loading || googleLoading || phoneLoading
+
   const exchangeToken = async (idToken: string, endpoint: string) => {
     const res = await fetch(`${API}${endpoint}`, {
-      method:  'POST',
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({ id_token: idToken }),
+      body: JSON.stringify({ id_token: idToken }),
     })
     if (!res.ok) throw new Error('Auth failed')
     return res.json()
@@ -58,78 +50,54 @@ export default function Login() {
     router.push('/dashboard')
   }
 
-  // ── Google ──────────────────────────────────────────────────────────────────
   const handleGoogle = async () => {
     setGoogleLoading(true); setError('')
     try {
       const idToken = await signInWithGoogle()
-      const data    = await exchangeToken(idToken, '/auth/firebase/google')
+      const data = await exchangeToken(idToken, '/auth/firebase/google')
       storeAuth(data)
     } catch (e: any) {
-      setError(e.message === 'Auth failed' ? 'Google login failed. Try again.' : 'Google sign-in cancelled.')
+      setError('Google sign-in failed. Please try again.')
     } finally { setGoogleLoading(false) }
   }
 
-  // ── Phone: send OTP ─────────────────────────────────────────────────────────
   const handleSendOTP = async () => {
     if (!phone || phone.length < 10) { setError('Enter a valid phone number'); return }
     setPhoneLoading(true); setError('')
     try {
       const formatted = phone.startsWith('+') ? phone : `+91${phone.replace(/\s/g, '')}`
-      if (!recaptchaRef.current) {
-        recaptchaRef.current = setupRecaptcha('recaptcha-container')
-      }
+      if (!recaptchaRef.current) recaptchaRef.current = setupRecaptcha('recaptcha-container')
       const result = await sendOTP(formatted, recaptchaRef.current)
-      setConfirmResult(result)
-      setOtpSent(true)
-    } catch (e: any) {
+      setConfirmResult(result); setOtpSent(true)
+    } catch {
       setError('Failed to send OTP. Check the number and try again.')
       recaptchaRef.current = null
     } finally { setPhoneLoading(false) }
   }
 
-  // ── Phone: verify OTP ───────────────────────────────────────────────────────
   const handleVerifyOTP = async () => {
     if (!otp || otp.length < 6) { setError('Enter the 6-digit OTP'); return }
     if (!confirmResult) return
     setPhoneLoading(true); setError('')
     try {
       const idToken = await verifyOTP(confirmResult, otp)
-      const data    = await exchangeToken(idToken, '/auth/firebase/phone')
+      const data = await exchangeToken(idToken, '/auth/firebase/phone')
       storeAuth(data)
-    } catch {
-      setError('Invalid OTP. Please try again.')
-    } finally { setPhoneLoading(false) }
+    } catch { setError('Invalid OTP. Please try again.') }
+    finally { setPhoneLoading(false) }
   }
 
-  // ── Email/password ──────────────────────────────────────────────────────────
   const handleLogin = async () => {
     setLoading(true); setError('')
     try {
-      const res     = await login(email, password)
-      const token   = res.data.access_token
+      const res = await login(email, password)
+      const token = res.data.access_token
       const payload = JSON.parse(atob(token.split('.')[1]))
       setToken(token)
       setUser({ id: payload.sub, email, name: payload.name || email.split('@')[0] })
       router.push('/dashboard')
-    } catch {
-      setError('Invalid credentials. Please try again.')
-    } finally { setLoading(false) }
-  }
-
-  // ── Guest ───────────────────────────────────────────────────────────────────
-  const handleGuest = async () => {
-    setGuestLoading(true); setError('')
-    try {
-      const res   = await guestLogin()
-      const token = res.data.access_token
-      const p     = JSON.parse(atob(token.split('.')[1]))
-      setToken(token)
-      setUser({ id: p.sub, email: 'guest@rankbattle.demo', name: 'Guest Aspirant' })
-      router.push('/dashboard')
-    } catch {
-      setError('Could not start guest session.')
-    } finally { setGuestLoading(false) }
+    } catch { setError('Invalid credentials. Please try again.') }
+    finally { setLoading(false) }
   }
 
   return (
@@ -138,11 +106,8 @@ export default function Login() {
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
       padding: '24px', position: 'relative', overflow: 'hidden',
     }}>
-      {/* Background blobs */}
       <div style={{ position: 'absolute', top: -100, right: -80, width: 350, height: 350, borderRadius: '50%', background: 'rgba(160,82,45,0.07)', pointerEvents: 'none' }}/>
       <div style={{ position: 'absolute', bottom: -80, left: -60, width: 280, height: 280, borderRadius: '50%', background: 'rgba(200,150,12,0.06)', pointerEvents: 'none' }}/>
-
-      {/* Invisible recaptcha container */}
       <div id="recaptcha-container" />
 
       {/* Logo */}
@@ -161,155 +126,120 @@ export default function Login() {
       </div>
 
       <div className="paper-card" style={{ width: '100%', maxWidth: 400, padding: '28px 24px', position: 'relative', zIndex: 1 }}>
-        <p className="serif" style={{ fontSize: 21, fontWeight: 600, color: 'var(--ink)', marginBottom: 4 }}>Welcome back</p>
-        <p style={{ fontSize: 13, color: 'var(--ink-faint)', marginBottom: 22 }}>Sign in to your war room</p>
+        <p className="serif" style={{ fontSize: 21, fontWeight: 600, color: 'var(--ink)', marginBottom: 4 }}>Get Started</p>
+        <p style={{ fontSize: 13, color: 'var(--ink-faint)', marginBottom: 22 }}>New or returning — sign in to continue</p>
 
-        {/* Google */}
+        {/* Google — primary CTA */}
         <button onClick={handleGoogle} disabled={anyLoading} style={{
-          width: '100%', padding: '13px', fontSize: 15, fontWeight: 600,
+          width: '100%', padding: '14px', fontSize: 15, fontWeight: 600,
           borderRadius: 14, border: '1.5px solid rgba(0,0,0,0.12)',
           background: '#fff', color: '#1a1a1a', cursor: 'pointer', marginBottom: 10,
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-          boxShadow: '0 1px 4px rgba(0,0,0,0.08)', transition: 'box-shadow 0.15s',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.08)', transition: 'box-shadow 0.15s',
         }}
-          onMouseEnter={e => e.currentTarget.style.boxShadow = '0 3px 10px rgba(0,0,0,0.13)'}
-          onMouseLeave={e => e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.08)'}
+          onMouseEnter={e => e.currentTarget.style.boxShadow = '0 4px 14px rgba(0,0,0,0.13)'}
+          onMouseLeave={e => e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.08)'}
         >
-          {googleLoading ? 'Signing in...' : (
-            <>
-              <GoogleIcon />
-              Continue with Google
-            </>
-          )}
+          {googleLoading ? 'Signing in...' : <><GoogleIcon />Continue with Google</>}
         </button>
 
         {/* Phone OTP */}
         {!showPhone ? (
           <button onClick={() => setShowPhone(true)} disabled={anyLoading} style={{
-            width: '100%', padding: '13px', fontSize: 15, fontWeight: 600,
+            width: '100%', padding: '14px', fontSize: 15, fontWeight: 600,
             borderRadius: 14, border: '1.5px solid rgba(0,0,0,0.12)',
-            background: '#fff', color: '#1a1a1a', cursor: 'pointer', marginBottom: 10,
+            background: '#fff', color: '#1a1a1a', cursor: 'pointer', marginBottom: 16,
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-            boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
           }}>
             📱 Continue with Phone
           </button>
         ) : (
           <div style={{
             border: '1.5px solid rgba(160,82,45,0.2)', borderRadius: 14,
-            padding: '16px', marginBottom: 10,
-            background: 'rgba(160,82,45,0.03)',
+            padding: '16px', marginBottom: 16, background: 'rgba(160,82,45,0.03)',
           }}>
-            <p style={{ fontSize: 12, fontWeight: 700, letterSpacing: 1, color: 'var(--ink-soft)', marginBottom: 10 }}>PHONE LOGIN</p>
+            <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, color: 'var(--ink-soft)', marginBottom: 10 }}>PHONE LOGIN</p>
             {!otpSent ? (
-              <>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <input
-                    value={phone}
-                    onChange={e => setPhone(e.target.value)}
-                    placeholder="+91 XXXXX XXXXX"
-                    type="tel"
-                    style={{ flex: 1, padding: '11px 13px', borderRadius: 10, border: '1.5px solid rgba(160,82,45,0.2)', background: 'var(--paper)', fontSize: 14, color: 'var(--ink)', outline: 'none' }}
-                  />
-                  <button onClick={handleSendOTP} disabled={phoneLoading} style={{
-                    padding: '11px 16px', borderRadius: 10, border: 'none',
-                    background: 'var(--terra)', color: '#fff', fontSize: 13,
-                    fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap',
-                  }}>
-                    {phoneLoading ? '...' : 'Send OTP'}
-                  </button>
-                </div>
-              </>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <input value={phone} onChange={e => setPhone(e.target.value)}
+                  placeholder="+91 XXXXX XXXXX" type="tel"
+                  style={{ flex: 1, padding: '11px 13px', borderRadius: 10, border: '1.5px solid rgba(160,82,45,0.2)', background: 'var(--paper)', fontSize: 14, color: 'var(--ink)', outline: 'none' }} />
+                <button onClick={handleSendOTP} disabled={phoneLoading} style={{
+                  padding: '11px 16px', borderRadius: 10, border: 'none',
+                  background: 'var(--terra)', color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                }}>{phoneLoading ? '...' : 'Send OTP'}</button>
+              </div>
             ) : (
               <>
                 <p style={{ fontSize: 12, color: 'var(--ink-soft)', marginBottom: 10 }}>OTP sent to {phone}</p>
                 <div style={{ display: 'flex', gap: 8 }}>
-                  <input
-                    value={otp}
-                    onChange={e => setOtp(e.target.value)}
-                    placeholder="6-digit OTP"
-                    maxLength={6}
-                    style={{ flex: 1, padding: '11px 13px', borderRadius: 10, border: '1.5px solid rgba(160,82,45,0.2)', background: 'var(--paper)', fontSize: 16, color: 'var(--ink)', outline: 'none', letterSpacing: 4, textAlign: 'center' }}
-                  />
+                  <input value={otp} onChange={e => setOtp(e.target.value)}
+                    placeholder="6-digit OTP" maxLength={6}
+                    style={{ flex: 1, padding: '11px 13px', borderRadius: 10, border: '1.5px solid rgba(160,82,45,0.2)', background: 'var(--paper)', fontSize: 16, color: 'var(--ink)', outline: 'none', letterSpacing: 4, textAlign: 'center' }} />
                   <button onClick={handleVerifyOTP} disabled={phoneLoading} style={{
                     padding: '11px 16px', borderRadius: 10, border: 'none',
-                    background: 'var(--terra)', color: '#fff', fontSize: 13,
-                    fontWeight: 600, cursor: 'pointer',
-                  }}>
-                    {phoneLoading ? '...' : 'Verify'}
-                  </button>
+                    background: 'var(--terra)', color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                  }}>{phoneLoading ? '...' : 'Verify'}</button>
                 </div>
                 <button onClick={() => { setOtpSent(false); setOtp('') }} style={{
-                  background: 'none', border: 'none', fontSize: 12,
-                  color: 'var(--terra)', cursor: 'pointer', marginTop: 8, padding: 0,
+                  background: 'none', border: 'none', fontSize: 12, color: 'var(--terra)', cursor: 'pointer', marginTop: 8, padding: 0,
                 }}>Resend OTP</button>
               </>
             )}
           </div>
         )}
 
-        {/* Guest */}
-        <button onClick={handleGuest} disabled={anyLoading} style={{
-          width: '100%', padding: '11px', fontSize: 14, fontWeight: 600,
-          borderRadius: 14, border: '1.5px dashed rgba(160,82,45,0.35)',
-          background: 'rgba(160,82,45,0.05)', color: 'var(--terra)',
-          cursor: 'pointer', marginBottom: 18, transition: 'background 0.15s',
-        }}
-          onMouseEnter={e => e.currentTarget.style.background = 'rgba(160,82,45,0.1)'}
-          onMouseLeave={e => e.currentTarget.style.background = 'rgba(160,82,45,0.05)'}
-        >
-          {guestLoading ? 'Starting...' : '👁 Explore as Guest'}
-        </button>
-
         {/* Divider */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 18 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
           <div style={{ flex: 1, height: 1, background: 'rgba(160,82,45,0.15)' }}/>
-          <span style={{ fontSize: 10, color: 'var(--ink-faint)', fontWeight: 600, letterSpacing: 1 }}>OR EMAIL</span>
+          <span style={{ fontSize: 10, color: 'var(--ink-faint)', fontWeight: 600, letterSpacing: 1 }}>EXISTING USERS</span>
           <div style={{ flex: 1, height: 1, background: 'rgba(160,82,45,0.15)' }}/>
         </div>
 
-        {/* Email/Password */}
-        <div style={{ marginBottom: 14 }}>
-          <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1.5, color: 'var(--ink-soft)', display: 'block', marginBottom: 7 }}>EMAIL</label>
-          <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-            placeholder="you@example.com"
-            style={{ width: '100%', padding: '12px 14px', borderRadius: 12, border: '2px solid rgba(160,82,45,0.15)', background: 'var(--paper)', fontSize: 14, color: 'var(--ink)', outline: 'none', boxSizing: 'border-box' }}
-            onFocus={e => e.target.style.borderColor = '#A0522D'}
-            onBlur={e => e.target.style.borderColor = 'rgba(160,82,45,0.15)'}
-          />
-        </div>
-
-        <div style={{ marginBottom: 20 }}>
-          <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1.5, color: 'var(--ink-soft)', display: 'block', marginBottom: 7 }}>PASSWORD</label>
-          <input type="password" value={password} onChange={e => setPassword(e.target.value)}
-            placeholder="••••••••"
-            onKeyDown={e => e.key === 'Enter' && handleLogin()}
-            style={{ width: '100%', padding: '12px 14px', borderRadius: 12, border: '2px solid rgba(160,82,45,0.15)', background: 'var(--paper)', fontSize: 14, color: 'var(--ink)', outline: 'none', boxSizing: 'border-box' }}
-            onFocus={e => e.target.style.borderColor = '#A0522D'}
-            onBlur={e => e.target.style.borderColor = 'rgba(160,82,45,0.15)'}
-          />
-        </div>
-
-        {error && (
-          <div style={{ background: 'rgba(192,57,43,0.08)', border: '1px solid rgba(192,57,43,0.2)', borderRadius: 10, padding: '10px 14px', marginBottom: 16 }}>
-            <p style={{ fontSize: 13, color: '#C0392B', fontWeight: 500, margin: 0 }}>{error}</p>
+        {/* Email login — collapsed by default */}
+        {!showEmail ? (
+          <button onClick={() => setShowEmail(true)} style={{
+            width: '100%', padding: '12px', fontSize: 14, fontWeight: 500,
+            borderRadius: 14, border: '1.5px solid rgba(160,82,45,0.2)',
+            background: 'transparent', color: 'var(--ink-soft)', cursor: 'pointer',
+          }}>
+            Sign in with Email & Password
+          </button>
+        ) : (
+          <div>
+            <div style={{ marginBottom: 12 }}>
+              <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1.5, color: 'var(--ink-soft)', display: 'block', marginBottom: 7 }}>EMAIL</label>
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                style={{ width: '100%', padding: '12px 14px', borderRadius: 12, border: '2px solid rgba(160,82,45,0.15)', background: 'var(--paper)', fontSize: 14, color: 'var(--ink)', outline: 'none', boxSizing: 'border-box' }}
+                onFocus={e => e.target.style.borderColor = '#A0522D'}
+                onBlur={e => e.target.style.borderColor = 'rgba(160,82,45,0.15)'} />
+            </div>
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ fontSize: 10, fontWeight: 700, letterSpacing: 1.5, color: 'var(--ink-soft)', display: 'block', marginBottom: 7 }}>PASSWORD</label>
+              <input type="password" value={password} onChange={e => setPassword(e.target.value)}
+                placeholder="••••••••"
+                onKeyDown={e => e.key === 'Enter' && handleLogin()}
+                style={{ width: '100%', padding: '12px 14px', borderRadius: 12, border: '2px solid rgba(160,82,45,0.15)', background: 'var(--paper)', fontSize: 14, color: 'var(--ink)', outline: 'none', boxSizing: 'border-box' }}
+                onFocus={e => e.target.style.borderColor = '#A0522D'}
+                onBlur={e => e.target.style.borderColor = 'rgba(160,82,45,0.15)'} />
+            </div>
+            <button className="btn-terra" onClick={handleLogin} disabled={anyLoading}
+              style={{ width: '100%', padding: '14px', fontSize: 15, letterSpacing: 0.5 }}>
+              {loading ? 'Signing in...' : 'Enter the War Room →'}
+            </button>
           </div>
         )}
 
-        <button className="btn-terra" onClick={handleLogin} disabled={anyLoading}
-          style={{ width: '100%', padding: '15px', fontSize: 15, letterSpacing: 0.5 }}>
-          {loading ? 'Signing in...' : 'Enter the War Room →'}
-        </button>
-
-        <p style={{ textAlign: 'center', marginTop: 18, fontSize: 13, color: 'var(--ink-faint)' }}>
-          No account?{' '}
-          <span style={{ color: 'var(--terra)', fontWeight: 600, cursor: 'pointer' }} onClick={() => router.push('/register')}>
-            Register here
-          </span>
-        </p>
+        {error && (
+          <div style={{ background: 'rgba(192,57,43,0.08)', border: '1px solid rgba(192,57,43,0.2)', borderRadius: 10, padding: '10px 14px', marginTop: 14 }}>
+            <p style={{ fontSize: 13, color: '#C0392B', fontWeight: 500, margin: 0 }}>{error}</p>
+          </div>
+        )}
       </div>
 
-      <p style={{ marginTop: 28, fontSize: 11, color: 'var(--ink-faint)', textAlign: 'center' }}>
+      <p style={{ marginTop: 24, fontSize: 11, color: 'var(--ink-faint)', textAlign: 'center' }}>
         1,402 aspirants currently preparing
       </p>
     </div>

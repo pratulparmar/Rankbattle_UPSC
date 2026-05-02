@@ -10,3 +10,7 @@ pydantic[email]
 email-validator
 httpx
 anthropic
+firebase-admin
+razorpay
+google-auth
+cryptography

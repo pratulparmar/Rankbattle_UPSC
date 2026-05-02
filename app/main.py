@@ -13,7 +13,7 @@ app = FastAPI(title="RankBattle UPSC", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["https://rankbattle-upsc.vercel.app","https://upsc.rankbattle.in","http://localhost:3000"],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],

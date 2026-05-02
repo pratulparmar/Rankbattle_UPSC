@@ -1,0 +1,745 @@
+mcq_id,subject,topic_id,action,new_options,new_correct_idx,new_probability,v_reason
+ECO_AGR_Q001,Economy,ECO_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.918,OK
+ECO_AGR_Q003,Economy,ECO_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.918,OK
+ECO_AGR_Q005,Economy,ECO_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.918,OK
+ECO_AGR_Q007,Economy,ECO_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.918,OK
+ECO_AGR_Q008,Economy,ECO_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.918,OK
+ECO_AGR_Q010,Economy,ECO_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.918,OK
+ECO_AGR_Q011,Economy,ECO_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.918,OK
+ECO_AGR_Q017,Economy,ECO_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.918,OK
+ECO_AGR_Q021,Economy,ECO_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.918,OK
+ECO_AGR_Q023,Economy,ECO_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.918,OK
+ECO_AGR_Q024,Economy,ECO_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.918,OK
+ECO_AGR_Q025,Economy,ECO_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.918,OK
+ECO_BNK_Q002,Economy,ECO_BNK,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.886,OK
+ECO_BNK_Q004,Economy,ECO_BNK,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.886,OK
+ECO_BNK_Q006,Economy,ECO_BNK,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.886,OK
+ECO_BNK_Q007,Economy,ECO_BNK,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.886,OK
+ECO_BNK_Q008,Economy,ECO_BNK,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.886,OK
+ECO_BNK_Q013,Economy,ECO_BNK,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.886,OK
+ECO_BNK_Q016,Economy,ECO_BNK,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.886,OK
+ECO_BNK_Q018,Economy,ECO_BNK,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.886,OK
+ECO_BNK_Q020,Economy,ECO_BNK,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.886,OK
+ECO_BNK_Q023,Economy,ECO_BNK,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.886,OK
+ECO_BNK_Q024,Economy,ECO_BNK,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.886,OK
+ECO_BNK_Q026,Economy,ECO_BNK,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.886,OK
+ECO_BNK_Q031,Economy,ECO_BNK,KEEP_FACTUAL,"['a specialized entity established in 2021 to acquire stressed assets from banks', 'a regulatory body that monitors the Gross NPA Ratio of scheduled commercial banks', 'a type of payment bank authorized to handle deposits but not issue loans', 'a cooperative banking institution focused on rural credit under the Banking Laws Amendment Act, 2025']",0,0.886,FACTUAL_OK
+ECO_EXT_Q004,Economy,ECO_EXT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.845,OK
+ECO_EXT_Q005,Economy,ECO_EXT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.845,OK
+ECO_EXT_Q012,Economy,ECO_EXT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.845,OK
+ECO_EXT_Q015,Economy,ECO_EXT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.845,OK
+ECO_EXT_Q016,Economy,ECO_EXT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.845,OK
+ECO_EXT_Q017,Economy,ECO_EXT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.845,OK
+ECO_EXT_Q019,Economy,ECO_EXT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.845,OK
+ECO_EXT_Q023,Economy,ECO_EXT,KEEP_FACTUAL,"['the top source country for FDI inflows to India', 'the country with which India has the largest trade deficit', ""the largest contributor to India's forex reserves"", ""the top destination for India's outward FDI""]",0,0.845,FACTUAL_OK
+ECO_EXT_Q024,Economy,ECO_EXT,KEEP_FACTUAL,"['A trade-weighted average of nominal exchange rates of a currency against a basket of other currencies', 'A nominal exchange rate adjusted for inflation differentials with trading partners', ""The difference between a country's exports and imports of goods and services"", ""A measure of foreign direct investment flows into a country's capital account""]",1,0.845,FACTUAL_OK
+ECO_EXT_Q029,Economy,ECO_EXT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.845,OK
+ECO_EXT_Q031,Economy,ECO_EXT,KEEP_FACTUAL,"['Record unaccounted capital flows like FDI and FPI', 'Ensure that the sum of Current Account and Capital Account equals zero', 'Measure the difference between merchandise exports and imports', 'Account for changes in foreign exchange reserves of the country']",1,0.845,FACTUAL_OK
+ECO_EXT_Q032,Economy,ECO_EXT,KEEP_FACTUAL,"['Managed by the Government of India under FEMA, 1999 with objectives of maximizing returns and supporting fiscal policy', 'Managed by the Reserve Bank of India under the RBI Act, 1934 with objectives of liquidity and safety', 'Managed jointly by RBI and Ministry of Finance under the Foreign Exchange Regulation Act, 1973 with objectives of stability and growth', 'Managed by the Reserve Bank of India under the Banking Regulation Act, 1949 with objectives of profitability and currency intervention']",1,0.845,FACTUAL_OK
+ECO_FIN_Q004,Economy,ECO_FIN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.945,OK
+ECO_FIN_Q005,Economy,ECO_FIN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.945,OK
+ECO_FIN_Q006,Economy,ECO_FIN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.945,OK
+ECO_FIN_Q010,Economy,ECO_FIN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.945,OK
+ECO_FIN_Q012,Economy,ECO_FIN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.945,OK
+ECO_FIN_Q016,Economy,ECO_FIN,KEEP_FACTUAL,"[""A mechanism for applying in IPOs where funds remain blocked in the applicant's bank account until allotment"", 'A system for secondary market trading introduced by SEBI in 2008', 'A facility for mutual fund investments where units are automatically redeemed', 'A platform for foreign exchange trading between banks and financial institutions']",0,0.945,FACTUAL_OK
+ECO_FIN_Q018,Economy,ECO_FIN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.945,OK
+ECO_FIN_Q019,Economy,ECO_FIN,KEEP_FACTUAL,"['Money market deals with short-term debt instruments (up to one year), while capital market deals with long-term instruments like equity shares and bonds.', 'Money market deals with long-term equity instruments, while capital market deals with short-term debt instruments.', 'Money market facilitates long-term financing through bonds, while capital market handles short-term borrowing between banks.', 'Money market involves trading of existing securities, while capital market involves issuance of new securities only.']",0,0.945,FACTUAL_OK
+ECO_FP_Q006,Economy,ECO_FP,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.916,OK
+ECO_FP_Q007,Economy,ECO_FP,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.916,OK
+ECO_FP_Q013,Economy,ECO_FP,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.916,OK
+ECO_FP_Q018,Economy,ECO_FP,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.916,OK
+ECO_FP_Q019,Economy,ECO_FP,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.916,OK
+ECO_FP_Q024,Economy,ECO_FP,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.916,OK
+ECO_FP_Q025,Economy,ECO_FP,KEEP_FACTUAL,"['A classification of government spending that was abolished after 2017-18 and replaced by scheme-wise classification', 'A type of expenditure that includes only capital outlays for infrastructure projects', 'The portion of government spending that is financed through borrowings and market loans', 'A budgetary classification that distinguishes between developmental and non-developmental spending']",0,0.916,FACTUAL_OK
+ECO_FP_Q026,Economy,ECO_FP,KEEP_FACTUAL,"['A cess introduced in the Union Budget 2021-22 to fund agricultural infrastructure development', 'A surcharge levied on agricultural income to support rural development schemes', 'A cess introduced in 2016 to finance the Krishi Kalyan Abhiyan', 'A component of GST compensation cess for states to improve farm infrastructure']",0,0.916,FACTUAL_OK
+ECO_FP_Q027,Economy,ECO_FP,KEEP_FACTUAL,"['A tax on coal production to fund renewable energy projects', 'A surcharge on corporate income tax for environmental protection', 'A component of GST compensation cess for states', 'A cess on petroleum products to reduce carbon emissions']",0,0.916,FACTUAL_OK
+ECO_IND2_Q003,Economy,ECO_IND2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.916,OK
+ECO_IND2_Q004,Economy,ECO_IND2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.916,OK
+ECO_IND2_Q005,Economy,ECO_IND2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.916,OK
+ECO_IND2_Q014,Economy,ECO_IND2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.916,OK
+ECO_IND2_Q018,Economy,ECO_IND2,KEEP_FACTUAL,"['A report published by the World Bank that primarily uses survey data to measure global inequality', 'A report published by the World Inequality Lab that combines tax data, national accounts, and survey data', 'An IMF publication focusing on income distribution using only national accounts data', 'A UN report that measures inequality through household consumption surveys']",1,0.916,FACTUAL_OK
+ECO_IND_Q004,Economy,ECO_IND,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.916,OK
+ECO_IND_Q009,Economy,ECO_IND,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.916,OK
+ECO_IND_Q010,Economy,ECO_IND,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.916,OK
+ECO_IND_Q011,Economy,ECO_IND,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.916,OK
+ECO_IND_Q013,Economy,ECO_IND,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.916,OK
+ECO_IND_Q014,Economy,ECO_IND,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.916,OK
+ECO_IND_Q015,Economy,ECO_IND,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.916,OK
+ECO_INF_Q005,Economy,ECO_INF,REEVAL_CLAUDE,"['Only one', 'Only two', 'All three', 'None']",1,0.893,OK
+ECO_INF_Q011,Economy,ECO_INF,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.893,OK
+ECO_INF_Q018,Economy,ECO_INF,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.893,OK
+ECO_INF_Q022,Economy,ECO_INF,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.893,OK
+ECO_INF_Q025,Economy,ECO_INF,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.893,OK
+ECO_INF_Q027,Economy,ECO_INF,KEEP_FACTUAL,"[""The Federal Reserve's preferred inflation measure in the United States"", 'The primary inflation indicator used by the European Central Bank', 'A measure of wholesale price inflation in India', 'An index tracking agricultural commodity prices globally']",0,0.893,FACTUAL_OK
+ECO_INF_Q028,Economy,ECO_INF,KEEP_FACTUAL,"['A committee that recommended fiscal consolidation targets for states', 'A committee that recommended adopting inflation targeting in India', 'A committee that recommended reforms in the banking sector', 'A committee that recommended changes to the Consumer Price Index base year']",1,0.893,FACTUAL_OK
+ECO_MP_Q011,Economy,ECO_MP,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.901,OK
+ECO_MP_Q016,Economy,ECO_MP,KEEP_FACTUAL,"['A monetary policy tool where the central bank simultaneously purchases long-term government securities and sells short-term ones', 'A liquidity adjustment facility where the RBI lends to banks against government securities at a fixed rate', 'A statutory requirement for banks to maintain a portion of their deposits as liquid assets with the RBI', 'A foreign exchange intervention mechanism involving simultaneous buy and sell of USD-INR swaps']",0,0.901,FACTUAL_OK
+ECO_MP_Q017,Economy,ECO_MP,KEEP_FACTUAL,"['A mechanism where RBI conducts open market operations exclusively in central government securities to manage yields', 'A process where RBI buys or sells State Development Loans through auctions to influence state government bond yields', 'A uniform price auction system used by RBI for all government bond transactions without competitive bidding', 'A liquidity adjustment facility where RBI provides overnight funds to banks against state government securities']",1,0.901,FACTUAL_OK
+ECO_MP_Q019,Economy,ECO_MP,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.901,OK
+ECO_MP_Q024,Economy,ECO_MP,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.901,OK
+ECO_MP_Q026,Economy,ECO_MP,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.901,OK
+ECO_NIA_Q002,Economy,ECO_NIA,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.88,OK
+ECO_NIA_Q003,Economy,ECO_NIA,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.88,OK
+ECO_NIA_Q007,Economy,ECO_NIA,KEEP_FACTUAL,"['Real GDP divided by population, used for standard of living comparisons', 'Nominal GDP divided by population, used for standard of living comparisons', 'Real GDP divided by area of the country, used for density comparisons', 'Nominal GDP adjusted for inflation and divided by working-age population']",0,0.88,FACTUAL_OK
+ECO_NIA_Q008,Economy,ECO_NIA,KEEP_FACTUAL,"[""The base year for India's GDP and IIP calculations"", ""The base year for India's Consumer Price Index (CPI)"", 'The previous base year for GDP before the latest revision', 'The year when India switched to GDP at factor cost methodology']",0,0.88,FACTUAL_OK
+ECO_NIA_Q010,Economy,ECO_NIA,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.88,OK
+ECO_NIA_Q011,Economy,ECO_NIA,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.88,OK
+ECO_NIA_Q013,Economy,ECO_NIA,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.88,OK
+ECO_NIA_Q018,Economy,ECO_NIA,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.88,OK
+ECO_NIA_Q020,Economy,ECO_NIA,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.88,OK
+ECO_NIA_Q022,Economy,ECO_NIA,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.88,OK
+ECO_NIA_Q023,Economy,ECO_NIA,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.88,OK
+ECO_NIA_Q024,Economy,ECO_NIA,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.88,OK
+ECO_NIA_Q031,Economy,ECO_NIA,KEEP_FACTUAL,"['GDP equals GNP minus net factor income from abroad (NFIA)', 'GDP equals GNP plus net indirect taxes', 'GNP equals GDP plus net factor income from abroad (NFIA)', 'GNP equals GDP minus net factor income from abroad (NFIA)']",2,0.88,FACTUAL_OK
+ECO_PLN_Q002,Economy,ECO_PLN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.918,OK
+ECO_PLN_Q006,Economy,ECO_PLN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.918,OK
+ECO_PLN_Q008,Economy,ECO_PLN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.918,OK
+ECO_PLN_Q010,Economy,ECO_PLN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.918,OK
+ECO_PLN_Q012,Economy,ECO_PLN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.918,OK
+ECO_PLN_Q013,Economy,ECO_PLN,KEEP_FACTUAL,"['A free trade agreement between India and the European Free Trade Association countries signed in March 2024, with provisions for investment commitments and tariff reductions', 'A bilateral investment treaty between India and Switzerland focusing on technology transfer and intellectual property rights', 'A regional trade bloc comprising India, Norway, Iceland, and Liechtenstein to promote sustainable development goals', 'A multilateral agreement under the World Trade Organization framework to reduce agricultural subsidies and market access barriers']",0,0.918,FACTUAL_OK
+ECO_PLN_Q014,Economy,ECO_PLN,KEEP_FACTUAL,"['A central sector scheme for rooftop solarization with an outlay of ₹75,021 crore', 'A state sector scheme for rural electrification with an outlay of ₹50,000 crore', 'A centrally sponsored scheme for urban housing with free electricity up to 200 units', 'A policy think tank initiative for renewable energy research and development']",0,0.918,FACTUAL_OK
+ECO_PLN_Q015,Economy,ECO_PLN,KEEP_FACTUAL,"['A digital infrastructure platform developed by NITI Aayog for poverty alleviation programs', 'A set of open APIs and digital public goods including Aadhaar, UPI, and DigiLocker', 'A cooperative federalism initiative for sharing state-level development data', 'A cybersecurity framework for protecting critical digital infrastructure in India']",1,0.918,FACTUAL_OK
+ECO_PLN_Q016,Economy,ECO_PLN,KEEP_FACTUAL,"['A comprehensive plan by NITI Aayog for India to become a developed nation by 2047', 'A poverty alleviation strategy by the Planning Commission targeting 2047', 'An urban housing scheme under Ministry of Housing and Urban Affairs', 'A rural health mission focusing on backward districts by 2047']",0,0.918,FACTUAL_OK
+ECO_PLN_Q017,Economy,ECO_PLN,KEEP_FACTUAL,"['A crop insurance scheme launched in 2016 to provide financial support to farmers against crop losses', 'A rural housing scheme launched in 2015 under the Ministry of Rural Development', 'A poverty alleviation program that uses the Rangarajan Committee poverty line for targeting beneficiaries', 'An urban health mission launched in 2013 focusing on healthcare in metropolitan areas']",0,0.918,FACTUAL_OK
+ECO_PLN_Q018,Economy,ECO_PLN,KEEP_FACTUAL,"['A programme launched in 2023 by NITI Aayog to improve governance and development outcomes in backward blocks through delta rankings', 'A scheme launched in 2018 by the Planning Commission to provide financial grants to backward blocks', 'A rural housing programme launched in 2023 under the Ministry of Rural Development', 'An urban health mission launched in 2023 to improve healthcare in urban blocks']",0,0.918,FACTUAL_OK
+ECO_PLN_Q019,Economy,ECO_PLN,KEEP_FACTUAL,"['A scheme for urban housing under the Ministry of Housing and Urban Affairs', 'A poverty line calculation methodology proposed by the Rangarajan Committee', 'A tribal welfare scheme for Particularly Vulnerable Tribal Groups under the Ministry of Tribal Affairs', 'A health mission focusing on rural areas under the National Rural Health Mission']",2,0.918,FACTUAL_OK
+ECO_PLN_Q020,Economy,ECO_PLN,KEEP_FACTUAL,"['A Central Sector Scheme for traditional artisans and craftspeople with ₹13,000 crore outlay', 'A State Sector Scheme for urban artisans under Ministry of Rural Development', 'A Centrally Sponsored Scheme for industrial workers with ₹20,000 crore outlay', 'A policy think tank replacing the Planning Commission for economic transformation']",0,0.918,FACTUAL_OK
+ECO_PLN_Q022,Economy,ECO_PLN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.918,OK
+ECO_PLN_Q023,Economy,ECO_PLN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.918,OK
+ECO_PLN_Q025,Economy,ECO_PLN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.918,OK
+ECO_PLN_Q026,Economy,ECO_PLN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.918,OK
+ECO_PLN_Q027,Economy,ECO_PLN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.918,OK
+ECO_SRV_Q003,Economy,ECO_SRV,KEEP_FACTUAL,"['A digital platform providing real-time container tracking across Indian ports through a single window', 'A government scheme offering viability gap funding for logistics infrastructure projects', ""An index measuring India's logistics performance compared to other countries"", 'A national investment pipeline for developing multi-modal logistics hubs']",0,0.883,FACTUAL_OK
+ECO_SRV_Q004,Economy,ECO_SRV,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.883,OK
+ECO_SRV_Q005,Economy,ECO_SRV,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.883,OK
+ECO_SRV_Q006,Economy,ECO_SRV,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.883,OK
+ECO_SRV_Q007,Economy,ECO_SRV,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.883,OK
+ECO_SRV_Q009,Economy,ECO_SRV,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.883,OK
+ECO_SRV_Q012,Economy,ECO_SRV,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.883,OK
+ECO_SRV_Q014,Economy,ECO_SRV,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.883,OK
+ENV_BIO_Q002,Environment,ENV_BIO,KEEP_FACTUAL,"['A scheme for mangrove restoration and shoreline habitat conservation', 'An international treaty on biodiversity hotspots signed by India', 'A program for genetic diversity conservation of endemic species in Western Ghats', 'An initiative by IPCC for climate change adaptation in coastal regions']",0,0.904,FACTUAL_OK
+ENV_BIO_Q004,Environment,ENV_BIO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.904,OK
+ENV_BIO_Q009,Environment,ENV_BIO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.904,OK
+ENV_BIO_Q010,Environment,ENV_BIO,KEEP_FACTUAL,"[""India's first Dark Sky Reserve designated by the International Dark-Sky Association"", ""India's first Dark Sky Park designated by the IUCN"", ""India's first biodiversity hotspot designated as a Dark Sky Reserve"", ""India's first tiger reserve recognized as a UNESCO World Heritage Site""]",0,0.904,FACTUAL_OK
+ENV_BIO_Q013,Environment,ENV_BIO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.904,OK
+ENV_BIO_Q014,Environment,ENV_BIO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.904,OK
+ENV_BIO_Q015,Environment,ENV_BIO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.904,OK
+ENV_BIO_Q016,Environment,ENV_BIO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.904,OK
+ENV_BIO_Q017,Environment,ENV_BIO,KEEP_FACTUAL,"['A group of countries with high species diversity that cooperate on biodiversity conservation, formed in 2002', 'A UN initiative launched at the 1992 Earth Summit to protect biodiversity hotspots', 'An international treaty adopted in 2010 at the Nagoya Protocol meeting', 'A coalition of developing countries focused on climate change adaptation under the IPCC']",0,0.904,FACTUAL_OK
+ENV_BIO_Q018,Environment,ENV_BIO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.904,OK
+ENV_BIO_Q019,Environment,ENV_BIO,KEEP_FACTUAL,"['An area with at least 1500 endemic vascular plant species and having lost at least 70% of its original primary vegetation', 'An area with at least 1000 endemic vascular plant species and having lost at least 50% of its original primary vegetation', 'An area with at least 2000 endemic vascular plant species and having lost at least 75% of its original primary vegetation', 'An area with high overall species diversity and significant cultural heritage value']",0,0.904,FACTUAL_OK
+ENV_BIO_Q021,Environment,ENV_BIO,KEEP_FACTUAL,"['A mechanism to reduce emissions from deforestation and forest degradation, while promoting conservation and sustainable forest management', 'A program focused exclusively on afforestation and reforestation activities in developing countries', 'An initiative to protect biodiversity hotspots through the establishment of protected areas', 'A scheme to provide carbon credits for industrial emission reductions in developed nations']",0,0.904,FACTUAL_OK
+ENV_CC_Q001,Environment,ENV_CC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.91,OK
+ENV_CC_Q002,Environment,ENV_CC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.91,OK
+ENV_CC_Q004,Environment,ENV_CC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.91,OK
+ENV_CC_Q005,Environment,ENV_CC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.91,OK
+ENV_CC_Q007,Environment,ENV_CC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.91,OK
+ENV_CC_Q010,Environment,ENV_CC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.91,OK
+ENV_CC_Q011,Environment,ENV_CC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.91,OK
+ENV_CC_Q012,Environment,ENV_CC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.91,OK
+ENV_CC_Q013,Environment,ENV_CC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.91,OK
+ENV_CC_Q014,Environment,ENV_CC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.91,OK
+ENV_CC_Q015,Environment,ENV_CC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.91,OK
+ENV_CC_Q017,Environment,ENV_CC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.91,OK
+ENV_CC_Q018,Environment,ENV_CC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.91,OK
+ENV_CC_Q021,Environment,ENV_CC,KEEP_FACTUAL,"['A fund established under the Kyoto Protocol to help developed countries reduce emissions', 'A financial mechanism to assist vulnerable developing countries in recovering from climate-induced disasters', 'A World Bank initiative to finance carbon capture and storage projects globally', 'A UNEP-administered fund for biodiversity conservation in climate-vulnerable regions']",1,0.91,FACTUAL_OK
+ENV_CC_Q026,Environment,ENV_CC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.91,OK
+ENV_CON_Q002,Environment,ENV_CON,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.909,OK
+ENV_CON_Q005,Environment,ENV_CON,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.909,OK
+ENV_CON_Q006,Environment,ENV_CON,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.909,OK
+ENV_CON_Q007,Environment,ENV_CON,KEEP_FACTUAL,"['a statutory body under the Wildlife Protection Act that enforces conservation laws', 'an advisory body that recommends policies for Protected Area management to the government', 'a planning committee formed by NGT to address coastal erosion in Sundarbans', 'a technical committee that implements the National Wildlife Action Plan (2017-2031)']",1,0.909,FACTUAL_OK
+ENV_CON_Q009,Environment,ENV_CON,KEEP_FACTUAL,"['International Union for Conservation of Nature', 'Convention on International Trade in Endangered Species', 'United Nations Environment Programme', 'World Wildlife Fund']",0,0.909,FACTUAL_OK
+ENV_CON_Q010,Environment,ENV_CON,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.909,OK
+ENV_CON_Q011,Environment,ENV_CON,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.909,OK
+ENV_CON_Q013,Environment,ENV_CON,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.909,OK
+ENV_CON_Q015,Environment,ENV_CON,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.909,OK
+ENV_CON_Q021,Environment,ENV_CON,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.909,OK
+ENV_CON_Q022,Environment,ENV_CON,KEEP_FACTUAL,"['A wetland designated as a Ramsar site in August 2024', 'A Biosphere Reserve recognized by UNESCO', 'A National Park with core and buffer zones', 'A Tiger Reserve under Project Tiger']",0,0.909,FACTUAL_OK
+ENV_CON_Q025,Environment,ENV_CON,KEEP_FACTUAL,"['A legally protected area under the Wildlife Protection Act, 1972 with strict no-take zones', ""An internationally recognized area under UNESCO's Man and the Biosphere Programme with core, buffer, and transition zones"", 'A wetland designated under the Ramsar Convention for waterfowl habitat conservation', 'A protected area specifically for tiger conservation with core and buffer zones as per NTCA guidelines']",1,0.909,FACTUAL_OK
+ENV_CON_Q026,Environment,ENV_CON,KEEP_FACTUAL,"['A species that has no known living individuals in its natural habitat but may exist in captivity or cultivation.', 'A species that has completely disappeared from all habitats worldwide, with no surviving individuals anywhere.', 'A species that is facing an extremely high risk of extinction in the wild in the immediate future.', 'A species that is likely to become endangered in the near future unless conservation measures are implemented.']",0,0.909,FACTUAL_OK
+ENV_CON_Q030,Environment,ENV_CON,KEEP_FACTUAL,"['It provides the highest protection for animal species, including tigers and elephants.', 'It lists plant species that are protected under the Act.', 'It includes species listed under the Convention on International Trade in Endangered Species (CITES).', 'It covers species that were previously in Schedules III and IV of the unamended Act.']",2,0.909,FACTUAL_OK
+ENV_ECO_Q001,Environment,ENV_ECO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.909,OK
+ENV_ECO_Q002,Environment,ENV_ECO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.909,OK
+ENV_ECO_Q003,Environment,ENV_ECO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.909,OK
+ENV_ECO_Q004,Environment,ENV_ECO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.909,OK
+ENV_ECO_Q005,Environment,ENV_ECO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.909,OK
+ENV_ECO_Q007,Environment,ENV_ECO,KEEP_FACTUAL,"['A new species of shieldtail snake discovered in the Western Ghats', 'A high-altitude springtail species found in the Eastern Himalayas', 'A marine species identified in the Andaman Sea biodiversity hotspot', 'A freshwater fish species endemic to the Sundarbans mangrove ecosystem']",0,0.909,FACTUAL_OK
+ENV_ECO_Q008,Environment,ENV_ECO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.909,OK
+ENV_ECO_Q009,Environment,ENV_ECO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.909,OK
+ENV_ECO_Q012,Environment,ENV_ECO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.909,OK
+ENV_ECO_Q013,Environment,ENV_ECO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.909,OK
+ENV_ECO_Q014,Environment,ENV_ECO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.909,OK
+ENV_ECO_Q016,Environment,ENV_ECO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.909,OK
+ENV_ECO_Q020,Environment,ENV_ECO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.909,OK
+ENV_ECO_Q022,Environment,ENV_ECO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.909,OK
+ENV_ECO_Q027,Environment,ENV_ECO,KEEP_FACTUAL,"['Biotic components are living organisms that interact with each other, while abiotic components are non-living physical and chemical factors that influence the ecosystem.', 'Biotic components include sunlight and minerals, while abiotic components include producers and decomposers.', 'Biotic components determine the distribution of organisms, while abiotic components are limited to water and soil only.', 'Biotic components are always visible to the naked eye, while abiotic components are microscopic elements like pH and temperature.']",0,0.909,FACTUAL_OK
+ENV_INT_Q001,Environment,ENV_INT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.895,OK
+ENV_INT_Q005,Environment,ENV_INT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.895,OK
+ENV_INT_Q008,Environment,ENV_INT,KEEP_FACTUAL,"['The seventh assessment report of the Intergovernmental Panel on Climate Change (IPCC) currently in the scoping phase', 'The seventh Conference of Parties to the Paris Agreement held in 2024', 'A protocol under the Kyoto Convention dealing with carbon trading mechanisms', 'The seventh amendment to the Montreal Protocol addressing new ozone-depleting substances']",0,0.895,FACTUAL_OK
+ENV_INT_Q010,Environment,ENV_INT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.895,OK
+ENV_INT_Q011,Environment,ENV_INT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.895,OK
+ENV_INT_Q012,Environment,ENV_INT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.895,OK
+ENV_INT_Q014,Environment,ENV_INT,KEEP_FACTUAL,"['A fund established under the UNFCCC to assist developing countries in climate adaptation and mitigation', 'A fund operationalized by the Global Environment Facility to support implementation of the Kunming-Montreal Global Biodiversity Framework', 'A mechanism under the Kyoto Protocol for clean development projects in developing countries', 'A fund created under the Paris Agreement specifically for loss and damage in vulnerable countries']",1,0.895,FACTUAL_OK
+ENV_INT_Q020,Environment,ENV_INT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.895,OK
+ENV_INT_Q023,Environment,ENV_INT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.895,OK
+ENV_INT_Q024,Environment,ENV_INT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.895,OK
+ENV_INT_Q026,Environment,ENV_INT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.895,OK
+ENV_LAW_Q003,Environment,ENV_LAW,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.86,OK
+ENV_LAW_Q005,Environment,ENV_LAW,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.86,OK
+ENV_LAW_Q007,Environment,ENV_LAW,KEEP_FACTUAL,"['a portal for digital submission of environmental clearances under EIA rules', 'a mobile application for reporting wildlife crimes under WPA 1972', 'a database of forest land diversion approvals under FCA 1980', 'a platform for biodiversity documentation under Biological Diversity Act 2002']",0,0.86,FACTUAL_OK
+ENV_LAW_Q008,Environment,ENV_LAW,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.86,OK
+ENV_LAW_Q009,Environment,ENV_LAW,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.86,OK
+ENV_LAW_Q011,Environment,ENV_LAW,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.86,OK
+ENV_LAW_Q012,Environment,ENV_LAW,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.86,OK
+ENV_LAW_Q013,Environment,ENV_LAW,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.86,OK
+ENV_LAW_Q014,Environment,ENV_LAW,KEEP_FACTUAL,"['A climate finance target agreed at COP29 aiming for at least $300 billion annually', 'A biodiversity conservation framework under the Biological Diversity Act 2002', 'A carbon trading mechanism operationalized under Article 6.4 of the Paris Agreement', ""A national target for protected area expansion under India's National Biodiversity Action Plan""]",0,0.86,FACTUAL_OK
+ENV_LAW_Q015,Environment,ENV_LAW,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.86,OK
+ENV_LAW_Q016,Environment,ENV_LAW,KEEP_FACTUAL,"[""India's 58th Tiger Reserve, notified by the Madhya Pradesh government"", ""India's 58th Tiger Reserve, notified directly by the National Tiger Conservation Authority"", ""India's 57th Tiger Reserve, notified by the Central Government"", ""India's 58th Tiger Reserve, notified by the Central Government on NTCA's recommendation""]",0,0.86,FACTUAL_OK
+ENV_LAW_Q022,Environment,ENV_LAW,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.86,OK
+ENV_LAW_Q026,Environment,ENV_LAW,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.86,OK
+ENV_LAW_Q028,Environment,ENV_LAW,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.86,OK
+ENV_POL_Q002,Environment,ENV_POL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.885,OK
+ENV_POL_Q003,Environment,ENV_POL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.885,OK
+ENV_POL_Q004,Environment,ENV_POL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.885,OK
+ENV_POL_Q006,Environment,ENV_POL,KEEP_FACTUAL,"['A system providing air quality forecasts for all major Indian cities', 'A national emergency response plan for air pollution in Delhi-NCR', 'A system providing air quality forecasts for Delhi, Mumbai, Pune, and Ahmedabad', 'A research program studying indoor air pollution in urban areas']",2,0.885,FACTUAL_OK
+ENV_POL_Q007,Environment,ENV_POL,KEEP_FACTUAL,"['Standards notified under the Air (Prevention and Control of Pollution) Act, 1981', 'Standards notified under the Environment (Protection) Act, 1986', 'A long-term national programme to reduce particulate matter pollution', 'An emergency action plan for Delhi-NCR during poor air quality periods']",1,0.885,FACTUAL_OK
+ENV_POL_Q012,Environment,ENV_POL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.885,OK
+ENV_POL_Q013,Environment,ENV_POL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.885,OK
+ENV_POL_Q015,Environment,ENV_POL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.885,OK
+ENV_POL_Q016,Environment,ENV_POL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.885,OK
+ENV_POL_Q017,Environment,ENV_POL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.885,OK
+ENV_POL_Q022,Environment,ENV_POL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.885,OK
+ENV_POL_Q024,Environment,ENV_POL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.885,OK
+ENV_POL_Q026,Environment,ENV_POL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.885,OK
+ENV_REN_Q001,Environment,ENV_REN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.885,OK
+ENV_REN_Q002,Environment,ENV_REN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.885,OK
+ENV_REN_Q003,Environment,ENV_REN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.885,OK
+ENV_REN_Q004,Environment,ENV_REN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.885,OK
+ENV_REN_Q006,Environment,ENV_REN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.885,OK
+ENV_REN_Q007,Environment,ENV_REN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.885,OK
+ENV_REN_Q012,Environment,ENV_REN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.885,OK
+ENV_REN_Q015,Environment,ENV_REN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.885,OK
+ENV_REN_Q016,Environment,ENV_REN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.885,OK
+ENV_REN_Q017,Environment,ENV_REN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.885,OK
+ENV_REN_Q019,Environment,ENV_REN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.885,OK
+ENV_REN_Q022,Environment,ENV_REN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.885,OK
+ENV_REN_Q023,Environment,ENV_REN,KEEP_FACTUAL,"['A solar park in Rajasthan with capacity exceeding 2 GW', 'A solar park in Gujarat with capacity of 1 GW', 'A solar park in Karnataka with capacity of 3 GW', 'A solar park in Tamil Nadu with capacity of 500 MW']",0,0.885,FACTUAL_OK
+ENV_REN_Q024,Environment,ENV_REN,KEEP_FACTUAL,"['A global initiative for scaling solar applications in the industrial sector', 'An agricultural solar initiative of the International Solar Alliance (ISA)', 'A program under National Solar Mission for residential rooftop solar', 'A joint initiative of ISA and IRENA for green hydrogen production']",1,0.885,FACTUAL_OK
+ENV_REN_Q025,Environment,ENV_REN,KEEP_FACTUAL,"['An initiative launched by India and France at COP21 in Paris with headquarters in Gurugram, India', 'A global agency for all renewable energy sources headquartered in Abu Dhabi with 168 member countries', 'A UN-backed solar energy program focused exclusively on African countries', 'An Indian government scheme to promote rooftop solar installations in urban areas']",0,0.885,FACTUAL_OK
+ENV_RPT_Q008,Environment,ENV_RPT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.848,OK
+ENV_RPT_Q011,Environment,ENV_RPT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.848,OK
+ENV_RPT_Q012,Environment,ENV_RPT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.848,OK
+ENV_RPT_Q013,Environment,ENV_RPT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.848,OK
+ENV_RPT_Q014,Environment,ENV_RPT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.848,OK
+ENV_RPT_Q015,Environment,ENV_RPT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.848,OK
+ENV_RPT_Q017,Environment,ENV_RPT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.848,OK
+ENV_RPT_Q018,Environment,ENV_RPT,KEEP_FACTUAL,"[""An annual report on India's forest cover published by the Ministry of Environment, Forest and Climate Change"", ""A biennial report on India's forest cover published by the Forest Survey of India"", 'A global assessment of forest resources published by the United Nations Environment Programme', 'A quarterly report on mangrove cover changes published by the National Green Tribunal']",1,0.848,FACTUAL_OK
+ENV_RPT_Q022,Environment,ENV_RPT,KEEP_FACTUAL,"['An index published by UNEP that assesses climate change policies of countries', 'A report by IPCC that introduces new metrics for greenhouse gas emissions tracking', 'An assessment by Yale and Columbia Universities that introduced new biodiversity metrics', 'A ranking by World Bank focusing on sustainable agriculture and waste management indicators']",2,0.848,FACTUAL_OK
+ENV_RPT_Q023,Environment,ENV_RPT,KEEP_FACTUAL,"['A global inventory maintained by the International Union for Conservation of Nature that assesses extinction risk of species using categories like Critically Endangered and Vulnerable', 'An annual report published by the United Nations Environment Programme tracking population trends of vertebrate species worldwide', 'A database managed by the Convention on International Trade in Endangered Species focusing on species threatened by wildlife trade', 'A national assessment initiative launched by India to evaluate conservation status of its flora and fauna from 2025 to 2030']",0,0.848,FACTUAL_OK
+ENV_RPT_Q024,Environment,ENV_RPT,KEEP_FACTUAL,"['A global index that tracks population trends of vertebrate species over time, published by WWF and ZSL', 'An annual assessment of extinction risk for all plant and animal species worldwide, maintained by IUCN', 'A comprehensive environmental performance ranking of countries based on air quality and emissions data', ""A national-level forest monitoring system that reports on India's forest cover and tree density""]",0,0.848,FACTUAL_OK
+ENV_RPT_Q027,Environment,ENV_RPT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.848,OK
+ENV_RPT_Q029,Environment,ENV_RPT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.848,OK
+ENV_RPT_Q032,Environment,ENV_RPT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.848,OK
+ENV_SDG_Q002,Environment,ENV_SDG,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.882,OK
+ENV_SDG_Q005,Environment,ENV_SDG,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.882,OK
+ENV_SDG_Q006,Environment,ENV_SDG,KEEP_FACTUAL,"['A scheme launched in 2023 to certify hydrogen produced from fossil fuels with carbon capture', 'An initiative launched in April 2025 to certify hydrogen produced from renewable sources', 'A program under the National Solar Mission to promote hydrogen-based vehicles', 'A 2024 scheme to certify carbon credits generated from hydrogen production projects']",1,0.882,FACTUAL_OK
+ENV_SDG_Q008,Environment,ENV_SDG,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.882,OK
+ENV_SDG_Q011,Environment,ENV_SDG,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.882,OK
+ENV_SDG_Q012,Environment,ENV_SDG,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.882,OK
+ENV_SDG_Q014,Environment,ENV_SDG,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.882,OK
+ENV_SDG_Q016,Environment,ENV_SDG,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.882,OK
+ENV_SPEC_Q002,Environment,ENV_SPEC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.909,OK
+ENV_SPEC_Q003,Environment,ENV_SPEC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.909,OK
+ENV_SPEC_Q004,Environment,ENV_SPEC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.909,OK
+ENV_SPEC_Q005,Environment,ENV_SPEC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.909,OK
+ENV_SPEC_Q007,Environment,ENV_SPEC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.909,OK
+ENV_SPEC_Q009,Environment,ENV_SPEC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.909,OK
+ENV_SPEC_Q011,Environment,ENV_SPEC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.909,OK
+ENV_SPEC_Q014,Environment,ENV_SPEC,KEEP_FACTUAL,"[""India's first Dark Sky Reserve designated by IUCN"", 'A Ramsar site under the Wetlands Convention', 'A UNESCO World Heritage Site for cultural heritage', 'A biosphere reserve with three distinct zones']",0,0.909,FACTUAL_OK
+ENV_SPEC_Q019,Environment,ENV_SPEC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.909,OK
+ENV_SPEC_Q020,Environment,ENV_SPEC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.909,OK
+ENV_SPEC_Q023,Environment,ENV_SPEC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.909,OK
+ENV_SPEC_Q024,Environment,ENV_SPEC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.909,OK
+GEO_AGR_Q003,Geography,GEO_AGR,KEEP_FACTUAL,"['A wetland in Gujarat recently designated as a Ramsar site', 'A rubber cultivation region in Kerala', 'A mixed farming initiative in Punjab', 'A rice-wheat cropping system in Uttar Pradesh']",0,0.84,FACTUAL_OK
+GEO_AGR_Q004,Geography,GEO_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.84,OK
+GEO_AGR_Q005,Geography,GEO_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.84,OK
+GEO_AGR_Q006,Geography,GEO_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.84,OK
+GEO_AGR_Q007,Geography,GEO_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.84,OK
+GEO_AGR_Q008,Geography,GEO_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.84,OK
+GEO_AGR_Q009,Geography,GEO_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.84,OK
+GEO_AGR_Q013,Geography,GEO_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.84,OK
+GEO_AGR_Q014,Geography,GEO_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.84,OK
+GEO_AGR_Q015,Geography,GEO_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.84,OK
+GEO_CLM_Q002,Geography,GEO_CLM,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.843,OK
+GEO_CLM_Q003,Geography,GEO_CLM,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.843,OK
+GEO_CLM_Q004,Geography,GEO_CLM,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.843,OK
+GEO_CLM_Q005,Geography,GEO_CLM,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.843,OK
+GEO_CLM_Q007,Geography,GEO_CLM,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.843,OK
+GEO_CLM_Q008,Geography,GEO_CLM,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.843,OK
+GEO_CLM_Q009,Geography,GEO_CLM,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.843,OK
+GEO_CLM_Q012,Geography,GEO_CLM,KEEP_FACTUAL,"['A system that classifies hurricanes based on their wind speed into five categories', 'A scale that measures storm surge height and flooding potential of cyclones', 'An index that categorizes tropical cyclones based on their atmospheric pressure', 'A framework that rates cyclones according to their rainfall intensity and duration']",0,0.843,FACTUAL_OK
+GEO_CLM_Q017,Geography,GEO_CLM,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.843,OK
+GEO_HUM_Q003,Geography,GEO_HUM,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.84,OK
+GEO_HUM_Q004,Geography,GEO_HUM,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.84,OK
+GEO_HUM_Q005,Geography,GEO_HUM,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.84,OK
+GEO_HUM_Q006,Geography,GEO_HUM,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.84,OK
+GEO_HUM_Q012,Geography,GEO_HUM,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.84,OK
+GEO_HUM_Q015,Geography,GEO_HUM,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.84,OK
+GEO_HUM_Q016,Geography,GEO_HUM,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.84,OK
+GEO_HUM_Q019,Geography,GEO_HUM,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.84,OK
+GEO_IND_Q004,Geography,GEO_IND,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.823,OK
+GEO_IND_Q005,Geography,GEO_IND,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.823,OK
+GEO_IND_Q007,Geography,GEO_IND,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.823,OK
+GEO_IND_Q008,Geography,GEO_IND,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.823,OK
+GEO_IND_Q009,Geography,GEO_IND,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.823,OK
+GEO_IND_Q013,Geography,GEO_IND,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.823,OK
+GEO_IND_Q014,Geography,GEO_IND,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.823,OK
+GEO_IND_Q015,Geography,GEO_IND,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.823,OK
+GEO_IND_Q016,Geography,GEO_IND,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",3,0.823,OK
+GEO_IND_Q024,Geography,GEO_IND,KEEP_FACTUAL,"['A young fold mountain system in the Himalayas', 'One of the oldest fold mountain systems in the world, located in the Peninsular Plateau', 'A volcanic mountain range in the Andaman and Nicobar Islands', 'A coral reef system in the Lakshadweep Islands']",1,0.823,FACTUAL_OK
+GEO_IND_Q025,Geography,GEO_IND,KEEP_FACTUAL,"[""India's only active volcano located in the Andaman and Nicobar Islands"", 'A dormant volcano in the Lakshadweep Islands', 'An extinct volcano in the Western Ghats', 'A coral island in the Bay of Bengal with volcanic activity']",0,0.823,FACTUAL_OK
+GEO_IND_Q027,Geography,GEO_IND,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.823,OK
+GEO_IND_Q029,Geography,GEO_IND,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.823,OK
+GEO_MIN_Q001,Geography,GEO_MIN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.84,OK
+GEO_MIN_Q003,Geography,GEO_MIN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.84,OK
+GEO_MIN_Q004,Geography,GEO_MIN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.84,OK
+GEO_MIN_Q007,Geography,GEO_MIN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.84,OK
+GEO_MIN_Q008,Geography,GEO_MIN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.84,OK
+GEO_MIN_Q009,Geography,GEO_MIN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.84,OK
+GEO_MIN_Q012,Geography,GEO_MIN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.84,OK
+GEO_MIN_Q014,Geography,GEO_MIN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.84,OK
+GEO_MIN_Q016,Geography,GEO_MIN,KEEP_FACTUAL,"[""India's oldest producing oil field located in the Assam-Arakan basin"", 'A coal mine in the Gondwana basin of central India', 'A uranium mining site in the Singhbhum basin', 'A natural gas field in the Krishna-Godavari basin']",0,0.84,FACTUAL_OK
+GEO_MIN_Q017,Geography,GEO_MIN,KEEP_FACTUAL,"['A public sector undertaking under the Ministry of Mines that processes ilmenite for titanium production', 'A private company that extracts and processes monazite for rare earth elements', 'A public sector undertaking under the Department of Atomic Energy that processes monazite for rare earths and thorium', 'A joint venture between NALCO and Hindustan Copper for processing critical minerals']",2,0.84,FACTUAL_OK
+GEO_MON_Q003,Geography,GEO_MON,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.852,OK
+GEO_MON_Q004,Geography,GEO_MON,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.852,OK
+GEO_MON_Q006,Geography,GEO_MON,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.852,OK
+GEO_MON_Q009,Geography,GEO_MON,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.852,OK
+GEO_MON_Q010,Geography,GEO_MON,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.852,OK
+GEO_MON_Q011,Geography,GEO_MON,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.852,OK
+GEO_MON_Q017,Geography,GEO_MON,KEEP_FACTUAL,"['A recognition under the Ramsar Convention for cities that conserve urban wetlands', 'A UNESCO program for protecting heritage cities with water bodies', 'An initiative by the Ministry of Environment to develop artificial wetlands in smart cities', 'A classification by the World Bank for cities implementing wetland-based climate adaptation projects']",0,0.852,FACTUAL_OK
+GEO_MON_Q019,Geography,GEO_MON,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.852,OK
+GEO_MON_Q020,Geography,GEO_MON,KEEP_FACTUAL,"['A severe cyclonic storm that made landfall in West Bengal and Bangladesh in 2024', 'The first cyclone of the 2024 Northeast Monsoon season affecting Tamil Nadu', 'A monsoon depression that originated in the Arabian Sea in summer 2024', 'A western disturbance that brought rainfall to northern India in winter 2024']",0,0.852,FACTUAL_OK
+GEO_MON_Q022,Geography,GEO_MON,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.852,OK
+GEO_MON_Q023,Geography,GEO_MON,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.852,OK
+GEO_MON_Q026,Geography,GEO_MON,KEEP_FACTUAL,"['A high-speed wind current over the Arabian Sea during peak monsoon months', 'A winter jet stream that brings Western Disturbances to northwest India', 'An ocean current in the Indian Ocean that influences El Niño patterns', 'A cloud band phenomenon that determines active and break phases of monsoon']",0,0.852,FACTUAL_OK
+GEO_MON_Q029,Geography,GEO_MON,KEEP_FACTUAL,"['The seasonal shift of the Inter-Tropical Convergence Zone northward, creating low pressure over India', 'The intense heating of the Tibetan Plateau during summer months', 'The differential heating between the Indian subcontinent and the surrounding oceans', 'The formation of the Tropical Easterly Jet Stream over the Indian peninsula']",2,0.852,FACTUAL_OK
+GEO_MON_Q030,Geography,GEO_MON,KEEP_FACTUAL,"['Tropical cyclones originating in the Bay of Bengal that bring summer rainfall to eastern India', 'Extra-tropical cyclones originating in the Mediterranean region that bring winter rainfall to northwest India', 'Weather systems associated with the southwest monsoon that cause rainfall in central India during June-September', 'Low-pressure systems formed over the Arabian Sea that bring pre-monsoon showers to western India']",1,0.852,FACTUAL_OK
+GEO_MON_Q031,Geography,GEO_MON,KEEP_FACTUAL,"['A periodic warming of sea surface temperatures in the central and eastern Pacific Ocean that affects global weather patterns', 'A seasonal reversal of wind patterns over the Indian Ocean that brings monsoon rains to India', 'A temperature gradient pattern in the Indian Ocean that influences rainfall distribution in the Indian subcontinent', 'A winter weather system originating from the Mediterranean that brings rainfall to northwest India']",0,0.852,FACTUAL_OK
+GEO_MORPH_Q001,Geography,GEO_MORPH,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.688,OK
+GEO_MORPH_Q003,Geography,GEO_MORPH,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.688,OK
+GEO_MORPH_Q005,Geography,GEO_MORPH,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.688,OK
+GEO_MORPH_Q006,Geography,GEO_MORPH,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.688,OK
+GEO_MORPH_Q008,Geography,GEO_MORPH,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.688,OK
+GEO_MORPH_Q009,Geography,GEO_MORPH,KEEP_FACTUAL,"['A region in Japan recently struck by a 7.5 magnitude earthquake', 'The epicenter of the 2024 earthquake in Japan', 'The focus point of seismic activity in the Pacific Ring of Fire', 'A volcanic island chain experiencing frequent eruptions']",0,0.688,FACTUAL_OK
+GEO_MORPH_Q010,Geography,GEO_MORPH,KEEP_FACTUAL,"['Primary waves that are the fastest seismic waves and travel through solids, liquids, and gases', 'Secondary waves that are slower than P-waves and travel only through solids, causing shear motion', ""Surface waves that travel along Earth's surface and cause the most damage during earthquakes"", 'Compressional waves that are the first to be detected by seismographs and move in a push-pull motion']",1,0.688,FACTUAL_OK
+GEO_OCN_Q003,Geography,GEO_OCN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.762,OK
+GEO_OCN_Q004,Geography,GEO_OCN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.762,OK
+GEO_OCN_Q005,Geography,GEO_OCN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.762,OK
+GEO_OCN_Q011,Geography,GEO_OCN,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.762,OK
+GEO_OCN_Q014,Geography,GEO_OCN,KEEP_FACTUAL,"[""A bay with the world's highest tidal range"", ""A bay with the world's largest coral reef system"", 'A bay known for its unique halocline phenomenon', 'A bay where warm and cold ocean currents converge']",0,0.762,FACTUAL_OK
+GEO_OCN_Q015,Geography,GEO_OCN,KEEP_FACTUAL,"[""A warm current flowing south along Australia's east coast"", ""A cold current flowing north along Australia's west coast"", ""A warm current flowing north along Australia's west coast"", ""A cold current flowing south along Australia's east coast""]",0,0.762,FACTUAL_OK
+GEO_PHY_Q001,Geography,GEO_PHY,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.83,OK
+GEO_PHY_Q003,Geography,GEO_PHY,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.83,OK
+GEO_PHY_Q005,Geography,GEO_PHY,KEEP_FACTUAL,"[""A lunar eclipse where Earth's shadow falls on the Moon"", 'An annular solar eclipse visible only in Asia', 'A solar eclipse where the Moon completely blocks the Sun along a narrow path', 'A partial solar eclipse visible only from the Southern Hemisphere']",2,0.83,FACTUAL_OK
+GEO_PHY_Q009,Geography,GEO_PHY,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.83,OK
+GEO_PHY_Q011,Geography,GEO_PHY,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.83,OK
+GEO_PHY_Q013,Geography,GEO_PHY,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.83,OK
+GEO_PHY_Q014,Geography,GEO_PHY,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.83,OK
+GEO_PHY_Q015,Geography,GEO_PHY,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.83,OK
+GEO_RIV_Q003,Geography,GEO_RIV,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.833,OK
+GEO_RIV_Q004,Geography,GEO_RIV,KEEP_FACTUAL,"['A newly designated Ramsar site in Uttar Pradesh', 'A wetland in Gujarat added to the Ramsar list in early 2026', 'The 100th Ramsar site of India designated in 2026', 'A bird sanctuary in Madhya Pradesh recognized under Ramsar Convention']",0,0.833,FACTUAL_OK
+GEO_RIV_Q005,Geography,GEO_RIV,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.833,OK
+GEO_RIV_Q008,Geography,GEO_RIV,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.833,OK
+GEO_RIV_Q014,Geography,GEO_RIV,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.833,OK
+GEO_RIV_Q015,Geography,GEO_RIV,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.833,OK
+GEO_RIV_Q019,Geography,GEO_RIV,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.833,OK
+GEO_RIV_Q022,Geography,GEO_RIV,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.833,OK
+GEO_RIV_Q025,Geography,GEO_RIV,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.833,OK
+GEO_RIV_Q027,Geography,GEO_RIV,KEEP_FACTUAL,"['The name of Brahmaputra River in Tibet', 'A tributary of Ganga River in Uttar Pradesh', 'The name of Yamuna River in Bangladesh', 'A west-flowing river in Peninsular India']",0,0.833,FACTUAL_OK
+GEO_SOIL_Q001,Geography,GEO_SOIL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.845,OK
+GEO_SOIL_Q002,Geography,GEO_SOIL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.845,OK
+GEO_SOIL_Q004,Geography,GEO_SOIL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.845,OK
+GEO_SOIL_Q006,Geography,GEO_SOIL,KEEP_FACTUAL,"['A scheme implemented by the Ministry of Environment, Forest and Climate Change to monitor soil pollution', 'A scheme implemented by the Ministry of Agriculture & Farmers Welfare to assess soil health parameters', 'A scheme implemented by the Ministry of Rural Development for watershed management', 'A scheme implemented by the Ministry of Earth Sciences for soil moisture monitoring']",1,0.845,FACTUAL_OK
+GEO_SOIL_Q007,Geography,GEO_SOIL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.845,OK
+GEO_SOIL_Q012,Geography,GEO_SOIL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.845,OK
+GEO_SOIL_Q013,Geography,GEO_SOIL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.845,OK
+GEO_SOIL_Q015,Geography,GEO_SOIL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.845,OK
+GEO_VEG_Q004,Geography,GEO_VEG,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.78,OK
+GEO_VEG_Q006,Geography,GEO_VEG,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.78,OK
+GEO_VEG_Q008,Geography,GEO_VEG,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.78,OK
+GEO_VEG_Q013,Geography,GEO_VEG,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.78,OK
+GEO_WLD_Q001,Geography,GEO_WLD,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.835,OK
+GEO_WLD_Q002,Geography,GEO_WLD,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.835,OK
+GEO_WLD_Q003,Geography,GEO_WLD,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.835,OK
+GEO_WLD_Q004,Geography,GEO_WLD,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.835,OK
+GEO_WLD_Q005,Geography,GEO_WLD,KEEP_FACTUAL,"['A UNESCO World Heritage Site spanning Tajikistan, Turkmenistan, and Uzbekistan', 'A proposed economic corridor connecting India, Middle East, and Europe', 'A transboundary river basin management initiative in Central Asia', 'A recently announced transportation network in the Caucasus region']",0,0.835,FACTUAL_OK
+GEO_WLD_Q008,Geography,GEO_WLD,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.835,OK
+GEO_WLD_Q009,Geography,GEO_WLD,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.835,OK
+GEO_WLD_Q011,Geography,GEO_WLD,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.835,OK
+GEO_WLD_Q012,Geography,GEO_WLD,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.835,OK
+GEO_WLD_Q014,Geography,GEO_WLD,KEEP_FACTUAL,"['Asia', 'Africa', 'Antarctica', 'South America']",2,0.835,FACTUAL_OK
+GEO_WLD_Q015,Geography,GEO_WLD,KEEP_FACTUAL,"['Australia with approximately 7.7 million sq km', 'Europe with approximately 10.2 million sq km', 'South America with approximately 17.8 million sq km', 'Antarctica with approximately 14.2 million sq km']",0,0.835,FACTUAL_OK
+HIS_ANC1_Q001,History,HIS_ANC1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.715,OK
+HIS_ANC1_Q005,History,HIS_ANC1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.715,OK
+HIS_ANC1_Q006,History,HIS_ANC1,KEEP_FACTUAL,"[""a UNESCO World Heritage Site in Gujarat with unique water management systems that recently received attention from the Prime Minister's Office for conservation efforts"", 'a port city of the Indus Valley Civilization located in Gujarat known for its dockyard and maritime trade', 'an archaeological site in Punjab on the Ravi river that was one of the first discovered Harappan sites', 'a Harappan site in Pakistan on the Indus river famous for its Great Bath and advanced drainage system']",0,0.715,FACTUAL_OK
+HIS_ANC1_Q007,History,HIS_ANC1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.715,OK
+HIS_ANC1_Q012,History,HIS_ANC1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.715,OK
+HIS_ANC1_Q014,History,HIS_ANC1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.715,OK
+HIS_ANC1_Q017,History,HIS_ANC1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.715,OK
+HIS_ANC1_Q019,History,HIS_ANC1,KEEP_FACTUAL,"['Emergence of smaller tribal republics (janapadas)', 'Formation of large kingdoms like Kuru and Panchala', 'Establishment of the Mauryan Empire', 'Rise of city-states similar to Indus Valley Civilization']",1,0.715,FACTUAL_OK
+HIS_ANC2_Q001,History,HIS_ANC2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.729,OK
+HIS_ANC2_Q003,History,HIS_ANC2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.729,OK
+HIS_ANC2_Q004,History,HIS_ANC2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.729,OK
+HIS_ANC2_Q006,History,HIS_ANC2,KEEP_FACTUAL,"['An Indo-Greek king whose coins depict Athena and carry Greek legends', 'A Mauryan emperor who issued bilingual coins with Greek and Brahmi inscriptions', 'A Kushana ruler known for gold coins with Greek and Bactrian legends', 'A Gupta period king who issued coins depicting Krishna and Balarama']",0,0.729,FACTUAL_OK
+HIS_ANC2_Q013,History,HIS_ANC2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.729,OK
+HIS_ANC2_Q014,History,HIS_ANC2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.729,OK
+HIS_ANC2_Q021,History,HIS_ANC2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.729,OK
+HIS_ANC2_Q022,History,HIS_ANC2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.729,OK
+HIS_ANC2_Q023,History,HIS_ANC2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.729,OK
+HIS_ANC2_Q025,History,HIS_ANC2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.729,OK
+HIS_ANC2_Q026,History,HIS_ANC2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.729,OK
+HIS_ANC2_Q027,History,HIS_ANC2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.729,OK
+HIS_ANC2_Q028,History,HIS_ANC2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.729,OK
+HIS_ANC3_Q001,History,HIS_ANC3,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.762,OK
+HIS_ANC3_Q003,History,HIS_ANC3,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.762,OK
+HIS_ANC3_Q004,History,HIS_ANC3,KEEP_FACTUAL,"['A collection of religious devotional hymns from the Bhakti movement', 'A body of secular Tamil poetry focusing on themes of love and war', 'A series of Sanskrit philosophical texts from the Gupta period', 'A corpus of Buddhist monastic rules compiled in Sri Lanka']",1,0.762,FACTUAL_OK
+HIS_ANC3_Q008,History,HIS_ANC3,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.762,OK
+HIS_ANC3_Q012,History,HIS_ANC3,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.762,OK
+HIS_ANC3_Q014,History,HIS_ANC3,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.762,OK
+HIS_ANC3_Q015,History,HIS_ANC3,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.762,OK
+HIS_ANC3_Q017,History,HIS_ANC3,KEEP_FACTUAL,"['A Gupta emperor known for military conquests', ""A Sanskrit playwright who wrote 'Ratnavali', 'Priyadarshika', and 'Nagananda'"", 'The founder of Nalanda University', ""An astronomer who wrote the 'Aryabhatiya'""]",1,0.762,FACTUAL_OK
+HIS_ART1_Q004,History,HIS_ART1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.833,OK
+HIS_ART1_Q005,History,HIS_ART1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.833,OK
+HIS_ART1_Q006,History,HIS_ART1,KEEP_FACTUAL,"['A newly discovered archaeological site with Mauryan-era inscriptions', ""A natural heritage site recently added to India's UNESCO Tentative World Heritage List"", 'A Buddhist cave complex in Maharashtra known for fresco paintings', 'A colonial-era monument built in Indo-Saracenic architectural style']",1,0.833,FACTUAL_OK
+HIS_ART1_Q007,History,HIS_ART1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.833,OK
+HIS_ART1_Q009,History,HIS_ART1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.833,OK
+HIS_ART1_Q014,History,HIS_ART1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.833,OK
+HIS_ART1_Q015,History,HIS_ART1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.833,OK
+HIS_ART1_Q016,History,HIS_ART1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.833,OK
+HIS_ART1_Q018,History,HIS_ART1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.833,OK
+HIS_ART1_Q021,History,HIS_ART1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.833,OK
+HIS_ART1_Q022,History,HIS_ART1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.833,OK
+HIS_ART1_Q023,History,HIS_ART1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.833,OK
+HIS_ART1_Q027,History,HIS_ART1,KEEP_FACTUAL,"['Monolithic sandstone columns with polished surfaces and animal capitals', 'Brick structures with floral motifs and human figures', 'Granite pillars with unpolished surfaces and geometric patterns', 'Wooden columns with painted surfaces and mythological scenes']",0,0.833,FACTUAL_OK
+HIS_ART1_Q028,History,HIS_ART1,KEEP_FACTUAL,"['The largest rock-cut chaitya in India, dating to the 1st century BCE', 'A Buddhist monastery complex with both chaitya and vihara caves', 'A chaitya hall known for its continuous narrative sculptures', 'A Hindu rock-cut temple from the Gupta period']",0,0.833,FACTUAL_OK
+HIS_ART1_Q029,History,HIS_ART1,KEEP_FACTUAL,"['A white marble mausoleum constructed for Mumtaz Mahal between 1632-1653 CE', 'A red sandstone fort complex built as a victory monument in the 17th century', 'A Hindu temple converted into a mosque during the Mughal period', 'A palace complex serving as the administrative center of the Mughal Empire']",0,0.833,FACTUAL_OK
+HIS_ART1_Q030,History,HIS_ART1,KEEP_FACTUAL,"['A Hindu temple with a gold-plated dome built in the 16th century', 'A Sikh gurudwara with a gold-plated dome built by Guru Arjan Dev in 1581 CE', 'A Buddhist stupa with golden decorations constructed during the Mauryan period', 'A Mughal mosque with gold-plated minarets built by Akbar in the 16th century']",1,0.833,FACTUAL_OK
+HIS_ART2_Q002,History,HIS_ART2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.83,OK
+HIS_ART2_Q004,History,HIS_ART2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.83,OK
+HIS_ART2_Q006,History,HIS_ART2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.83,OK
+HIS_ART2_Q007,History,HIS_ART2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.83,OK
+HIS_ART2_Q008,History,HIS_ART2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.83,OK
+HIS_ART2_Q009,History,HIS_ART2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.83,OK
+HIS_ART2_Q011,History,HIS_ART2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.83,OK
+HIS_ART2_Q012,History,HIS_ART2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.83,OK
+HIS_ART2_Q017,History,HIS_ART2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.83,OK
+HIS_ART2_Q018,History,HIS_ART2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.83,OK
+HIS_ART2_Q020,History,HIS_ART2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.83,OK
+HIS_ART2_Q022,History,HIS_ART2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.83,OK
+HIS_ART2_Q024,History,HIS_ART2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.83,OK
+HIS_ART2_Q026,History,HIS_ART2,KEEP_FACTUAL,"[""A form of devotional poetry written in Braj Bhasha focusing on Krishna's childhood"", 'A style of Bhakti poetry using dohas that criticizes ritualism and social hierarchies', 'A classical Sanskrit poetic form used for philosophical discourse in Vedanta', 'A musical composition style in Hindustani classical music based on ragas']",1,0.83,FACTUAL_OK
+HIS_ART3_Q001,History,HIS_ART3,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.835,OK
+HIS_ART3_Q002,History,HIS_ART3,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.835,OK
+HIS_ART3_Q004,History,HIS_ART3,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.835,OK
+HIS_ART3_Q006,History,HIS_ART3,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.835,OK
+HIS_ART3_Q012,History,HIS_ART3,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.835,OK
+HIS_ART3_Q013,History,HIS_ART3,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.835,OK
+HIS_ART3_Q014,History,HIS_ART3,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.835,OK
+HIS_ART3_Q018,History,HIS_ART3,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.835,OK
+HIS_ART3_Q021,History,HIS_ART3,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.835,OK
+HIS_ART3_Q022,History,HIS_ART3,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.835,OK
+HIS_ART3_Q023,History,HIS_ART3,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.835,OK
+HIS_ART3_Q025,History,HIS_ART3,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.835,OK
+HIS_ART3_Q026,History,HIS_ART3,KEEP_FACTUAL,"['A revolutionary action led by Surya Sen in 1930 to capture police and armoury', 'A conspiracy in 1925 involving Ram Prasad Bismil and Ashfaqulla Khan', 'An assassination attempt on Lord Hardinge in Delhi in 1912', 'A tribal uprising in Bengal against British land revenue policies']",0,0.835,FACTUAL_OK
+HIS_MED1_Q008,History,HIS_MED1,KEEP_FACTUAL,"['A department for charity and welfare established by Firoz Shah Tughlaq', 'A department for slave administration established by Firoz Shah Tughlaq', 'A market regulatory body established by Alauddin Khilji', 'A revenue assignment system under the Delhi Sultanate']",0,0.517,FACTUAL_OK
+HIS_MED1_Q013,History,HIS_MED1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.517,OK
+HIS_MED1_Q015,History,HIS_MED1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.517,OK
+HIS_MED1_Q016,History,HIS_MED1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.517,OK
+HIS_MED1_Q017,History,HIS_MED1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.517,OK
+HIS_MED1_Q018,History,HIS_MED1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.517,OK
+HIS_MED1_Q019,History,HIS_MED1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.517,OK
+HIS_MED1_Q021,History,HIS_MED1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.517,OK
+HIS_MED1_Q022,History,HIS_MED1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.517,OK
+HIS_MED1_Q023,History,HIS_MED1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.517,OK
+HIS_MED1_Q027,History,HIS_MED1,KEEP_FACTUAL,"['The Arab invasion of Sindh led by Muhammad bin Qasim in 712 CE', 'The Ghaznavid invasions of Mahmud of Ghazni between 1000-1027 CE', 'The establishment of the Delhi Sultanate by Qutb-ud-din Aibak in 1206 CE', 'The Mughal Empire founded by Babur after the Battle of Panipat in 1526 CE']",0,0.517,FACTUAL_OK
+HIS_MED1_Q028,History,HIS_MED1,KEEP_FACTUAL,"['acquire temple wealth and plunder', 'establish permanent territorial control', 'spread Islam through forced conversions', 'counter the rising power of the Chola Empire']",0,0.517,FACTUAL_OK
+HIS_MED1_Q029,History,HIS_MED1,KEEP_FACTUAL,"['Qutb-ud-din Aibak', 'Iltutmish', 'Balban', 'Muhammad Ghori']",0,0.517,FACTUAL_OK
+HIS_MED2_Q001,History,HIS_MED2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.642,OK
+HIS_MED2_Q002,History,HIS_MED2,KEEP_FACTUAL,"[""The site of Aurangzeb's tomb where ASI is taking protective measures"", 'The location of the First Battle of Panipat that established Mughal rule', 'The place where Akbar introduced the Din-i-Ilahi syncretic religion', 'The capital of the Maratha Empire under Chhatrapati Shivaji']",0,0.642,FACTUAL_OK
+HIS_MED2_Q003,History,HIS_MED2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.642,OK
+HIS_MED2_Q004,History,HIS_MED2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.642,OK
+HIS_MED2_Q006,History,HIS_MED2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.642,OK
+HIS_MED2_Q010,History,HIS_MED2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.642,OK
+HIS_MED2_Q013,History,HIS_MED2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.642,OK
+HIS_MED2_Q015,History,HIS_MED2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.642,OK
+HIS_MOD1_Q002,History,HIS_MOD1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.843,OK
+HIS_MOD1_Q007,History,HIS_MOD1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.843,OK
+HIS_MOD1_Q013,History,HIS_MOD1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.843,OK
+HIS_MOD1_Q015,History,HIS_MOD1,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.843,OK
+HIS_MOD1_Q018,History,HIS_MOD1,KEEP_FACTUAL,"[""Founded in 1664 under Colbert's patronage, with Pondicherry as its main settlement"", 'Established in 1600 under royal charter, with Madras as its headquarters', 'Formed in 1612 through a joint stock company, with Surat as its primary base', 'Created in 1644 by Dutch merchants, with Cochin as its principal trading post']",0,0.843,FACTUAL_OK
+HIS_MOD1_Q019,History,HIS_MOD1,KEEP_FACTUAL,"['Zamindars were recognized as revenue collectors who paid variable amounts based on agricultural output', 'Zamindars were recognized as landowners who paid a fixed revenue to the East India Company', 'Ryots were recognized as landowners who paid fixed revenue directly to the government', 'Zamindars were temporary revenue collectors whose positions were reviewed every 10 years']",1,0.843,FACTUAL_OK
+HIS_MOD2_Q003,History,HIS_MOD2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.795,OK
+HIS_MOD2_Q005,History,HIS_MOD2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.795,OK
+HIS_MOD2_Q008,History,HIS_MOD2,KEEP_FACTUAL,"['A socio-religious reform movement founded by Swami Vivekananda in 1897', 'A Vedic revival movement founded by Dayanand Saraswati in 1875', 'A monotheistic reform movement founded by Raja Ram Mohan Roy in 1828', 'A caste upliftment movement founded by Jyotiba Phule in 1873']",0,0.795,FACTUAL_OK
+HIS_MOD2_Q009,History,HIS_MOD2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.795,OK
+HIS_MOD2_Q010,History,HIS_MOD2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.795,OK
+HIS_MOD2_Q016,History,HIS_MOD2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.795,OK
+HIS_MOD2_Q017,History,HIS_MOD2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.795,OK
+HIS_MOD2_Q019,History,HIS_MOD2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.795,OK
+HIS_MOD2_Q021,History,HIS_MOD2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.795,OK
+HIS_MOD2_Q026,History,HIS_MOD2,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.795,OK
+HIS_MOD3_Q001,History,HIS_MOD3,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.795,OK
+HIS_MOD3_Q002,History,HIS_MOD3,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.795,OK
+HIS_MOD3_Q004,History,HIS_MOD3,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.795,OK
+HIS_MOD3_Q005,History,HIS_MOD3,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.795,OK
+HIS_MOD3_Q012,History,HIS_MOD3,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.795,OK
+HIS_MOD3_Q014,History,HIS_MOD3,KEEP_FACTUAL,"['A society founded by Gopal Krishna Gokhale in 1905 to promote social service and moderate nationalism', 'A revolutionary organization established by Bal Gangadhar Tilak in 1916 for complete independence', 'An association formed by Dadabhai Naoroji in 1876 to represent Indian interests', 'A movement launched by Annie Besant in 1916 advocating for self-government']",0,0.795,FACTUAL_OK
+HIS_MOD3_Q016,History,HIS_MOD3,KEEP_FACTUAL,"['A slogan popularized by Bal Gangadhar Tilak', 'A slogan used during the Non-Cooperation Movement', 'A phrase from the Lucknow Pact of 1916', 'A demand made during the Morley-Minto Reforms']",0,0.795,FACTUAL_OK
+HIS_MOD3_Q024,History,HIS_MOD3,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.795,OK
+HIS_MOD4_Q002,History,HIS_MOD4,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.835,OK
+HIS_MOD4_Q003,History,HIS_MOD4,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.835,OK
+HIS_MOD4_Q005,History,HIS_MOD4,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.835,OK
+HIS_MOD4_Q007,History,HIS_MOD4,KEEP_FACTUAL,"['A 1928 proposal by the Indian National Congress for Dominion Status', 'A 1929 Muslim League manifesto demanding separate electorates and federal safeguards', 'A 1930 British plan offering provincial autonomy under the Government of India Act', 'A 1942 wartime proposal for immediate transfer of power to Indian hands']",1,0.835,FACTUAL_OK
+HIS_MOD4_Q008,History,HIS_MOD4,KEEP_FACTUAL,"['A British proposal in 1942 offering Dominion Status to India after World War II', 'A 1946 British plan for grouping Indian provinces into three sections', 'A 1930 conference where Gandhi represented Congress after the Gandhi-Irwin Pact', 'A 1928 report proposing Dominion Status for India with a unitary constitution']",0,0.835,FACTUAL_OK
+HIS_MOD4_Q014,History,HIS_MOD4,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.835,OK
+HIS_MOD4_Q016,History,HIS_MOD4,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.835,OK
+HIS_MOD4_Q019,History,HIS_MOD4,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.835,OK
+HIS_MOD4_Q021,History,HIS_MOD4,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.835,OK
+HIS_MOD4_Q022,History,HIS_MOD4,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.835,OK
+HIS_MOD4_Q024,History,HIS_MOD4,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.835,OK
+HIS_MOD4_Q026,History,HIS_MOD4,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.835,OK
+POL_AMD_Q003,Polity,POL_AMD,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.863,OK
+POL_AMD_Q004,Polity,POL_AMD,KEEP_FACTUAL,"['The 106th Constitutional Amendment Act providing 33% reservation for women in Lok Sabha and state assemblies', 'The 108th Constitutional Amendment Bill that lapsed without becoming law', 'The 44th Constitutional Amendment Act that removed Right to Property from Fundamental Rights', 'The 101st Constitutional Amendment Act that introduced Goods and Services Tax (GST)']",0,0.863,FACTUAL_OK
+POL_AMD_Q011,Polity,POL_AMD,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.863,OK
+POL_AMD_Q014,Polity,POL_AMD,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.863,OK
+POL_AMD_Q015,Polity,POL_AMD,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.863,OK
+POL_AMD_Q019,Polity,POL_AMD,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.863,OK
+POL_AMD_Q022,Polity,POL_AMD,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.863,OK
+POL_AMD_Q023,Polity,POL_AMD,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.863,OK
+POL_AMD_Q024,Polity,POL_AMD,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.863,OK
+POL_AMD_Q030,Polity,POL_AMD,KEEP_FACTUAL,"['Requires a simple majority in Parliament and ratification by at least half of the state legislatures', 'Requires a special majority in Parliament and ratification by at least half of the state legislatures', 'Requires a special majority in Parliament and ratification by two-thirds of the state legislatures', 'Requires an absolute majority in Parliament and ratification by at least half of the state legislatures']",1,0.863,FACTUAL_OK
+POL_AMD_Q031,Polity,POL_AMD,KEEP_FACTUAL,"['The Fifth Schedule deals with administration of Scheduled Areas generally, while the Sixth Schedule provides for autonomous district councils in tribal areas of Assam, Meghalaya, Tripura, and Mizoram.', 'The Fifth Schedule applies to tribal areas in Assam, Meghalaya, Tripura, and Mizoram, while the Sixth Schedule deals with administration of Scheduled Areas generally.', 'The Fifth Schedule provides for autonomous district councils, while the Sixth Schedule deals with administration and control of Scheduled Areas and Scheduled Tribes.', 'Both schedules apply to all Scheduled Areas across India, but the Sixth Schedule has additional provisions for autonomous district councils.']",0,0.863,FACTUAL_OK
+POL_CB_Q002,Polity,POL_CB,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.89,OK
+POL_CB_Q003,Polity,POL_CB,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.89,OK
+POL_CB_Q004,Polity,POL_CB,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.89,OK
+POL_CB_Q005,Polity,POL_CB,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.89,OK
+POL_CB_Q007,Polity,POL_CB,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.89,OK
+POL_CB_Q010,Polity,POL_CB,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.89,OK
+POL_CB_Q012,Polity,POL_CB,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.89,OK
+POL_CB_Q013,Polity,POL_CB,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.89,OK
+POL_CB_Q015,Polity,POL_CB,KEEP_FACTUAL,"['A constitutional body established by the 89th Amendment Act, 2003, which submits its annual report to the President of India', 'A statutory body established by the 102nd Amendment Act, 2018, which submits its annual report to the Parliament', 'A constitutional body established by the 65th Amendment Act, 1990, which submits its annual report to the Prime Minister', 'A statutory body established by the 86th Amendment Act, 2002, which submits its annual report to the Union Home Ministry']",0,0.89,FACTUAL_OK
+POL_CB_Q017,Polity,POL_CB,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.89,OK
+POL_CB_Q023,Polity,POL_CB,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.89,OK
+POL_CB_Q025,Polity,POL_CB,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.89,OK
+POL_CB_Q027,Polity,POL_CB,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.89,OK
+POL_DPSP_Q001,Polity,POL_DPSP,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.851,OK
+POL_DPSP_Q002,Polity,POL_DPSP,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.851,OK
+POL_DPSP_Q003,Polity,POL_DPSP,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.851,OK
+POL_DPSP_Q005,Polity,POL_DPSP,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.851,OK
+POL_DPSP_Q006,Polity,POL_DPSP,KEEP_FACTUAL,"['A constitutional principle used to balance Fundamental Rights and Directive Principles of State Policy', 'A legal doctrine that prioritizes Fundamental Rights over Directive Principles of State Policy', 'A judicial approach that gives supremacy to Directive Principles over Fundamental Rights', 'A constitutional amendment that added new Fundamental Duties in 2002']",0,0.851,FACTUAL_OK
+POL_DPSP_Q007,Polity,POL_DPSP,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.851,OK
+POL_DPSP_Q009,Polity,POL_DPSP,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.851,OK
+POL_DPSP_Q013,Polity,POL_DPSP,KEEP_FACTUAL,"['A directive principle requiring the State to secure a common set of personal laws for all citizens throughout India', 'A fundamental right guaranteeing equal civil laws to all religious communities in India', 'A constitutional amendment introduced in 1976 to replace diverse personal laws with a single code', 'A judicial doctrine established by the Supreme Court to harmonize personal laws across states']",0,0.851,FACTUAL_OK
+POL_DPSP_Q014,Polity,POL_DPSP,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.851,OK
+POL_DPSP_Q017,Polity,POL_DPSP,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.851,OK
+POL_DPSP_Q018,Polity,POL_DPSP,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.851,OK
+POL_ELC_Q001,Polity,POL_ELC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.916,OK
+POL_ELC_Q002,Polity,POL_ELC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.916,OK
+POL_ELC_Q010,Polity,POL_ELC,KEEP_FACTUAL,"['A scheme allowing anonymous political donations through bearer instruments', 'A digital platform for transparent election funding managed by the Election Commission', 'A method of state funding for political parties based on their electoral performance', 'A mechanism for corporate social responsibility contributions to election campaigns']",0,0.916,FACTUAL_OK
+POL_ELC_Q011,Polity,POL_ELC,KEEP_FACTUAL,"['A mechanism for anonymous corporate donations to political parties, upheld by the Supreme Court in 2024', 'A scheme introduced in 2018 to regulate individual donations to political parties through banking channels', ""An electoral funding mechanism struck down by the Supreme Court in 2024 for violating voters' right to information"", 'A provision under the Representation of the People Act, 1950 for transparent political funding']",2,0.916,FACTUAL_OK
+POL_ELC_Q018,Polity,POL_ELC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.916,OK
+POL_ELC_Q019,Polity,POL_ELC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.916,OK
+POL_ELC_Q022,Polity,POL_ELC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.916,OK
+POL_EMR_Q005,Polity,POL_EMR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.695,OK
+POL_EMR_Q006,Polity,POL_EMR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.695,OK
+POL_EMR_Q007,Polity,POL_EMR,KEEP_FACTUAL,"['A Supreme Court case that established judicial review of National Emergency under Article 352', ""A Supreme Court case that established judicial review of President's Rule imposition under Article 356"", ""A constitutional amendment that replaced 'internal disturbance' with 'armed rebellion' in Article 352"", ""A parliamentary act that reduced the approval period for President's Rule from two months to one month""]",1,0.695,FACTUAL_OK
+POL_EMR_Q008,Polity,POL_EMR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.695,OK
+POL_EMR_Q012,Polity,POL_EMR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.695,OK
+POL_EMR_Q013,Polity,POL_EMR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.695,OK
+POL_EMR_Q016,Polity,POL_EMR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.695,OK
+POL_EMR_Q017,Polity,POL_EMR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.695,OK
+POL_EX_Q004,Polity,POL_EX,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.89,OK
+POL_EX_Q005,Polity,POL_EX,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.89,OK
+POL_EX_Q007,Polity,POL_EX,KEEP_FACTUAL,"['A Cabinet Committee that recommends appointments to top bureaucratic posts', 'A Cabinet Committee that deals with defense, internal security, and foreign affairs', 'A Parliamentary Committee that oversees appointments to constitutional bodies', 'A constitutional body that directly appoints the Chairman of UPSC']",0,0.89,FACTUAL_OK
+POL_EX_Q014,Polity,POL_EX,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.89,OK
+POL_EX_Q015,Polity,POL_EX,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.89,OK
+POL_EX_Q016,Polity,POL_EX,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.89,OK
+POL_EX_Q019,Polity,POL_EX,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.89,OK
+POL_EX_Q023,Polity,POL_EX,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.89,OK
+POL_EX_Q031,Polity,POL_EX,KEEP_FACTUAL,"['For violation of the Constitution', 'For proven misbehavior or incapacity', 'For breach of parliamentary privilege', 'For failure to discharge constitutional duties']",0,0.89,FACTUAL_OK
+POL_FED_Q006,Polity,POL_FED,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.863,OK
+POL_FED_Q008,Polity,POL_FED,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.863,OK
+POL_FED_Q009,Polity,POL_FED,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.863,OK
+POL_FED_Q014,Polity,POL_FED,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.863,OK
+POL_FED_Q015,Polity,POL_FED,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.863,OK
+POL_FED_Q017,Polity,POL_FED,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.863,OK
+POL_FED_Q025,Polity,POL_FED,KEEP_FACTUAL,"['A commission that reviewed Centre-State relations in 2007', 'A commission that established the Inter-State Council in 1990', 'A constitutional body that allocates financial resources to states', 'A statutory authority that regulates inter-state water disputes']",0,0.863,FACTUAL_OK
+POL_FED_Q026,Polity,POL_FED,KEEP_FACTUAL,"['A constitutional body that approves state budgets and coordinates fiscal policies', 'An extra-constitutional body that historically approved Five-Year Plans and included chief ministers', 'A statutory body under the Planning Commission Act that formulates annual economic surveys', 'A judicial tribunal that resolves inter-state water disputes under Article 262 of the Constitution']",1,0.863,FACTUAL_OK
+POL_FED_Q032,Polity,POL_FED,KEEP_FACTUAL,"['Resolution passed by simple majority in Lok Sabha', 'Resolution passed by two-thirds majority in Rajya Sabha', 'Resolution passed by two-thirds majority in both Houses of Parliament', 'Resolution passed by simple majority in both Houses of Parliament']",1,0.863,FACTUAL_OK
+POL_FR_Q001,Polity,POL_FR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.863,OK
+POL_FR_Q002,Polity,POL_FR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.863,OK
+POL_FR_Q004,Polity,POL_FR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.863,OK
+POL_FR_Q011,Polity,POL_FR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.863,OK
+POL_FR_Q015,Polity,POL_FR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.863,OK
+POL_FR_Q016,Polity,POL_FR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.863,OK
+POL_FR_Q018,Polity,POL_FR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.863,OK
+POL_FR_Q019,Polity,POL_FR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.863,OK
+POL_FR_Q020,Polity,POL_FR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.863,OK
+POL_FR_Q022,Polity,POL_FR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.863,OK
+POL_FR_Q023,Polity,POL_FR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.863,OK
+POL_FR_Q024,Polity,POL_FR,KEEP_FACTUAL,"['A Supreme Court judgment that declared right to privacy as an absolute fundamental right', 'A Supreme Court judgment that declared right to privacy as part of right to life under Article 21', 'A High Court judgment that expanded the scope of Article 32 for privacy protection', 'A constitutional amendment that added right to privacy as a separate fundamental right']",1,0.863,FACTUAL_OK
+POL_FR_Q025,Polity,POL_FR,KEEP_FACTUAL,"['A landmark judgment that established the basic structure doctrine of the Constitution', 'A case that declared Directive Principles of State Policy as superior to Fundamental Rights', 'A judgment that established harmony between Fundamental Rights and Directive Principles as part of the basic structure', 'A case that expanded the scope of Article 21 to include right to privacy']",2,0.863,FACTUAL_OK
+POL_FR_Q026,Polity,POL_FR,KEEP_FACTUAL,"['A landmark judgment that expanded Article 21 to include procedural fairness and due process', 'A case that established Article 21 applies to private individuals as well as the state', 'A judgment that introduced the right to education under Article 21A', 'A case that distinguished between Article 32 and Article 226 writ jurisdictions']",0,0.863,FACTUAL_OK
+POL_HIS_Q001,Polity,POL_HIS,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.832,OK
+POL_HIS_Q003,Polity,POL_HIS,KEEP_FACTUAL,"['The Act that transferred powers from the East India Company to the British Crown', 'The Act that introduced dyarchy in provincial governments', 'The Act that established the first Governor-General of Bengal', 'The Act that provided for provincial autonomy and expanded electorates']",0,0.832,FACTUAL_OK
+POL_HIS_Q006,Polity,POL_HIS,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.832,OK
+POL_HIS_Q008,Polity,POL_HIS,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.832,OK
+POL_HIS_Q010,Polity,POL_HIS,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.832,OK
+POL_HIS_Q011,Polity,POL_HIS,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.832,OK
+POL_HIS_Q015,Polity,POL_HIS,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.832,OK
+POL_HIS_Q016,Polity,POL_HIS,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.832,OK
+POL_JUD_Q002,Polity,POL_JUD,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.906,OK
+POL_JUD_Q005,Polity,POL_JUD,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.906,OK
+POL_JUD_Q017,Polity,POL_JUD,KEEP_FACTUAL,"[""A Supreme Court judgment clarifying that buildings used for renting/leasing services qualify as 'plant' for GST input tax credit eligibility"", 'A High Court ruling that denied GST input tax credit for commercial buildings used in service industries', 'A Supreme Court verdict that struck down Section 17(5)(d) of the CGST Act as unconstitutional', ""A High Court decision that expanded the definition of 'capital goods' under GST to include all commercial properties""]",0,0.906,FACTUAL_OK
+POL_JUD_Q023,Polity,POL_JUD,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.906,OK
+POL_JUD_Q024,Polity,POL_JUD,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.906,OK
+POL_JUD_Q028,Polity,POL_JUD,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.906,OK
+POL_JUD_Q029,Polity,POL_JUD,KEEP_FACTUAL,"['the oldest tribunal in India, established in 1941', 'a constitutional tribunal established under Article 323A', 'a tribunal for public service disputes established in 1950', 'the first tribunal established after the 42nd Constitutional Amendment']",0,0.906,FACTUAL_OK
+POL_LOC_Q002,Polity,POL_LOC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.877,OK
+POL_LOC_Q005,Polity,POL_LOC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.877,OK
+POL_LOC_Q008,Polity,POL_LOC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.877,OK
+POL_LOC_Q009,Polity,POL_LOC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.877,OK
+POL_LOC_Q010,Polity,POL_LOC,KEEP_FACTUAL,"['a digital initiative by the Ministry of Panchayati Raj to strengthen governance in Panchayats', 'a portal managed by State Election Commissions for conducting local body elections', 'a constitutional body established under Article 243K to oversee Panchayat finances', 'a scheme under the 74th Amendment to digitize municipal corporation services']",0,0.877,FACTUAL_OK
+POL_LOC_Q011,Polity,POL_LOC,KEEP_FACTUAL,"['A constitutional body that recommends distribution of taxes between State and Local Bodies', 'A statutory body that allocates funds between Centre and States', 'An executive committee that implements rural development schemes', 'A judicial tribunal that resolves disputes between Panchayats and Municipalities']",0,0.877,FACTUAL_OK
+POL_LOC_Q017,Polity,POL_LOC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.877,OK
+POL_LOC_Q020,Polity,POL_LOC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.877,OK
+POL_LOC_Q021,Polity,POL_LOC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.877,OK
+POL_PARL_Q002,Polity,POL_PARL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.927,OK
+POL_PARL_Q003,Polity,POL_PARL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.927,OK
+POL_PARL_Q007,Polity,POL_PARL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.927,OK
+POL_PARL_Q015,Polity,POL_PARL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.927,OK
+POL_PARL_Q016,Polity,POL_PARL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.927,OK
+POL_PARL_Q017,Polity,POL_PARL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.927,OK
+POL_PARL_Q021,Polity,POL_PARL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.927,OK
+POL_PARL_Q022,Polity,POL_PARL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.927,OK
+POL_PARL_Q024,Polity,POL_PARL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.927,OK
+POL_PARL_Q025,Polity,POL_PARL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.927,OK
+POL_PARL_Q026,Polity,POL_PARL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.927,OK
+POL_PARL_Q030,Polity,POL_PARL,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.927,OK
+POL_PRE_Q003,Polity,POL_PRE,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.923,OK
+POL_PRE_Q006,Polity,POL_PRE,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.923,OK
+POL_PRE_Q007,Polity,POL_PRE,KEEP_FACTUAL,"['Added by the 44th Amendment Act, 1978', 'Added by the 42nd Amendment Act, 1976', 'Part of the original Preamble adopted in 1949', 'Added by the 73rd Amendment Act, 1992']",1,0.923,FACTUAL_OK
+POL_PRE_Q008,Polity,POL_PRE,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.923,OK
+POL_PRE_Q015,Polity,POL_PRE,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.923,OK
+POL_PRE_Q017,Polity,POL_PRE,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.923,OK
+POL_SB_Q001,Polity,POL_SB,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.885,OK
+POL_SB_Q003,Polity,POL_SB,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.885,OK
+POL_SB_Q006,Polity,POL_SB,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.885,OK
+POL_SB_Q009,Polity,POL_SB,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.885,OK
+POL_SB_Q010,Polity,POL_SB,KEEP_FACTUAL,"['a statutory body established in 1964 to investigate corruption cases', 'an advisory body on vigilance matters that became statutory in 2003', 'a constitutional body that oversees human rights violations', 'a regulatory body for banking and capital markets established in 1991']",1,0.885,FACTUAL_OK
+POL_SB_Q012,Polity,POL_SB,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.885,OK
+POL_SB_Q018,Polity,POL_SB,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.885,OK
+POL_SB_Q021,Polity,POL_SB,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.885,OK
+POL_SB_Q024,Polity,POL_SB,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.885,OK
+POL_SB_Q026,Polity,POL_SB,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.885,OK
+POL_SB_Q027,Polity,POL_SB,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.885,OK
+POL_SB_Q028,Polity,POL_SB,KEEP_FACTUAL,"['a statutory body that allocates funds to states for development projects', 'an executive body that recommends policies but does not allocate funds', 'a constitutional body that replaced the Planning Commission in 2014', 'a regulatory authority that oversees state government expenditures']",1,0.885,FACTUAL_OK
+POL_STATE_Q001,Polity,POL_STATE,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.89,OK
+POL_STATE_Q002,Polity,POL_STATE,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.89,OK
+POL_STATE_Q005,Polity,POL_STATE,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.89,OK
+POL_STATE_Q009,Polity,POL_STATE,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.89,OK
+POL_STATE_Q011,Polity,POL_STATE,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.89,OK
+POL_STATE_Q012,Polity,POL_STATE,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.89,OK
+POL_STATE_Q014,Polity,POL_STATE,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.89,OK
+POL_STATE_Q015,Polity,POL_STATE,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.89,OK
+POL_STATE_Q017,Polity,POL_STATE,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.89,OK
+ST_AGR_Q003,Science & Tech,ST_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.877,OK
+ST_AGR_Q006,Science & Tech,ST_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.877,OK
+ST_AGR_Q007,Science & Tech,ST_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.877,OK
+ST_AGR_Q008,Science & Tech,ST_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.877,OK
+ST_AGR_Q009,Science & Tech,ST_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.877,OK
+ST_AGR_Q011,Science & Tech,ST_AGR,KEEP_FACTUAL,"['A scheme to provide drones to women Self-Help Groups for agricultural applications with 80% subsidy', 'A regulatory framework under DGCA for agricultural drone operations in India', 'A scheme promoting natural farming through technology integration in agriculture', 'An initiative for biofortification of crops using drone-based precision farming techniques']",0,0.877,FACTUAL_OK
+ST_AGR_Q012,Science & Tech,ST_AGR,KEEP_FACTUAL,"[""A research institute that developed the world's first genetically modified cotton resistant to pink bollworm"", 'An institute under ICAR working on biofortified millet varieties', 'A CSIR laboratory focused on developing natural farming protocols', 'A DRDO facility creating precision agriculture drones for farmers']",0,0.877,FACTUAL_OK
+ST_AGR_Q013,Science & Tech,ST_AGR,KEEP_FACTUAL,"['A farming approach that relies on traditional methods and uniform application of inputs across entire fields without technological intervention.', 'An agricultural system that completely avoids external inputs like fertilizers and pesticides, focusing solely on natural processes.', 'A technology-driven farming method that uses data from drones and sensors to apply inputs like water and fertilizers only where and when needed.', 'A crop improvement technique that enhances nutritional content through conventional breeding methods without genetic modification.']",2,0.877,FACTUAL_OK
+ST_AGR_Q016,Science & Tech,ST_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.877,OK
+ST_AGR_Q018,Science & Tech,ST_AGR,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.877,OK
+ST_BIO_Q001,Science & Tech,ST_BIO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.84,OK
+ST_BIO_Q003,Science & Tech,ST_BIO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.84,OK
+ST_BIO_Q008,Science & Tech,ST_BIO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.84,OK
+ST_BIO_Q009,Science & Tech,ST_BIO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.84,OK
+ST_BIO_Q010,Science & Tech,ST_BIO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.84,OK
+ST_BIO_Q011,Science & Tech,ST_BIO,KEEP_FACTUAL,"['A policy launched in 2023 to promote gene therapy research in India', 'An initiative established in 1987 to create a biotechnology information network', 'A policy introduced in 2024 to fast-track innovation in bio-manufacturing', 'A program focusing on genome editing for climate-resilient crop development']",2,0.84,FACTUAL_OK
+ST_BIO_Q017,Science & Tech,ST_BIO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.84,OK
+ST_BIO_Q020,Science & Tech,ST_BIO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.84,OK
+ST_BIO_Q023,Science & Tech,ST_BIO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.84,OK
+ST_BIO_Q024,Science & Tech,ST_BIO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.84,OK
+ST_BIO_Q026,Science & Tech,ST_BIO,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.84,OK
+ST_BIO_Q027,Science & Tech,ST_BIO,KEEP_FACTUAL,"['A framework issued in 2017 that permits only certain stem cell therapies in India', 'A policy allowing all types of gene therapy treatments in India', 'A 2020 initiative to promote genome editing research in agriculture', 'A regulatory system for approving Bt cotton and Bt brinjal cultivation']",0,0.84,FACTUAL_OK
+ST_BIO_Q028,Science & Tech,ST_BIO,KEEP_FACTUAL,"['A global initiative to sequence and map all human genes, completed in 2003', 'A project focused on developing gene therapy for inherited diseases', 'An Indian government program to sequence genomes of indigenous crops', 'A United Nations initiative to regulate biotechnology patents worldwide']",0,0.84,FACTUAL_OK
+ST_DEF_Q001,Science & Tech,ST_DEF,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.845,OK
+ST_DEF_Q002,Science & Tech,ST_DEF,KEEP_FACTUAL,"['an advanced propulsion system for long-range air-to-air missiles', 'a new variant of the Prithvi tactical ballistic missile', 'an indigenous nuclear-powered submarine propulsion technology', 'a supersonic cruise missile jointly developed with Russia']",0,0.845,FACTUAL_OK
+ST_DEF_Q006,Science & Tech,ST_DEF,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.845,OK
+ST_DEF_Q008,Science & Tech,ST_DEF,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.845,OK
+ST_DEF_Q009,Science & Tech,ST_DEF,KEEP_FACTUAL,"['a man-portable air defence system designed to neutralize low-altitude aerial threats', 'a long-range ballistic missile system for strategic deterrence', 'an indigenous fighter aircraft developed for the Indian Air Force', 'a naval cruise missile system for anti-ship warfare']",0,0.845,FACTUAL_OK
+ST_DEF_Q014,Science & Tech,ST_DEF,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.845,OK
+ST_DEF_Q017,Science & Tech,ST_DEF,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.845,OK
+ST_DEF_Q018,Science & Tech,ST_DEF,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.845,OK
+ST_DEF_Q019,Science & Tech,ST_DEF,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.845,OK
+ST_DEF_Q020,Science & Tech,ST_DEF,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.845,OK
+ST_DEF_Q022,Science & Tech,ST_DEF,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.845,OK
+ST_DEF_Q025,Science & Tech,ST_DEF,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.845,OK
+ST_DEF_Q026,Science & Tech,ST_DEF,KEEP_FACTUAL,"['A hypersonic cruise missile under joint development by India and Russia', 'A supersonic cruise missile already inducted into the Indian armed forces', 'A subsonic cruise missile developed indigenously by DRDO', 'A tactical ballistic missile with a range of 500 km']",0,0.845,FACTUAL_OK
+ST_EMG_Q001,Science & Tech,ST_EMG,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.495,OK
+ST_EMG_Q002,Science & Tech,ST_EMG,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.495,OK
+ST_EMG_Q006,Science & Tech,ST_EMG,KEEP_FACTUAL,"[""A humanoid robot designed for ISRO's Gaganyaan uncrewed test flights"", 'A satellite launched by ISRO for X-ray polarimetry studies', 'A nanotechnology mission aiming for top five global ranking by 2030', 'A quantum computing processor developed for space applications']",0,0.495,FACTUAL_OK
+ST_EMG_Q007,Science & Tech,ST_EMG,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.495,OK
+ST_EMG_Q012,Science & Tech,ST_EMG,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.495,OK
+ST_EMG_Q014,Science & Tech,ST_EMG,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.495,OK
+ST_EMG_Q015,Science & Tech,ST_EMG,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.495,OK
+ST_EMG_Q016,Science & Tech,ST_EMG,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.495,OK
+ST_EMG_Q017,Science & Tech,ST_EMG,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.495,OK
+ST_HLT_Q002,Science & Tech,ST_HLT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.838,OK
+ST_HLT_Q003,Science & Tech,ST_HLT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.838,OK
+ST_HLT_Q004,Science & Tech,ST_HLT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.838,OK
+ST_HLT_Q005,Science & Tech,ST_HLT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.838,OK
+ST_HLT_Q006,Science & Tech,ST_HLT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.838,OK
+ST_HLT_Q009,Science & Tech,ST_HLT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.838,OK
+ST_HLT_Q015,Science & Tech,ST_HLT,KEEP_FACTUAL,"['A WHO classification module for Ayurveda, Siddha, and Unani Medicine', 'A WHO list of essential traditional medicines for global use', 'A WHO quality assurance program for herbal drug manufacturing', 'A WHO initiative to integrate traditional medicine into primary healthcare systems']",0,0.838,FACTUAL_OK
+ST_HLT_Q020,Science & Tech,ST_HLT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.838,OK
+ST_HLT_Q022,Science & Tech,ST_HLT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.838,OK
+ST_HLT_Q025,Science & Tech,ST_HLT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.838,OK
+ST_IT_Q004,Science & Tech,ST_IT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.877,OK
+ST_IT_Q007,Science & Tech,ST_IT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.877,OK
+ST_IT_Q008,Science & Tech,ST_IT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.877,OK
+ST_IT_Q010,Science & Tech,ST_IT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.877,OK
+ST_IT_Q011,Science & Tech,ST_IT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.877,OK
+ST_IT_Q013,Science & Tech,ST_IT,KEEP_FACTUAL,"['Tools for manufacturing compound semiconductors like gallium arsenide', 'Electronic Design Automation tools for chip layout developed to reduce foreign dependency', 'Computer-Aided Design tools for quantum computing processors', 'Tools for implementing Proof of Work consensus in blockchain chips']",1,0.877,FACTUAL_OK
+ST_IT_Q015,Science & Tech,ST_IT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.877,OK
+ST_IT_Q017,Science & Tech,ST_IT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.877,OK
+ST_IT_Q019,Science & Tech,ST_IT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.877,OK
+ST_IT_Q022,Science & Tech,ST_IT,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.877,OK
+ST_IT_Q027,Science & Tech,ST_IT,KEEP_FACTUAL,"['A quantum computing research facility established by ISRO for space applications', 'A collaborative initiative between India and AWS to provide quantum computing access', ""India's national mission to develop indigenous quantum processors"", 'A cybersecurity framework for post-quantum cryptography standards']",1,0.877,FACTUAL_OK
+ST_IT_Q028,Science & Tech,ST_IT,KEEP_FACTUAL,"['A consortium of telecom operators for 5G rollout in India', 'A government-industry partnership to develop 6G technologies under the Department of Telecommunications', 'A research initiative by IITs focusing on quantum communication networks', 'An international forum for setting global standards for next-generation wireless technologies']",1,0.877,FACTUAL_OK
+ST_IT_Q031,Science & Tech,ST_IT,KEEP_FACTUAL,"['It can only exist in either a 0 or 1 state at any given time, similar to classical bits.', 'It allows particles to remain connected regardless of distance through quantum entanglement.', 'It can exist in a superposition of both 0 and 1 states simultaneously.', 'It achieves quantum supremacy by solving impractical problems faster than classical computers.']",2,0.877,FACTUAL_OK
+ST_IT_Q032,Science & Tech,ST_IT,KEEP_FACTUAL,"['A proprietary blockchain platform developed by IBM for enterprise use', 'An open-source blockchain project hosted by the Linux Foundation', 'A government-backed blockchain initiative for digital currency', 'A consensus algorithm used in public blockchain networks']",1,0.877,FACTUAL_OK
+ST_NUC_Q004,Science & Tech,ST_NUC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.872,OK
+ST_NUC_Q006,Science & Tech,ST_NUC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.872,OK
+ST_NUC_Q007,Science & Tech,ST_NUC,KEEP_FACTUAL,"[""A proposed fusion-fission hybrid reactor being developed by India's Institute for Plasma Research"", ""India's first commercial nuclear fusion power plant currently operational in Tamil Nadu"", ""A thorium-based fast breeder reactor developed under India's three-stage nuclear program"", 'An international thermonuclear experimental reactor project where India is one of seven member countries']",0,0.872,FACTUAL_OK
+ST_NUC_Q008,Science & Tech,ST_NUC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.872,OK
+ST_NUC_Q012,Science & Tech,ST_NUC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.872,OK
+ST_NUC_Q013,Science & Tech,ST_NUC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.872,OK
+ST_NUC_Q015,Science & Tech,ST_NUC,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.872,OK
+ST_SPACE_Q003,Science & Tech,ST_SPACE,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.845,OK
+ST_SPACE_Q007,Science & Tech,ST_SPACE,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.845,OK
+ST_SPACE_Q008,Science & Tech,ST_SPACE,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.845,OK
+ST_SPACE_Q012,Science & Tech,ST_SPACE,KEEP_FACTUAL,"['A reusable launch vehicle technology demonstrator tested by ISRO for autonomous landing experiments', ""A lunar rover developed for the Chandrayaan-3 mission to explore the Moon's surface"", 'A regional navigation satellite system developed by India as an alternative to GPS', 'A cryogenic upper stage used in GSLV rockets for launching heavier payloads']",0,0.845,FACTUAL_OK
+ST_SPACE_Q013,Science & Tech,ST_SPACE,KEEP_FACTUAL,"[""India's first solar observatory mission that reached its halo orbit around the Sun-Earth L1 point in January 2024"", ""India's multi-wavelength space observatory launched to study astronomical objects like stars and galaxies"", ""India's lunar mission that successfully soft-landed on the Moon's south pole region in 2023"", ""India's regional navigation satellite system providing positioning services over India and surrounding areas""]",0,0.845,FACTUAL_OK
+ST_SPACE_Q014,Science & Tech,ST_SPACE,KEEP_FACTUAL,"[""India's first dedicated mission to study cosmic X-ray sources through polarimetry"", 'A joint India-US mission to study solar flares using X-ray spectroscopy', ""India's second multi-wavelength space observatory after AstroSat"", ""A lunar mission to analyze X-ray emissions from the Moon's surface""]",0,0.845,FACTUAL_OK
+ST_SPACE_Q015,Science & Tech,ST_SPACE,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.845,OK
+ST_SPACE_Q018,Science & Tech,ST_SPACE,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.845,OK
+ST_SPACE_Q019,Science & Tech,ST_SPACE,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.845,OK
+ST_SPACE_Q020,Science & Tech,ST_SPACE,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.845,OK
+ST_SPACE_Q022,Science & Tech,ST_SPACE,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.845,OK
+ST_SPACE_Q024,Science & Tech,ST_SPACE,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",1,0.845,OK
+ST_SPACE_Q025,Science & Tech,ST_SPACE,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",0,0.845,OK
+ST_SPACE_Q026,Science & Tech,ST_SPACE,ENRICH_ONLY,"['Only one', 'Only two', 'All three', 'None']",2,0.845,OK

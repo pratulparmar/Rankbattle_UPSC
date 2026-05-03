@@ -2,6 +2,7 @@ import uuid
 from sqlalchemy import Column, Text, SmallInteger, Float, Boolean, Integer, Date, ForeignKey, TIMESTAMP
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.orm import relationship
+from sqlalchemy import UniqueConstraint
 from app.db.database import Base
 
 
@@ -94,3 +95,22 @@ class SubjectAnalytics(Base):
     correct       = Column(Integer, default=0)
     avg_time_secs = Column(Float, default=0)
     last_updated  = Column(TIMESTAMP)
+
+
+class SessionQuestion(Base):
+    __tablename__ = "session_questions"
+    id              = Column(Integer, primary_key=True, autoincrement=True)
+    session_id      = Column(UUID(as_uuid=True), ForeignKey("mock_sessions.session_id"), nullable=False)
+    mcq_id          = Column(Text, ForeignKey("mcq_bank.mcq_id"), nullable=False)
+    position        = Column(SmallInteger, nullable=False)   # 1-indexed order
+
+    # Snapshot the question at bind time — immutable, never re-query mcq_bank for results
+    stem_snapshot           = Column(Text, nullable=False)
+    options_snapshot        = Column(JSONB, nullable=False)
+    correct_index_snapshot  = Column(SmallInteger, nullable=False)
+
+    __table_args__ = (
+        # No duplicate positions in a session, no duplicate questions in a session
+        UniqueConstraint("session_id", "position", name="uq_session_position"),
+        UniqueConstraint("session_id", "mcq_id",   name="uq_session_mcq"),
+    )

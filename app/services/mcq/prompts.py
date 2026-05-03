@@ -26,11 +26,22 @@ REFINEMENT RULES (violating any = rejection)
    Each statement must be factually independent and verifiable.
    Remove phantom numbering (e.g., "1." bleeding into statement text).
 
-4. OPTIONS MUST MATCH STATEMENT COUNT
-   2 statements → A: Only one | B: Only two | C: Both | D: Neither
-   3 statements → A: Only one | B: Only two | C: All three | D: None
-   NEVER use "All three" for 2-statement questions.
+4. OPTIONS MUST MATCH STATEMENT COUNT — STRICTLY
+   2 statements → MUST use EXACTLY these four options in this order:
+     A: 1 only
+     B: 2 only
+     C: Both 1 and 2
+     D: Neither 1 nor 2
+   NEVER use "Only one" or "Only two" for 2-statement questions.
+   NEVER use "Both" without "1 and 2" for 2-statement questions.
+
+   3 statements → MUST use EXACTLY these four options in this order:
+     A: Only one
+     B: Only two
+     C: All three
+     D: None
    NEVER use "Neither" for 3-statement questions.
+   NEVER use "All three" for 2-statement questions.
 
 5. FACTUAL ACCURACY
    NPT: India is NOT a signatory.
@@ -50,6 +61,7 @@ ZERO TOLERANCE
 - Zero directive-inside-statement.
 - Zero option-count mismatches.
 - Zero phantom numbering in statement text.
+- Zero count-based options ("Only one", "Only two") in 2-statement questions.
 """
 
 FEW_SHOT_EXAMPLES = [
@@ -80,7 +92,12 @@ FEW_SHOT_EXAMPLES = [
                         "The Department of Atomic Energy (DAE) operates under the Ministry of Science and Technology.",
                     ],
                     "directive": "Which of the above statements is/are correct?",
-                    "options": {"A": "1 only", "B": "2 only", "C": "Both 1 and 2", "D": "Neither 1 nor 2"},
+                    "options": {
+                        "A": "1 only",
+                        "B": "2 only",
+                        "C": "Both 1 and 2",
+                        "D": "Neither 1 nor 2"
+                    },
                     "correct_answer": "D",
                     "explanation": {
                         "concept_anchor": "India maintains a voluntary moratorium on nuclear testing but has not joined the NPT. DAE was established in 1954 and reports directly to the Prime Minister.",
@@ -139,7 +156,12 @@ FEW_SHOT_EXAMPLES = [
                         "DMH-11 was developed by the Punjab Agricultural University, Ludhiana.",
                     ],
                     "directive": "How many of the above statements are correct?",
-                    "options": {"A": "Only one", "B": "Only two", "C": "All three", "D": "None of the above"},
+                    "options": {
+                        "A": "Only one",
+                        "B": "Only two",
+                        "C": "All three",
+                        "D": "None of the above"
+                    },
                     "correct_answer": "B",
                     "explanation": {
                         "concept_anchor": "DMH-11 received GEAC approval for environmental release in 2022, making it India's first transgenic food crop to do so. It was developed at Delhi University's CGMCP.",
@@ -200,7 +222,11 @@ REFINEMENT_TOOL: Dict[str, Any] = {
                     "D": {"type": "string"},
                 },
                 "required": ["A", "B", "C", "D"],
-                "description": "2 statements: Only one/Only two/Both/Neither. 3 statements: Only one/Only two/All three/None.",
+                "description": (
+                    "2 statements → MUST use EXACTLY: A='1 only', B='2 only', C='Both 1 and 2', D='Neither 1 nor 2'. "
+                    "3 statements → MUST use EXACTLY: A='Only one', B='Only two', C='All three', D='None'. "
+                    "NO mixing of formats. NO 'Only one'/'Only two' for 2-statement questions."
+                ),
             },
             "correct_answer": {"type": "string", "enum": ["A", "B", "C", "D"]},
             "explanation": {

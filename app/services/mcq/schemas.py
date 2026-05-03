@@ -12,6 +12,9 @@ TRUNCATION_SUSPECTS = re.compile(
 )
 PHANTOM_NUMBER_PATTERN = re.compile(r"^\s*\d+[.)]\s*")
 
+# Exact Format A for 2-statement questions (lowercased)
+FORMAT_A_OPTIONS = {"1 only", "2 only", "both 1 and 2", "neither 1 nor 2"}
+
 
 class RawMCQ(BaseModel):
     mcq_id: str
@@ -90,9 +93,20 @@ class RefinedMCQOutput(BaseModel):
     def cross_field_checks(self) -> "RefinedMCQOutput":
         n = len(self.statements)
         option_texts = " ".join(self.options.values()).lower()
+        actual_options = {v.strip().lower() for v in self.options.values()}
+
+        if n == 2:
+            # ✅ Hard enforce Format A — exact match required
+            if actual_options != FORMAT_A_OPTIONS:
+                raise ValueError(
+                    f"2-statement question MUST use Format A options exactly: "
+                    f"'1 only' | '2 only' | 'Both 1 and 2' | 'Neither 1 nor 2'. "
+                    f"Got: {sorted(actual_options)}."
+                )
 
         if n == 2 and "all three" in option_texts:
             raise ValueError("'All three' invalid for 2-statement question.")
+
         if n == 3 and "neither" in option_texts and "none" not in option_texts:
             raise ValueError("Use 'None' not 'Neither' for 3-statement questions.")
 
@@ -105,7 +119,9 @@ class RefinedMCQOutput(BaseModel):
             sw_keys = set(self.explanation.statement_wise.keys())
             expected = {str(i) for i in range(1, n + 1)}
             if sw_keys != expected:
-                raise ValueError(f"statement_wise keys {sw_keys} must match statement count {expected}")
+                raise ValueError(
+                    f"statement_wise keys {sw_keys} must match statement count {expected}"
+                )
 
         return self
 

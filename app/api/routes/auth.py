@@ -38,28 +38,8 @@ def get_current_user(
 
 
 def verify_firebase_token(id_token: str) -> dict:
-    """Verify Firebase ID token using Firebase Admin SDK."""
-    try:
-        import firebase_admin
-        from firebase_admin import auth as firebase_auth, credentials
-
-        # Initialize once
-        if not firebase_admin._apps:
-            # On Railway: set GOOGLE_APPLICATION_CREDENTIALS env var
-            # OR use project_id only for verification
-            try:
-                cred = credentials.ApplicationDefault()
-            except Exception:
-                # Fallback: verify via Firebase REST API
-                return verify_firebase_token_rest(id_token)
-            firebase_admin.initialize_app(cred)
-
-        decoded = firebase_auth.verify_id_token(id_token)
-        return decoded
-    except ImportError:
-        return verify_firebase_token_rest(id_token)
-    except Exception as e:
-        raise HTTPException(401, f"Firebase token invalid: {e}")
+    """Verify Firebase ID token using Google public keys (no service account needed)."""
+    return verify_firebase_token_rest(id_token)
 
 
 def verify_firebase_token_rest(id_token: str) -> dict:

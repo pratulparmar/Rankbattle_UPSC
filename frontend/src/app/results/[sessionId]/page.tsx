@@ -7,13 +7,12 @@ import { QuestionBody } from '@/lib/parseQuestionText';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Explanation {
-  concept_anchor?:  string;
-  statement_wise?:  Record<string, string> | string[];
+  concept_anchor?:   string;
+  statement_wise?:   Record<string, string> | string[];
   why_others_wrong?: string | string[];
-  common_trap?:     string;
+  common_trap?:      string;
   elimination_hint?: string;
-  trap_analysis?:   string;
-  [key: string]:    string | string[] | undefined;
+  trap_analysis?:    string;
 }
 
 interface QuestionResult {
@@ -233,7 +232,7 @@ function ExpertAnalysis({ exp, isWrong }: { exp: Explanation | null | undefined;
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
                 {[whyOthers].map((w, i) => (
-                  <div key={k} style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+                  <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
                     <span style={{ fontSize: 11, color: '#ea580c', flexShrink: 0, marginTop: 2 }}>×</span>
                     <span style={{ fontSize: 12, color: '#374151', lineHeight: 1.6 }}>{w}</span>
                   </div>
@@ -346,7 +345,7 @@ function QuestionCard({ q, idx }: { q: QuestionResult; idx: number }) {
             }
 
             return (
-              <div key={k} style={{
+              <div key={i} style={{
                 display: 'flex', alignItems: 'flex-start', gap: 10,
                 padding: '10px 12px', borderRadius: 10,
                 background: bg, border: `1.5px solid ${border}`,

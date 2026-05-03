@@ -1,0 +1,2435 @@
+{
+  "clean_count": 93,
+  "mismatch_count": 83,
+  "no_expl_count": 0,
+  "unparseable_count": 0,
+  "clean_ids": [
+    "ECO_AGR_Q021",
+    "ECO_BNK_Q023",
+    "ECO_EXT_Q015",
+    "ECO_EXT_Q024",
+    "ECO_FIN_Q019",
+    "ECO_FP_Q018",
+    "ECO_FP_Q026",
+    "ECO_FP_Q027",
+    "ECO_IND_Q011",
+    "ECO_INF_Q011",
+    "ECO_INF_Q022",
+    "ECO_INF_Q028",
+    "ECO_MP_Q016",
+    "ECO_MP_Q017",
+    "ECO_NIA_Q031",
+    "ECO_PLN_Q022",
+    "ENV_BIO_Q002",
+    "ENV_BIO_Q016",
+    "ENV_BIO_Q021",
+    "ENV_CC_Q011",
+    "ENV_CON_Q009",
+    "ENV_CON_Q021",
+    "ENV_CON_Q025",
+    "ENV_CON_Q026",
+    "ENV_ECO_Q007",
+    "ENV_INT_Q015",
+    "ENV_LAW_Q015",
+    "ENV_RPT_Q023",
+    "ENV_RPT_Q024",
+    "ENV_SDG_Q005",
+    "ENV_SPEC_Q004",
+    "ENV_SPEC_Q020",
+    "GEO_AGR_Q015",
+    "GEO_CLM_Q003",
+    "GEO_CLM_Q012",
+    "GEO_IND_Q013",
+    "GEO_IND_Q015",
+    "GEO_MIN_Q008",
+    "GEO_MON_Q026",
+    "GEO_MON_Q031",
+    "GEO_MORPH_Q010",
+    "GEO_MORPH_Q012",
+    "GEO_OCN_Q003",
+    "GEO_OCN_Q008",
+    "GEO_OCN_Q015",
+    "GEO_PHY_Q010",
+    "GEO_RIV_Q021",
+    "GEO_VEG_Q013",
+    "GEO_WLD_Q005",
+    "GEO_WLD_Q009",
+    "HIS_ANC2_Q026",
+    "HIS_ANC3_Q017",
+    "HIS_ART1_Q005",
+    "HIS_ART1_Q011",
+    "HIS_ART2_Q009",
+    "HIS_ART2_Q026",
+    "HIS_ART3_Q012",
+    "HIS_ART3_Q020",
+    "HIS_ART3_Q023",
+    "HIS_ART3_Q025",
+    "HIS_MED1_Q013",
+    "HIS_MED1_Q017",
+    "HIS_MED1_Q028",
+    "HIS_MED2_Q013",
+    "HIS_MED2_Q015",
+    "HIS_MOD2_Q016",
+    "HIS_MOD2_Q019",
+    "HIS_MOD3_Q014",
+    "HIS_MOD4_Q009",
+    "HIS_MOD4_Q010",
+    "HIS_MOD4_Q014",
+    "HIS_MOD4_Q024",
+    "POL_AMD_Q012",
+    "POL_AMD_Q015",
+    "POL_CB_Q015",
+    "POL_CB_Q027",
+    "POL_DPSP_Q012",
+    "POL_EX_Q014",
+    "POL_EX_Q016",
+    "POL_FED_Q032",
+    "POL_JUD_Q020",
+    "POL_LOC_Q017",
+    "POL_LOC_Q024",
+    "POL_PARL_Q002",
+    "POL_PRE_Q015",
+    "POL_SB_Q018",
+    "POL_STATE_Q010",
+    "POL_STATE_Q012",
+    "POL_STATE_Q017",
+    "ST_AGR_Q013",
+    "ST_IT_Q027",
+    "ST_IT_Q032",
+    "ST_SPACE_Q014"
+  ],
+  "mismatches": [
+    {
+      "mcq_id": "ECO_BNK_Q018",
+      "subject": "Economy",
+      "topic_id": "ECO_BNK",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 CICs with assets above \u20b9100 crore must register with RBI as NBFCs under c"
+        }
+      ],
+      "stem_preview": "1. Core Investment Companies (CICs) with an asset size exceeding \u20b9100 crore are required to register with the Reserve Ba"
+    },
+    {
+      "mcq_id": "ECO_EXT_Q012",
+      "subject": "Economy",
+      "topic_id": "ECO_EXT",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The current account explicitly includes trade balance in goods, services "
+        }
+      ],
+      "stem_preview": "1. The current account of the Balance of Payments comprises trade balance in goods, services balance, primary income, an"
+    },
+    {
+      "mcq_id": "ECO_EXT_Q017",
+      "subject": "Economy",
+      "topic_id": "ECO_EXT",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 0,
+      "new_correct": "1 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": true,
+          "got": false,
+          "verdict_text": "FALSE \u2014 S&D provisions do not provide blanket exemptions from WTO rules; develop"
+        },
+        {
+          "stmt": "2",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 S&D provisions explicitly allow longer transition periods and implementat"
+        }
+      ],
+      "stem_preview": "1. Special and Differential Treatment (S&D) provisions provide blanket exemptions from all WTO rules for developing coun"
+    },
+    {
+      "mcq_id": "ECO_FP_Q013",
+      "subject": "Economy",
+      "topic_id": "ECO_FP",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Primary deficit = Fiscal deficit minus interest payments; it isolates bor"
+        }
+      ],
+      "stem_preview": "1. Primary deficit is calculated by subtracting interest payments from the fiscal deficit. 2. Interest payments are clas"
+    },
+    {
+      "mcq_id": "ECO_IND_Q014",
+      "subject": "Economy",
+      "topic_id": "ECO_IND",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 DPIIT, established in 2019 under the Ministry of Commerce and Industry, i"
+        }
+      ],
+      "stem_preview": "1. The Make in India initiative is coordinated by the Department for Promotion of Industry and Internal Trade (DPIIT) un"
+    },
+    {
+      "mcq_id": "ECO_INF_Q018",
+      "subject": "Economy",
+      "topic_id": "ECO_INF",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The Office of the Economic Adviser under the Ministry of Commerce and Ind"
+        }
+      ],
+      "stem_preview": "1. The Wholesale Price Index (WPI) is published by the Office of the Economic Adviser, Ministry of Commerce and Industry"
+    },
+    {
+      "mcq_id": "ECO_MP_Q024",
+      "subject": "Economy",
+      "topic_id": "ECO_MP",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Repo (Repurchase agreement) is the rate at which RBI lends to banks again"
+        }
+      ],
+      "stem_preview": "1. The repo rate is the rate at which the Reserve Bank of India lends to commercial banks against government securities "
+    },
+    {
+      "mcq_id": "ECO_SRV_Q006",
+      "subject": "Economy",
+      "topic_id": "ECO_SRV",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 MMLPs reduce cargo handling time, logistics costs, and facilitate seamles"
+        }
+      ],
+      "stem_preview": "1. Multi-modal logistics parks (MMLPs) are being developed primarily to reduce cargo handling time and transportation co"
+    },
+    {
+      "mcq_id": "ECO_SRV_Q014",
+      "subject": "Economy",
+      "topic_id": "ECO_SRV",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 NIP targets \u20b9111 lakh crore in infrastructure investment across FY 2020\u2013F"
+        }
+      ],
+      "stem_preview": "1. The National Infrastructure Pipeline (NIP) is a comprehensive investment plan with a target of \u20b9111 lakh crore spanni"
+    },
+    {
+      "mcq_id": "ST_EMG_Q014",
+      "subject": "Economy",
+      "topic_id": "ST_EMG",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The Digital Rupee is a CBDC issued by RBI, confirmed in RBI's official an"
+        }
+      ],
+      "stem_preview": "1. The Digital Rupee (e\u20b9) is a central bank digital currency issued by the Reserve Bank of India. 2. The wholesale Digit"
+    },
+    {
+      "mcq_id": "ENV_BIO_Q013",
+      "subject": "Environment",
+      "topic_id": "ENV_BIO",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Conservation International currently recognizes 36 biodiversity hotspots "
+        }
+      ],
+      "stem_preview": "1. Conservation International identifies 36 global biodiversity hotspots. 2. These biodiversity hotspots cover approxima"
+    },
+    {
+      "mcq_id": "ENV_BIO_Q014",
+      "subject": "Environment",
+      "topic_id": "ENV_BIO",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 EbA uses biodiversity, wetlands, mangroves, and other ecosystems to reduc"
+        }
+      ],
+      "stem_preview": "1. Ecosystem-based adaptation primarily focuses on leveraging biodiversity and ecosystem services to help communities co"
+    },
+    {
+      "mcq_id": "ENV_CON_Q006",
+      "subject": "Environment",
+      "topic_id": "ENV_CON",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Conservation Reserves are declared under Section 36A on any area owned by"
+        }
+      ],
+      "stem_preview": "1. Conservation Reserves are declared under Section 36A of the Wildlife (Protection) Act, 1972. 2. Community Reserves ar"
+    },
+    {
+      "mcq_id": "ENV_CON_Q013",
+      "subject": "Environment",
+      "topic_id": "ENV_CON",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 0,
+      "new_correct": "1 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": true,
+          "got": false,
+          "verdict_text": "FALSE \u2014 Data Deficient is not a threat category; it is a classification indicati"
+        }
+      ],
+      "stem_preview": "1. Data Deficient is a threat category on the IUCN Red List indicating species at high risk of extinction. 2. The IUCN R"
+    },
+    {
+      "mcq_id": "ENV_ECO_Q008",
+      "subject": "Environment",
+      "topic_id": "ENV_ECO",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 COP29's primary outcome was agreement on climate finance mobilization, cu"
+        }
+      ],
+      "stem_preview": "1. The COP29 conference held in Baku, Azerbaijan primarily focused on mobilizing climate finance for developing nations."
+    },
+    {
+      "mcq_id": "ENV_ECO_Q020",
+      "subject": "Environment",
+      "topic_id": "ENV_ECO",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 A food chain is a linear sequence of organisms through which energy trans"
+        }
+      ],
+      "stem_preview": "1. A food chain represents a linear sequence of energy transfer, while a food web consists of interconnected multiple fo"
+    },
+    {
+      "mcq_id": "ENV_INT_Q011",
+      "subject": "Environment",
+      "topic_id": "ENV_INT",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The convention was adopted at the diplomatic conference in Minamata on 10"
+        }
+      ],
+      "stem_preview": "1. The Minamata Convention on Mercury was adopted in 2013 and entered into force in 2017. 2. The fifth Conference of the"
+    },
+    {
+      "mcq_id": "ENV_INT_Q012",
+      "subject": "Environment",
+      "topic_id": "ENV_INT",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The 20 Aichi Biodiversity Targets were adopted at COP10 in Nagoya (2010) "
+        }
+      ],
+      "stem_preview": "1. The Aichi Biodiversity Targets were established with a target achievement timeframe of 2011 to 2020 under the Convent"
+    },
+    {
+      "mcq_id": "ENV_LAW_Q022",
+      "subject": "Environment",
+      "topic_id": "ENV_LAW",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 0,
+      "new_correct": "1 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": true,
+          "got": false,
+          "verdict_text": "FALSE \u2014 Schedule III lists fauna (wild animals) requiring protection, not plants"
+        }
+      ],
+      "stem_preview": "1. Schedule III of the Wildlife Protection Act, 1972 lists plant species that require protection from exploitation. 2. S"
+    },
+    {
+      "mcq_id": "ENV_POL_Q015",
+      "subject": "Environment",
+      "topic_id": "ENV_POL",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Atal Bhujal Yojana explicitly focuses on sustainable groundwater manageme"
+        }
+      ],
+      "stem_preview": "1. The Atal Bhujal Yojana is designed to achieve sustainable groundwater management in water-stressed areas across India"
+    },
+    {
+      "mcq_id": "ENV_REN_Q001",
+      "subject": "Environment",
+      "topic_id": "ENV_REN",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 India's solar capacity crossed 75 GW in early 2024 and ranks fourth globa"
+        }
+      ],
+      "stem_preview": "1. India's solar installed capacity exceeded 75 gigawatts as of early 2024, making it the fourth largest solar capacity "
+    },
+    {
+      "mcq_id": "ENV_REN_Q003",
+      "subject": "Environment",
+      "topic_id": "ENV_REN",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 India's solar capacity surpassed 75 GW in 2024, positioning it as the wor"
+        }
+      ],
+      "stem_preview": "1. India's installed solar capacity exceeded 75 gigawatts as of early 2024, making it the fourth largest solar capacity "
+    },
+    {
+      "mcq_id": "ENV_REN_Q004",
+      "subject": "Environment",
+      "topic_id": "ENV_REN",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The ACC battery storage programme targets 50 GWh of manufacturing capacit"
+        }
+      ],
+      "stem_preview": "1. The National Programme on Advanced Chemistry Cell Battery Storage aims to achieve 50 GWh of domestic manufacturing ca"
+    },
+    {
+      "mcq_id": "ENV_REN_Q015",
+      "subject": "Environment",
+      "topic_id": "ENV_REN",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 As of 2023, India's installed wind capacity exceeded 45 GW with Tamil Nad"
+        }
+      ],
+      "stem_preview": "1. India's installed wind energy capacity exceeds 45 gigawatts, with Tamil Nadu having the highest installed capacity am"
+    },
+    {
+      "mcq_id": "ENV_RPT_Q012",
+      "subject": "Environment",
+      "topic_id": "ENV_RPT",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The EPI 2022 comprised 40 performance indicators grouped under climate ch"
+        }
+      ],
+      "stem_preview": "1. The Environmental Performance Index (EPI) 2022 assessed countries on 40 performance indicators across climate change,"
+    },
+    {
+      "mcq_id": "ENV_RPT_Q032",
+      "subject": "Environment",
+      "topic_id": "ENV_RPT",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The report explicitly states that global GHG emissions must decline by 42"
+        }
+      ],
+      "stem_preview": "1. The Emissions Gap Report 2023 states that global greenhouse gas emissions must fall by 42 percent by 2030 to limit wa"
+    },
+    {
+      "mcq_id": "GEO_AGR_Q008",
+      "subject": "Geography",
+      "topic_id": "GEO_AGR",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Gujarat, Andhra Pradesh, Karnataka, and Uttar Pradesh are indeed major to"
+        }
+      ],
+      "stem_preview": "1. Gujarat, Andhra Pradesh, Karnataka, and Uttar Pradesh are among the major tobacco-producing states in India. 2. The '"
+    },
+    {
+      "mcq_id": "GEO_CLM_Q017",
+      "subject": "Geography",
+      "topic_id": "GEO_CLM",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Geostrophic wind forms when pressure gradient force equals Coriolis force"
+        }
+      ],
+      "stem_preview": "1. Geostrophic wind occurs when the pressure gradient force is balanced by the Coriolis force, resulting in wind that bl"
+    },
+    {
+      "mcq_id": "GEO_HUM_Q004",
+      "subject": "Geography",
+      "topic_id": "GEO_HUM",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The 2021 Census was postponed from 2020 to 2024-2025 primarily due to the"
+        }
+      ],
+      "stem_preview": "1. The 2021 Census of India was postponed primarily due to the COVID-19 pandemic. 2. The 16th decennial census will be c"
+    },
+    {
+      "mcq_id": "GEO_IND_Q004",
+      "subject": "Geography",
+      "topic_id": "GEO_IND",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The Northern Plains are formed by alluvial deposits from the Indus, Ganga"
+        }
+      ],
+      "stem_preview": "1. The Northern Plains of India are formed by the alluvial deposits of the Indus, Ganga, and Brahmaputra river systems. "
+    },
+    {
+      "mcq_id": "GEO_MON_Q019",
+      "subject": "Geography",
+      "topic_id": "GEO_MON",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 In 2019, a strong positive IOD did offset weak El Ni\u00f1o effects, contribut"
+        }
+      ],
+      "stem_preview": "1. A strong positive Indian Ocean Dipole (IOD) in 2019 helped offset the effects of El Ni\u00f1o, resulting in normal monsoon"
+    },
+    {
+      "mcq_id": "GEO_MON_Q022",
+      "subject": "Geography",
+      "topic_id": "GEO_MON",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The Southwest Monsoon contributes approximately 75% of India's annual rai"
+        }
+      ],
+      "stem_preview": "1. The Southwest Monsoon accounts for approximately 75% of India's annual rainfall. 2. The Northeast Monsoon primarily a"
+    },
+    {
+      "mcq_id": "GEO_MORPH_Q015",
+      "subject": "Geography",
+      "topic_id": "GEO_MORPH",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Seafloor spreading at mid-ocean ridges creates new oceanic lithosphere as"
+        }
+      ],
+      "stem_preview": "1. Seafloor spreading occurs at mid-ocean ridges, where magma rises and solidifies to form new oceanic crust. 2. Contine"
+    },
+    {
+      "mcq_id": "GEO_OCN_Q011",
+      "subject": "Geography",
+      "topic_id": "GEO_OCN",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Diurnal tides have exactly one high tide and one low tide per lunar day, "
+        }
+      ],
+      "stem_preview": "1. Diurnal tides exhibit one high tide and one low tide per lunar day. 2. Semidiurnal tides exhibit two high tides and t"
+    },
+    {
+      "mcq_id": "GEO_RIV_Q014",
+      "subject": "Geography",
+      "topic_id": "GEO_RIV",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Himalayan rivers such as the Ganga and Brahmaputra are perennial due to d"
+        }
+      ],
+      "stem_preview": "1. Himalayan rivers are perennial, receiving water from both rainfall and melted snow from glaciers. 2. Peninsular river"
+    },
+    {
+      "mcq_id": "GEO_RIV_Q015",
+      "subject": "Geography",
+      "topic_id": "GEO_RIV",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The Ganga river basin is the largest overall river basin in India with a "
+        }
+      ],
+      "stem_preview": "1. The Ganga river basin is the largest river basin in India. 2. The Godavari river basin is the largest peninsular rive"
+    },
+    {
+      "mcq_id": "GEO_RIV_Q025",
+      "subject": "Geography",
+      "topic_id": "GEO_RIV",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Narmada, Tapi, Mahi, Sabarmati, and Periyar are all major west-flowing pe"
+        }
+      ],
+      "stem_preview": "1. Narmada, Tapi, Mahi, Sabarmati, and Periyar are among the major west-flowing peninsular rivers of India. 2. Among wes"
+    },
+    {
+      "mcq_id": "GEO_SOIL_Q013",
+      "subject": "Geography",
+      "topic_id": "GEO_SOIL",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Alluvial soils cover approximately 40% of India's total land area, predom"
+        }
+      ],
+      "stem_preview": "1. Alluvial soils are the most widespread and fertile soils in India, covering approximately 40% of the land area. 2. Al"
+    },
+    {
+      "mcq_id": "GEO_SOIL_Q015",
+      "subject": "Geography",
+      "topic_id": "GEO_SOIL",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Alluvial soils are indeed the most widespread soil type in India, coverin"
+        }
+      ],
+      "stem_preview": "1. Alluvial soils are the most widespread soil type in India, covering approximately 40 percent of the total land area. "
+    },
+    {
+      "mcq_id": "GEO_VEG_Q004",
+      "subject": "Geography",
+      "topic_id": "GEO_VEG",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Tree cover in ISFR explicitly includes scattered trees, linear tree patch"
+        }
+      ],
+      "stem_preview": "1. Tree cover as per the India State of Forest Report includes small patches of trees outside recorded forest areas. 2. "
+    },
+    {
+      "mcq_id": "GEO_VEG_Q006",
+      "subject": "Geography",
+      "topic_id": "GEO_VEG",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Tendu leaves are predominantly collected from Tropical Dry Deciduous fore"
+        }
+      ],
+      "stem_preview": "1. Tendu leaves, used for making bidis, are primarily collected from Tropical Dry Deciduous forests in India. 2. The Gre"
+    },
+    {
+      "mcq_id": "GEO_VEG_Q012",
+      "subject": "Geography",
+      "topic_id": "GEO_VEG",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Mizoram has approximately 85-88% of its geographical area under forest co"
+        }
+      ],
+      "stem_preview": "1. Mizoram has the highest percentage of geographical area under forest cover among Indian states. 2. Madhya Pradesh has"
+    },
+    {
+      "mcq_id": "HIS_ANC1_Q007",
+      "subject": "History",
+      "topic_id": "HIS_ANC1",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The Rigveda Samhita contains exactly 1,028 hymns and predates the Yajurve"
+        }
+      ],
+      "stem_preview": "1. The Rigveda Samhita contains 1,028 hymns and is the oldest of the Vedic texts. 2. Recent collaborative initiatives be"
+    },
+    {
+      "mcq_id": "HIS_ANC2_Q017",
+      "subject": "History",
+      "topic_id": "HIS_ANC2",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The Third Council was convened at Pataliputra under Emperor Ashoka's dire"
+        }
+      ],
+      "stem_preview": "1. The Third Buddhist Council was convened at Pataliputra under the patronage of Emperor Ashoka. 2. The Third Buddhist C"
+    },
+    {
+      "mcq_id": "HIS_ANC3_Q014",
+      "subject": "History",
+      "topic_id": "HIS_ANC3",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The Rashtrakutas displaced Chalukyan rule in the 8th century and built th"
+        }
+      ],
+      "stem_preview": "1. The Rashtrakutas overthrew the Chalukyas of Badami and commissioned the construction of the Kailasanatha Temple at El"
+    },
+    {
+      "mcq_id": "HIS_ART1_Q018",
+      "subject": "History",
+      "topic_id": "HIS_ART1",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Ashoka commissioned the original brick stupa (ca. 250 BCE) as a reliquary"
+        }
+      ],
+      "stem_preview": "1. Sanchi Stupa was originally constructed during the reign of Emperor Ashoka of the Mauryan dynasty. 2. The stupa was s"
+    },
+    {
+      "mcq_id": "HIS_ART2_Q017",
+      "subject": "History",
+      "topic_id": "HIS_ART2",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Abhijnanashakuntalam is Kalidasa's most renowned play, telling the story "
+        }
+      ],
+      "stem_preview": "1. Kalidasa authored the Sanskrit drama Abhijnanashakuntalam, one of the most celebrated works of classical Indian liter"
+    },
+    {
+      "mcq_id": "HIS_MED1_Q019",
+      "subject": "History",
+      "topic_id": "HIS_MED1",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Mirabai (c. 1498\u20131547) was a 16th-century Rajput princess of Mewar who co"
+        }
+      ],
+      "stem_preview": "1. Mirabai was a 16th-century Rajput princess who composed devotional bhajans dedicated to Lord Krishna. 2. Andal was an"
+    },
+    {
+      "mcq_id": "HIS_MED1_Q022",
+      "subject": "History",
+      "topic_id": "HIS_MED1",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The iqta system granted revenue-generating rights from assigned territori"
+        }
+      ],
+      "stem_preview": "1. The iqta system under the Delhi Sultanate involved revenue assignments to military officers as compensation in lieu o"
+    },
+    {
+      "mcq_id": "HIS_MOD1_Q013",
+      "subject": "History",
+      "topic_id": "HIS_MOD1",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The battle was fought between the British East India Company under Robert"
+        }
+      ],
+      "stem_preview": "1. The Battle of Plassey was fought between the forces of the British East India Company and Siraj-ud-Daulah, the Nawab "
+    },
+    {
+      "mcq_id": "HIS_MOD3_Q005",
+      "subject": "History",
+      "topic_id": "HIS_MOD3",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The Lucknow Pact facilitated reconciliation between the Moderate faction "
+        }
+      ],
+      "stem_preview": "1. The Lucknow Pact of 1916 reunited the Moderates and Extremists within the Indian National Congress. 2. The Lucknow Pa"
+    },
+    {
+      "mcq_id": "HIS_MOD3_Q017",
+      "subject": "History",
+      "topic_id": "HIS_MOD3",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The Indian Association was founded in Calcutta in 1876 by Surendranath Ba"
+        }
+      ],
+      "stem_preview": "1. The Indian Association was founded in Calcutta in 1876 by Surendranath Banerjee and Ananda Mohan Bose. 2. The Bombay "
+    },
+    {
+      "mcq_id": "HIS_MOD3_Q021",
+      "subject": "History",
+      "topic_id": "HIS_MOD3",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The Ghadar Movement was established in 1913 in San Francisco with Lala Ha"
+        }
+      ],
+      "stem_preview": "1. The Ghadar Movement was founded in 1913 in San Francisco by Lala Hardayal. 2. The Ghadar Movement aimed to overthrow "
+    },
+    {
+      "mcq_id": "HIS_MOD3_Q024",
+      "subject": "History",
+      "topic_id": "HIS_MOD3",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Tilak founded the Home Rule League in April 1916 in Pune with the objecti"
+        }
+      ],
+      "stem_preview": "1. Bal Gangadhar Tilak founded the Home Rule League in April 1916 in Pune. 2. Annie Besant founded the Home Rule League "
+    },
+    {
+      "mcq_id": "HIS_MOD4_Q019",
+      "subject": "History",
+      "topic_id": "HIS_MOD4",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Mohan Singh formed the INA in 1942 with Japanese support during World War"
+        }
+      ],
+      "stem_preview": "1. The Indian National Army was formed in 1942 under the leadership of Mohan Singh. 2. Subhas Chandra Bose assumed comma"
+    },
+    {
+      "mcq_id": "HIS_MOD4_Q021",
+      "subject": "History",
+      "topic_id": "HIS_MOD4",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both statements",
+        "Neither of the above"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The Khilafat Movement was launched in 1919 in response to the threatened "
+        }
+      ],
+      "stem_preview": "1. The Khilafat Movement was launched in 1919 to protect the Ottoman Caliphate following the end of World War I. 2. The "
+    },
+    {
+      "mcq_id": "GEO_HUM_Q012",
+      "subject": "Polity",
+      "topic_id": "GEO_HUM",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Census 2011 recorded 31.2% (approximately 377 million) of India's populat"
+        }
+      ],
+      "stem_preview": "1. As per Census 2011, India's urban population constituted 31.2% of the total population. 2. The 74th Constitutional Am"
+    },
+    {
+      "mcq_id": "GEO_MIN_Q014",
+      "subject": "Polity",
+      "topic_id": "GEO_MIN",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 India's nuclear doctrine explicitly mandates no first use of nuclear weap"
+        }
+      ],
+      "stem_preview": "1. India's nuclear weapons doctrine is based on 'no first use' and credible minimum deterrence. 2. India is not a signat"
+    },
+    {
+      "mcq_id": "POL_AMD_Q011",
+      "subject": "Polity",
+      "topic_id": "POL_AMD",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Article 21A mandates free and compulsory education as a fundamental right"
+        }
+      ],
+      "stem_preview": "1. The 86th Amendment Act, 2002 inserted Article 21A to make free and compulsory education a fundamental right for child"
+    },
+    {
+      "mcq_id": "POL_ELC_Q018",
+      "subject": "Polity",
+      "topic_id": "POL_ELC",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The 1950 Act establishes the framework for seat allocation across states "
+        }
+      ],
+      "stem_preview": "1. The Representation of the People Act, 1950 deals with the allocation of seats in Parliament and delimitation of const"
+    },
+    {
+      "mcq_id": "POL_EMR_Q013",
+      "subject": "Polity",
+      "topic_id": "POL_EMR",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The term was restored to five years; during Emergency it was extended to "
+        }
+      ],
+      "stem_preview": "1. The 44th Amendment Act, 1978 restored the term of the Lok Sabha and state legislative assemblies to five years from t"
+    },
+    {
+      "mcq_id": "POL_EX_Q019",
+      "subject": "Polity",
+      "topic_id": "POL_EX",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Article 56 explicitly provides a five-year term from assuming office with"
+        }
+      ],
+      "stem_preview": "1. The President of India serves a term of five years from the date of assuming office, with no constitutional bar on re"
+    },
+    {
+      "mcq_id": "POL_FR_Q002",
+      "subject": "Polity",
+      "topic_id": "POL_FR",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Article 19(1) explicitly lists six freedoms: speech and expression, assem"
+        }
+      ],
+      "stem_preview": "1. Article 19 of the Indian Constitution guarantees six fundamental freedoms to citizens, including freedom of speech an"
+    },
+    {
+      "mcq_id": "POL_FR_Q015",
+      "subject": "Polity",
+      "topic_id": "POL_FR",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Article 23 explicitly prohibits trafficking, begar, and forced labour; it"
+        }
+      ],
+      "stem_preview": "1. Article 23 of the Indian Constitution prohibits trafficking in human beings and begar or other forms of forced labour"
+    },
+    {
+      "mcq_id": "POL_FR_Q019",
+      "subject": "Polity",
+      "topic_id": "POL_FR",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Article 21 protects life and personal liberty and is enforceable against "
+        }
+      ],
+      "stem_preview": "1. Article 21 of the Indian Constitution guarantees the right to life and personal liberty, which is enforceable only ag"
+    },
+    {
+      "mcq_id": "POL_HIS_Q008",
+      "subject": "Polity",
+      "topic_id": "POL_HIS",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Emergency provisions in the Constitution derive from the emergency powers"
+        }
+      ],
+      "stem_preview": "1. The emergency provisions in the Constitution of India were borrowed from the Government of India Act, 1935. 2. The Bh"
+    },
+    {
+      "mcq_id": "POL_HIS_Q012",
+      "subject": "Polity",
+      "topic_id": "POL_HIS",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The Act created the office of Governor-General of Bengal with an Executiv"
+        }
+      ],
+      "stem_preview": "1. The Regulating Act of 1773 established the office of Governor-General of Bengal with an Executive Council of four mem"
+    },
+    {
+      "mcq_id": "POL_HIS_Q015",
+      "subject": "Polity",
+      "topic_id": "POL_HIS",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The Act terminated EIC rule and vested all powers in the Crown, with the "
+        }
+      ],
+      "stem_preview": "1. The Government of India Act 1858 transferred the powers of the East India Company to the British Crown through the Se"
+    },
+    {
+      "mcq_id": "POL_HIS_Q018",
+      "subject": "Polity",
+      "topic_id": "POL_HIS",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The Objectives Resolution was formally adopted by the Constituent Assembl"
+        }
+      ],
+      "stem_preview": "1. The Objectives Resolution was adopted by the Constituent Assembly on 22 January 1947. 2. The Objectives Resolution en"
+    },
+    {
+      "mcq_id": "POL_LOC_Q009",
+      "subject": "Polity",
+      "topic_id": "POL_LOC",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 3,
+      "new_correct": "Neither 1 nor 2",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 State Finance Commissions are mandated under Article 243I and reconstitut"
+        }
+      ],
+      "stem_preview": "1. State Finance Commissions are constituted every five years under Article 243I of the Constitution of India. 2. The 16"
+    },
+    {
+      "mcq_id": "POL_PARL_Q019",
+      "subject": "Polity",
+      "topic_id": "POL_PARL",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 An Appropriation Bill explicitly grants Parliament's authorization to wit"
+        }
+      ],
+      "stem_preview": "1. An Appropriation Bill authorizes the withdrawal of money from the Consolidated Fund of India for specific government "
+    },
+    {
+      "mcq_id": "POL_PARL_Q021",
+      "subject": "Polity",
+      "topic_id": "POL_PARL",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The Public Accounts Committee has 22 members: 15 from Lok Sabha and 7 fro"
+        }
+      ],
+      "stem_preview": "1. The Public Accounts Committee consists of 22 members, with 15 from Lok Sabha and 7 from Rajya Sabha. 2. The Estimates"
+    },
+    {
+      "mcq_id": "POL_PARL_Q025",
+      "subject": "Polity",
+      "topic_id": "POL_PARL",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Article 105(2) provides immunity from civil arrest during parliamentary s"
+        }
+      ],
+      "stem_preview": "1. Members of Parliament enjoy immunity from arrest in civil cases during parliamentary sessions and for forty days befo"
+    },
+    {
+      "mcq_id": "POL_STATE_Q011",
+      "subject": "Polity",
+      "topic_id": "POL_STATE",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Article 171 specifies one-sixth of Council members are nominated by the G"
+        }
+      ],
+      "stem_preview": "1. One-sixth of the members of a State Legislative Council are nominated by the Governor. 2. The State Legislative Counc"
+    },
+    {
+      "mcq_id": "ST_AGR_Q009",
+      "subject": "Science & Tech",
+      "topic_id": "ST_AGR",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Dhanashakti is an iron-rich pearl millet variety developed through conven"
+        }
+      ],
+      "stem_preview": "1. Dhanashakti is an iron-rich pearl millet variety developed through biofortification. 2. The Indian Council of Agricul"
+    },
+    {
+      "mcq_id": "ST_BIO_Q020",
+      "subject": "Science & Tech",
+      "topic_id": "ST_BIO",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Bt cotton was approved for commercial cultivation in India in 2002 and re"
+        }
+      ],
+      "stem_preview": "1. Bt cotton has been approved for commercial cultivation in India. 2. Genetically modified mustard (Dhara Mustard Hybri"
+    },
+    {
+      "mcq_id": "ST_DEF_Q015",
+      "subject": "Science & Tech",
+      "topic_id": "ST_DEF",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Nirbhay is India's first indigenously developed long-range subsonic cruis"
+        }
+      ],
+      "stem_preview": "1. The Nirbhay cruise missile is India's first indigenously developed subsonic cruise missile. 2. The Nirbhay cruise mis"
+    },
+    {
+      "mcq_id": "ST_DEF_Q018",
+      "subject": "Science & Tech",
+      "topic_id": "ST_DEF",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 INS Arihant, commissioned in November 2015 (operational 2016), is India's"
+        }
+      ],
+      "stem_preview": "1. INS Arihant is India's first indigenously built nuclear-powered ballistic missile submarine. 2. INS Chakra is a nucle"
+    },
+    {
+      "mcq_id": "ST_HLT_Q005",
+      "subject": "Science & Tech",
+      "topic_id": "ST_HLT",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 AB-PMJAY uses Socio-Economic Caste Census 2011 data as the primary source"
+        }
+      ],
+      "stem_preview": "1. The Ayushman Bharat Pradhan Mantri Jan Arogya Yojana (AB-PMJAY) identifies beneficiaries based on the Socio-Economic "
+    },
+    {
+      "mcq_id": "ST_HLT_Q020",
+      "subject": "Science & Tech",
+      "topic_id": "ST_HLT",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Mission Indradhanush has a target of 90% full immunization coverage by 20"
+        }
+      ],
+      "stem_preview": "1. Mission Indradhanush aims to achieve 90% full immunization coverage by 2025. 2. The Human Papillomavirus (HPV) vaccin"
+    },
+    {
+      "mcq_id": "ST_NUC_Q012",
+      "subject": "Science & Tech",
+      "topic_id": "ST_NUC",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Kudankulam units 1 and 2 are Russian VVER-1000 reactors using enriched ur"
+        }
+      ],
+      "stem_preview": "1. The Kudankulam Nuclear Power Plant uses Russian VVER reactors that operate with enriched uranium and light water as b"
+    },
+    {
+      "mcq_id": "ST_NUC_Q015",
+      "subject": "Science & Tech",
+      "topic_id": "ST_NUC",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 IAEA is formally recognized as an autonomous organization within the UN s"
+        }
+      ],
+      "stem_preview": "1. The International Atomic Energy Agency (IAEA) is an autonomous organization within the United Nations system. 2. The "
+    },
+    {
+      "mcq_id": "ST_SPACE_Q018",
+      "subject": "Science & Tech",
+      "topic_id": "ST_SPACE",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 M3 detected spectroscopic evidence of water molecules on the lunar surfac"
+        }
+      ],
+      "stem_preview": "1. Chandrayaan-1's Moon Mineralogy Mapper (M3) discovered water molecules on the Moon's surface. 2. Chandrayaan-1 was la"
+    }
+  ],
+  "no_explanation": [],
+  "unparseable": []
+}

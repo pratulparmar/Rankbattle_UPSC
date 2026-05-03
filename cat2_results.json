@@ -1,0 +1,293 @@
+{
+  "processed": 10,
+  "failed": 1,
+  "dry_run": true,
+  "results": [
+    {
+      "mcq_id": "ENV_RPT_Q012",
+      "subject": "Environment",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "old_correct": 1,
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_correct": 2,
+      "new_explanation": {
+        "concept_anchor": "The Environmental Performance Index (EPI) is a biennial index released by Yale and Columbia Universities that measures the environmental performance of countries across multiple dimensions, indicators, and policy objectives.",
+        "statement_wise": {
+          "1": "TRUE \u2014 The EPI 2022 assessed 180 countries on 40 performance indicators across 11 issue categories, grouped under the three policy objectives of climate change, environmental health, and ecosystem vitality.",
+          "2": "TRUE \u2014 Denmark topped the Environmental Performance Index (EPI) 2022 with a score of 77.9, as reported in the EPI 2022 report by Yale and Columbia Universities."
+        },
+        "why_others_wrong": "'1 only' fails because Statement 2 is also true \u2014 Denmark did top EPI 2022 with a score of 77.9. '2 only' fails because Statement 1 is also true \u2014 EPI 2022 did use 40 indicators across three policy objectives. 'Neither 1 nor 2' fails because both statements are factually accurate as per the official EPI 2022 report.",
+        "common_trap": "Students often confuse the number of indicators (40) with the number of issue categories (11) or the number of policy objectives (3), leading them to incorrectly mark Statement 1 as false.",
+        "elimination_hint": "If you recall that Denmark consistently leads global environmental rankings and that EPI 2022 used a multi-indicator framework, both statements check out \u2014 directly pointing to 'Both 1 and 2'."
+      }
+    },
+    {
+      "mcq_id": "GEO_SOIL_Q013",
+      "subject": "Geography",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "old_correct": 1,
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_correct": 2,
+      "new_explanation": {
+        "concept_anchor": "Alluvial soils, formed by riverine deposits across the Indo-Gangetic plains and coastal deltas, are the most extensive soil type in India and are crucial for agricultural productivity, especially in their newer khadar form.",
+        "statement_wise": {
+          "1": "TRUE \u2014 Alluvial soils are the most widespread and fertile soils in India, covering approximately 40% of the total land area, as stated in NCERT Class 10 Geography.",
+          "2": "TRUE \u2014 Alluvial soils are characteristically rich in potash, phosphoric acid, and lime, but deficient in nitrogen and organic matter, according to NCERT Class 10 Geography."
+        },
+        "why_others_wrong": "Option '1 only' fails because Statement 2 is also correct regarding the nutrient profile of alluvial soils. Option '2 only' fails because Statement 1 is also correct about alluvial soils covering ~40% of India's land area. Option 'Neither 1 nor 2' fails because both statements are factually accurate as per NCERT.",
+        "common_trap": "Students often doubt Statement 2 by confusing 'rich in potash and lime' with 'rich in nitrogen,' or assume alluvial soils are uniformly fertile in all nutrients, leading them to mark only Statement 1 as correct.",
+        "elimination_hint": "If you recall that alluvial soils require nitrogen fertilizers (a commonly tested fact), you can confirm Statement 2's deficiency claim; combined with the well-known 40% coverage figure for Statement 1, both statements must be true, pointing directly to 'Both 1 and 2.'"
+      }
+    },
+    {
+      "mcq_id": "GEO_SOIL_Q015",
+      "subject": "Geography",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "old_correct": 1,
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_correct": 2,
+      "new_explanation": {
+        "concept_anchor": "Alluvial soils, formed from river sediments deposited across the Indo-Gangetic Plain, are the most widespread soil type in India, covering approximately 40 percent of the total land area. Within alluvial soils, Khadar and Bhangar represent two distinct sub-types differing in age, texture, and fertility.",
+        "statement_wise": {
+          "1": "TRUE \u2014 Alluvial soils are indeed the most widespread soil type in India, covering approximately 40 percent of the total land area, as confirmed by NCERT Class 10 Geography 'Resources and Development'.",
+          "2": "TRUE \u2014 Khadar soil is more fertile than Bhangar soil because it is newer, composed of finer particles, and is regularly renewed by annual river floods, as described in NCERT Class 10 Geography 'Resources and Development'."
+        },
+        "why_others_wrong": "'1 only' fails because Statement 2 is also true \u2014 Khadar is genuinely more fertile than Bhangar due to regular flood renewal. '2 only' fails because Statement 1 is also true \u2014 alluvial soils do cover ~40% of India's land. 'Neither 1 nor 2' fails because both statements are factually correct as per NCERT.",
+        "common_trap": "Students often confuse Khadar and Bhangar, mistakenly assuming older Bhangar soils are more fertile due to longer weathering, when in fact the regular renewal of fine sediments makes younger Khadar more fertile.",
+        "elimination_hint": "Since alluvial soils covering ~40% of India is a well-known NCERT fact (Statement 1 = TRUE), and Khadar being more fertile than Bhangar is a standard NCERT distinction (Statement 2 = TRUE), the answer must be 'Both 1 and 2'."
+      }
+    },
+    {
+      "mcq_id": "GEO_VEG_Q004",
+      "subject": "Geography",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "old_correct": 1,
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_correct": 0,
+      "new_explanation": {
+        "concept_anchor": "The India State of Forest Report (ISFR) by the Forest Survey of India distinguishes between 'Forest Cover' (recorded forest areas) and 'Tree Cover' (trees outside recorded forests). Tiger Reserves in India are notified under Project Tiger by the National Tiger Conservation Authority.",
+        "statement_wise": {
+          "1": "TRUE \u2014 As per ISFR methodology, 'Tree Cover' includes tree patches less than 1 hectare in area and scattered trees that lie outside recorded forest areas, making it distinct from forest cover.",
+          "2": "FALSE \u2014 Guru Ghasidas National Park and Tamor Pingla Wildlife Sanctuary were jointly notified as India's 53rd Tiger Reserve in October 2021, not in 2024."
+        },
+        "why_others_wrong": "'2 only' fails because Statement 1 is correctly defined in ISFR methodology; 'Both 1 and 2' fails because Statement 2 has the wrong year (2021, not 2024) and wrong serial number; 'Neither 1 nor 2' fails because Statement 1 is factually accurate as per ISFR.",
+        "common_trap": "Students often confuse the year of notification of the Guru Ghasidas-Tamor Pingla Tiger Reserve, and may also mix up the serial number (53rd, not 52nd), leading them to incorrectly reject Statement 2 for the wrong reason or accept it as true.",
+        "elimination_hint": "Confirm Statement 1 first \u2014 ISFR explicitly counts sub-hectare tree patches outside forests as 'Tree Cover'; this is a standard definition. Then verify Statement 2's year: the reserve was notified in 2021, not 2024, making only Statement 1 correct."
+      }
+    },
+    {
+      "mcq_id": "GEO_VEG_Q006",
+      "subject": "Geography",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "old_correct": 1,
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_correct": 2,
+      "new_explanation": {
+        "concept_anchor": "Tendu leaves are a major non-timber forest product harvested primarily from central Indian dry deciduous forests. The Green Credit Program represents India's market-based approach to environmental governance, notified in October 2023 by MoEFCC.",
+        "statement_wise": {
+          "1": "TRUE \u2014 Tendu (Diospyros melanoxylon) trees, whose leaves are used for making bidis, are predominantly found in Tropical Dry Deciduous forests of central India, as confirmed by forestry reports and economic surveys.",
+          "2": "TRUE \u2014 The Green Credit Program, launched in October 2023 by the Ministry of Environment, Forest and Climate Change, creates a market-based mechanism to incentivize voluntary environmental actions including sustainable forest management, as per PIB releases."
+        },
+        "why_others_wrong": "'1 only' fails because Statement 2 is also correct about the Green Credit Program. '2 only' fails because Statement 1 is also correct about tendu leaves and dry deciduous forests. 'Neither 1 nor 2' fails because both statements are factually accurate.",
+        "common_trap": "Students often associate tendu leaves with tropical moist or sal forests rather than dry deciduous forests, leading them to incorrectly mark Statement 1 as false. Additionally, some confuse the Green Credit Program with the Carbon Credit Trading Scheme, doubting Statement 2.",
+        "elimination_hint": "Confirming that tendu is a hallmark NTFP of central India's dry deciduous belt and recalling the 2023 MoEFCC notification on Green Credits immediately points to both statements being true, leaving 'Both 1 and 2' as the only valid choice."
+      }
+    },
+    {
+      "mcq_id": "GEO_VEG_Q012",
+      "subject": "Geography",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "old_correct": 1,
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_correct": 2,
+      "new_explanation": {
+        "concept_anchor": "India's forest cover data distinguishes between percentage of geographical area under forest and absolute forest area in sq km; the ISFR 2021 reports both metrics separately for each state.",
+        "statement_wise": {
+          "1": "TRUE \u2014 Mizoram has the highest percentage of geographical area under forest cover at 84.93%, as per the India State of Forest Report (ISFR) 2021.",
+          "2": "TRUE \u2014 Madhya Pradesh has the largest forest cover in India by absolute area, covering 77,492.60 sq km, according to the India State of Forest Report (ISFR) 2021."
+        },
+        "why_others_wrong": "'1 only' fails because Statement 2 is also correct about MP's absolute area leadership; '2 only' fails because Statement 1 is also correct about Mizoram's percentage leadership; 'Neither 1 nor 2' fails because both statements are factually accurate as per ISFR 2021.",
+        "common_trap": "Students often confuse percentage-based forest cover ranking with absolute area ranking and assume the same state tops both lists, leading them to mark only one statement as correct.",
+        "elimination_hint": "Recognise that 'highest percentage' and 'largest absolute area' are two different metrics \u2014 a small northeastern state like Mizoram can top percentage rankings while a large central state like MP tops absolute area rankings; once this distinction is clear, both statements are independently verifiable as TRUE, pointing directly to 'Both 1 and 2'."
+      }
+    },
+    {
+      "mcq_id": "HIS_ANC1_Q007",
+      "subject": "History",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "old_correct": 1,
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_correct": 2,
+      "new_explanation": {
+        "concept_anchor": "The Rigveda is the oldest of the four Vedas, comprising 1,028 hymns (suktas) arranged in 10 mandalas, dated approximately 1500\u20131200 BCE. Contemporary scholarship increasingly adopts interdisciplinary approaches to explore possible connections between Vedic literature and Harappan archaeology.",
+        "statement_wise": {
+          "1": "TRUE \u2014 The Rigveda Samhita contains exactly 1,028 hymns and is universally recognized as the oldest among the four Vedic texts, as confirmed by NCERT Class XI History.",
+          "2": "TRUE \u2014 Collaborative academic initiatives involving archaeologists and Sanskrit scholars are actively underway to correlate Rigvedic textual evidence with archaeological findings from the Harappan civilization, reflecting a growing interdisciplinary research trend."
+        },
+        "why_others_wrong": "'1 only' fails because Statement 2 is also true; '2 only' fails because Statement 1 is also true; 'Neither 1 nor 2' fails because both statements are independently verified as correct.",
+        "common_trap": "Students often doubt Statement 2, assuming no serious academic effort exists to connect Vedic texts with Harappan archaeology, when in fact such interdisciplinary research is well-established in academic circles.",
+        "elimination_hint": "Confirm Statement 1 first \u2014 1,028 hymns is a standard NCERT fact; then recognize that interdisciplinary Vedic-Harappan research is a documented academic reality, making 'Both 1 and 2' the only viable option."
+      }
+    },
+    {
+      "mcq_id": "HIS_ANC2_Q017",
+      "subject": "History",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "old_correct": 1,
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_correct": 2,
+      "new_explanation": {
+        "concept_anchor": "The Third Buddhist Council, held circa 250 BCE at Pataliputra under Emperor Ashoka's patronage, was instrumental in standardizing Buddhist doctrine and launching large-scale missionary activities beyond the Indian subcontinent.",
+        "statement_wise": {
+          "1": "TRUE \u2014 The Third Buddhist Council was indeed convened at Pataliputra under the patronage of Emperor Ashoka, as recorded in Buddhist chronicles like the Mahavamsa and Dipavamsa.",
+          "2": "TRUE \u2014 Following the Third Buddhist Council, Ashoka dispatched missionaries including his son Mahendra and daughter Sanghamitra to Sri Lanka, and others to Suvarnabhumi (Southeast Asia) and Hellenistic kingdoms (Central/West Asia), as evidenced by Ashokan edicts and Buddhist texts."
+        },
+        "why_others_wrong": "'1 only' fails because Statement 2 is also true \u2014 missionary expansion did follow the Council. '2 only' fails because Statement 1 is also true \u2014 Pataliputra under Ashoka is well-documented as the venue. 'Neither 1 nor 2' fails because both statements are historically accurate and corroborated by multiple sources.",
+        "common_trap": "Students often know Statement 1 is correct but underestimate or overlook the direct causal link between the Third Buddhist Council and the organised missionary dispatches, doubting Statement 2's accuracy.",
+        "elimination_hint": "If you confirm that Ashoka patronised the Third Council at Pataliputra (Statement 1 = TRUE), then recall Ashoka's famous missionary dispatches to Sri Lanka and beyond as a direct outcome of that Council (Statement 2 = TRUE), leading straight to 'Both 1 and 2'."
+      }
+    },
+    {
+      "mcq_id": "POL_HIS_Q015",
+      "subject": "Polity",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "old_correct": 1,
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_correct": 2,
+      "new_explanation": {
+        "concept_anchor": "The Government of India Act 1858 formally abolished the East India Company and transferred all administrative, military, and financial powers to the British Crown, to be exercised through a newly created Secretary of State for India assisted by a Council of India.",
+        "statement_wise": {
+          "1": "TRUE \u2014 The Government of India Act 1858 abolished the East India Company and transferred its powers, territories, and revenues to the British Crown, to be exercised by the Secretary of State for India.",
+          "2": "TRUE \u2014 The Government of India Act 1858 created a 15-member Council of India to assist the Secretary of State for India in London."
+        },
+        "why_others_wrong": "'1 only' fails because Statement 2 is also correct about the 15-member Council of India; '2 only' fails because Statement 1 is also correct about the transfer of powers to the Crown via Secretary of State; 'Neither 1 nor 2' fails because both statements are factually accurate as per Laxmikanth.",
+        "common_trap": "Students often confuse the number of members in the Council of India \u2014 some recall it as 12 or 10 members \u2014 and incorrectly mark Statement 2 as false, leading them to choose '1 only' instead of 'Both 1 and 2'.",
+        "elimination_hint": "If you confirm that the Act did abolish the Company and transfer powers to the Crown (Statement 1 = TRUE), then verify the 15-member Council detail; both facts together point directly to 'Both 1 and 2'."
+      }
+    },
+    {
+      "mcq_id": "POL_PARL_Q025",
+      "subject": "Polity",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "old_correct": 1,
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_correct": 2,
+      "new_explanation": {
+        "concept_anchor": "Parliamentary privileges under Article 105 of the Constitution and Section 135A of the Code of Civil Procedure, 1908 grant Members of Parliament immunity from civil arrest during sessions and 40 days before and after, but no such protection extends to criminal cases.",
+        "statement_wise": {
+          "1": "TRUE \u2014 Under Section 135A of the Code of Civil Procedure, 1908, Members of Parliament are immune from arrest in civil cases during a parliamentary session and for forty days before and after such session.",
+          "2": "TRUE \u2014 Parliamentary privileges do not cover criminal cases; an MP can be lawfully arrested and detained in a criminal matter even while Parliament is in session."
+        },
+        "why_others_wrong": "'1 only' fails because Statement 2 is also true \u2014 criminal immunity does not exist for MPs. '2 only' fails because Statement 1 is also true \u2014 civil immunity for 40 days before, during, and after session is well-established. 'Neither 1 nor 2' fails because both statements are factually correct.",
+        "common_trap": "Students often assume parliamentary privilege provides blanket immunity from all arrests (both civil and criminal), leading them to mark Statement 2 as false \u2014 but the protection strictly covers only civil cases.",
+        "elimination_hint": "Confirm that civil immunity exists (Statement 1 = TRUE), then recall that criminal arrests are not covered by privilege (Statement 2 = TRUE) \u2014 this directly points to 'Both 1 and 2'."
+      }
+    }
+  ],
+  "failures": [
+    {
+      "mcq_id": "GEO_RIV_Q014",
+      "reason": "Gemini verification failed"
+    }
+  ]
+}

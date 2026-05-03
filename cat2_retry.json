@@ -1,0 +1,324 @@
+{
+  "count": 11,
+  "questions": [
+    {
+      "mcq_id": "ENV_RPT_Q012",
+      "subject": "Environment",
+      "topic_id": "ENV_RPT",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The EPI 2022 comprised 40 performance indicators grouped under climate ch"
+        }
+      ],
+      "stem_preview": "1. The Environmental Performance Index (EPI) 2022 assessed countries on 40 performance indicators across climate change,",
+      "classification_reason": "Cat1 mismatch \u2014 correct_index conflicts with explanation verdicts: stmt1 expected FALSE got TRUE"
+    },
+    {
+      "mcq_id": "GEO_RIV_Q014",
+      "subject": "Geography",
+      "topic_id": "GEO_RIV",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Himalayan rivers such as the Ganga and Brahmaputra are perennial due to d"
+        }
+      ],
+      "stem_preview": "1. Himalayan rivers are perennial, receiving water from both rainfall and melted snow from glaciers. 2. Peninsular river",
+      "classification_reason": "Cat1 mismatch \u2014 correct_index conflicts with explanation verdicts: stmt1 expected FALSE got TRUE"
+    },
+    {
+      "mcq_id": "GEO_SOIL_Q013",
+      "subject": "Geography",
+      "topic_id": "GEO_SOIL",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Alluvial soils cover approximately 40% of India's total land area, predom"
+        }
+      ],
+      "stem_preview": "1. Alluvial soils are the most widespread and fertile soils in India, covering approximately 40% of the land area. 2. Al",
+      "classification_reason": "Cat1 mismatch \u2014 correct_index conflicts with explanation verdicts: stmt1 expected FALSE got TRUE"
+    },
+    {
+      "mcq_id": "GEO_SOIL_Q015",
+      "subject": "Geography",
+      "topic_id": "GEO_SOIL",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Alluvial soils are indeed the most widespread soil type in India, coverin"
+        }
+      ],
+      "stem_preview": "1. Alluvial soils are the most widespread soil type in India, covering approximately 40 percent of the total land area. ",
+      "classification_reason": "Cat1 mismatch \u2014 correct_index conflicts with explanation verdicts: stmt1 expected FALSE got TRUE"
+    },
+    {
+      "mcq_id": "GEO_VEG_Q004",
+      "subject": "Geography",
+      "topic_id": "GEO_VEG",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Tree cover in ISFR explicitly includes scattered trees, linear tree patch"
+        }
+      ],
+      "stem_preview": "1. Tree cover as per the India State of Forest Report includes small patches of trees outside recorded forest areas. 2. ",
+      "classification_reason": "Cat1 mismatch \u2014 correct_index conflicts with explanation verdicts: stmt1 expected FALSE got TRUE"
+    },
+    {
+      "mcq_id": "GEO_VEG_Q006",
+      "subject": "Geography",
+      "topic_id": "GEO_VEG",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Tendu leaves are predominantly collected from Tropical Dry Deciduous fore"
+        }
+      ],
+      "stem_preview": "1. Tendu leaves, used for making bidis, are primarily collected from Tropical Dry Deciduous forests in India. 2. The Gre",
+      "classification_reason": "Cat1 mismatch \u2014 correct_index conflicts with explanation verdicts: stmt1 expected FALSE got TRUE"
+    },
+    {
+      "mcq_id": "GEO_VEG_Q012",
+      "subject": "Geography",
+      "topic_id": "GEO_VEG",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Mizoram has approximately 85-88% of its geographical area under forest co"
+        }
+      ],
+      "stem_preview": "1. Mizoram has the highest percentage of geographical area under forest cover among Indian states. 2. Madhya Pradesh has",
+      "classification_reason": "Cat1 mismatch \u2014 correct_index conflicts with explanation verdicts: stmt1 expected FALSE got TRUE"
+    },
+    {
+      "mcq_id": "HIS_ANC1_Q007",
+      "subject": "History",
+      "topic_id": "HIS_ANC1",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The Rigveda Samhita contains exactly 1,028 hymns and predates the Yajurve"
+        }
+      ],
+      "stem_preview": "1. The Rigveda Samhita contains 1,028 hymns and is the oldest of the Vedic texts. 2. Recent collaborative initiatives be",
+      "classification_reason": "Cat1 mismatch \u2014 correct_index conflicts with explanation verdicts: stmt1 expected FALSE got TRUE"
+    },
+    {
+      "mcq_id": "HIS_ANC2_Q017",
+      "subject": "History",
+      "topic_id": "HIS_ANC2",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The Third Council was convened at Pataliputra under Emperor Ashoka's dire"
+        }
+      ],
+      "stem_preview": "1. The Third Buddhist Council was convened at Pataliputra under the patronage of Emperor Ashoka. 2. The Third Buddhist C",
+      "classification_reason": "Cat1 mismatch \u2014 correct_index conflicts with explanation verdicts: stmt1 expected FALSE got TRUE"
+    },
+    {
+      "mcq_id": "POL_HIS_Q015",
+      "subject": "Polity",
+      "topic_id": "POL_HIS",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both",
+        "Neither"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 The Act terminated EIC rule and vested all powers in the Crown, with the "
+        }
+      ],
+      "stem_preview": "1. The Government of India Act 1858 transferred the powers of the East India Company to the British Crown through the Se",
+      "classification_reason": "Cat1 mismatch \u2014 correct_index conflicts with explanation verdicts: stmt1 expected FALSE got TRUE"
+    },
+    {
+      "mcq_id": "POL_PARL_Q025",
+      "subject": "Polity",
+      "topic_id": "POL_PARL",
+      "old_options": [
+        "Only one",
+        "Only two",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "new_options": [
+        "1 only",
+        "2 only",
+        "Both 1 and 2",
+        "Neither 1 nor 2"
+      ],
+      "correct_index": 1,
+      "new_correct": "2 only",
+      "conflicts": [
+        {
+          "stmt": "1",
+          "expected": false,
+          "got": true,
+          "verdict_text": "TRUE \u2014 Article 105(2) provides immunity from civil arrest during parliamentary s"
+        }
+      ],
+      "stem_preview": "1. Members of Parliament enjoy immunity from arrest in civil cases during parliamentary sessions and for forty days befo",
+      "classification_reason": "Cat1 mismatch \u2014 correct_index conflicts with explanation verdicts: stmt1 expected FALSE got TRUE"
+    }
+  ]
+}

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth'
 import BottomNav from '@/components/BottomNav'
+import PaywallModal from '@/components/PaywallModal'
 
 const API = process.env.NEXT_PUBLIC_API_URL
 const RAZORPAY_KEY = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || ''
@@ -42,23 +43,24 @@ export default function ProfilePage() {
   const { token, isLoading, logout } = useAuth()
   const router = useRouter()
 
-  const [profile, setProfile] = useState<Profile | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
-  const [saved, setSaved] = useState(false)
+  const [profile,    setProfile]    = useState<Profile | null>(null)
+  const [loading,    setLoading]    = useState(true)
+  const [saving,     setSaving]     = useState(false)
+  const [saved,      setSaved]      = useState(false)
+  const [showPaywall, setShowPaywall] = useState(false)
 
   // Edit state
-  const [name, setName] = useState('')
-  const [phone, setPhone] = useState('')
-  const [targetYear, setTargetYear] = useState(2026)
-  const [state, setState] = useState('')
+  const [name,            setName]            = useState('')
+  const [phone,           setPhone]           = useState('')
+  const [targetYear,      setTargetYear]      = useState(2026)
+  const [state,           setState]           = useState('')
   const [optionalSubject, setOptionalSubject] = useState('')
 
-  // Phone modal for subscription
+  // Phone modal
   const [showPhoneModal, setShowPhoneModal] = useState(false)
-  const [phoneInput, setPhoneInput] = useState('')
-  const [phoneError, setPhoneError] = useState('')
-  const [payLoading, setPayLoading] = useState(false)
+  const [phoneInput,     setPhoneInput]     = useState('')
+  const [phoneError,     setPhoneError]     = useState('')
+  const [payLoading,     setPayLoading]     = useState(false)
 
   useEffect(() => {
     if (!isLoading && !token) router.push('/login')
@@ -95,7 +97,6 @@ export default function ProfilePage() {
   }
 
   const handleSubscribe = () => {
-    // If phone not saved, show modal first
     if (!profile?.phone && !phone) {
       setShowPhoneModal(true)
     } else {
@@ -130,7 +131,6 @@ export default function ProfilePage() {
       })
       const order = await res.json()
 
-      // Load Razorpay script dynamically
       if (!document.getElementById('razorpay-script')) {
         await new Promise<void>(resolve => {
           const s = document.createElement('script')
@@ -146,15 +146,11 @@ export default function ProfilePage() {
         amount:      order.amount,
         currency:    order.currency,
         name:        'RankBattle UPSC',
-        description: 'Premium Subscription',
+        description: 'Prelims Sprint — ₹759',
         image:       '/logo.png',
         order_id:    order.order_id,
-        prefill: {
-          name:    order.name,
-          email:   order.email,
-          contact: userPhone,
-        },
-        theme: { color: '#A0522D' },
+        prefill:     { name: order.name, email: order.email, contact: userPhone },
+        theme:       { color: '#d4a017' },
         handler: async (response: any) => {
           const verifyRes = await fetch(`${API}/auth/subscription/verify`, {
             method: 'POST',
@@ -186,6 +182,7 @@ export default function ProfilePage() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--paper)', paddingBottom: 100 }}>
+
       {/* Header */}
       <div style={{
         background: 'linear-gradient(135deg, #A0522D, #7A3A1E)',
@@ -230,53 +227,143 @@ export default function ProfilePage() {
 
       <div style={{ maxWidth: 480, margin: '-32px auto 0', padding: '0 16px' }}>
 
-        {/* Subscription Card */}
+        {/* ── Subscription Card ── */}
         {!profile?.is_subscribed ? (
           <div className="paper-card" style={{
             marginBottom: 16, padding: '20px',
-            background: 'linear-gradient(135deg, #FFF8F0, #FFF0E0)',
-            border: '1.5px solid rgba(160,82,45,0.25)',
+            background: 'linear-gradient(145deg, #0d1117, #111827)',
+            border: '1.5px solid rgba(212,160,23,0.3)',
+            borderRadius: 20,
+            position: 'relative', overflow: 'hidden',
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-              <span style={{ fontSize: 24 }}>👑</span>
+            {/* Subtle background shimmer */}
+            <div style={{
+              position: 'absolute', top: -40, right: -40,
+              width: 160, height: 160, borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(212,160,23,0.07) 0%, transparent 70%)',
+              pointerEvents: 'none',
+            }} />
+
+            {/* Header */}
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 16 }}>
               <div>
-                <p style={{ fontWeight: 700, color: 'var(--ink)', margin: 0, fontSize: 16 }}>Unlock Premium</p>
-                <p style={{ fontSize: 12, color: 'var(--ink-soft)', margin: 0 }}>Full access to all 1,089 questions + AI Coach</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                  <span style={{ fontSize: 20 }}>👑</span>
+                  <p style={{ fontWeight: 700, color: '#f5c842', margin: 0, fontSize: 16 }}>
+                    Prelims &apos;26 Sprint
+                  </p>
+                </div>
+                <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', margin: 0 }}>
+                  Full access to 1,400+ UPSC audit questions + AI Coach
+                </p>
+              </div>
+              <span style={{
+                background: 'rgba(212,160,23,0.15)',
+                border: '1px solid rgba(212,160,23,0.3)',
+                color: '#f5c842', fontSize: 10, fontWeight: 700,
+                padding: '3px 8px', borderRadius: 99,
+                whiteSpace: 'nowrap',
+              }}>
+                ONE-TIME
+              </span>
+            </div>
+
+            {/* Pricing — two options side by side */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 16 }}>
+              {/* Sprint — recommended */}
+              <div style={{
+                background: 'rgba(212,160,23,0.08)',
+                border: '2px solid #d4a017',
+                borderRadius: 14, padding: '12px',
+                position: 'relative',
+              }}>
+                <div style={{
+                  position: 'absolute', top: -8, left: 10,
+                  background: 'linear-gradient(135deg, #d4a017, #f5c842)',
+                  color: '#0d0a00', fontSize: 9, fontWeight: 800,
+                  padding: '2px 8px', borderRadius: 99,
+                }}>
+                  ★ RECOMMENDED
+                </div>
+                <div style={{ fontSize: 11, color: '#f5c842', fontWeight: 600, marginBottom: 4, marginTop: 4 }}>
+                  Prelims Sprint
+                </div>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                  <span style={{ fontSize: 26, fontWeight: 800, color: '#f5c842', lineHeight: 1 }}>₹759</span>
+                </div>
+                <div style={{ fontSize: 10, color: 'rgba(212,160,23,0.6)', marginTop: 2 }}>one-time</div>
+                <div style={{ fontSize: 10, color: '#4ade80', marginTop: 4, fontWeight: 600 }}>Until Prelims</div>
+              </div>
+
+              {/* Monthly */}
+              <div style={{
+                background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                borderRadius: 14, padding: '12px',
+                opacity: 0.7,
+              }}>
+                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', fontWeight: 600, marginBottom: 4, marginTop: 4 }}>
+                  30-Day Booster
+                </div>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+                  <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', textDecoration: 'line-through' }}>₹1,499</span>
+                  <span style={{ fontSize: 22, fontWeight: 700, color: 'rgba(255,255,255,0.5)', lineHeight: 1 }}>₹999</span>
+                </div>
+                <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', marginTop: 2 }}>/month</div>
+                <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', marginTop: 4 }}>Monthly</div>
               </div>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginBottom: 16 }}>
-              <span style={{ fontSize: 28, fontWeight: 800, color: 'var(--terra)' }}>₹799</span>
-              <span style={{ fontSize: 16, color: 'var(--ink-faint)', textDecoration: 'line-through' }}>₹1,199</span>
-              <span style={{
-                background: 'rgba(46,125,50,0.12)', color: '#2E7D32',
-                fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 20,
-              }}>33% OFF</span>
-            </div>
-
+            {/* Features */}
             <div style={{ marginBottom: 16 }}>
-              {['1,089 Grade A UPSC questions', 'AI Coach with unlimited queries', 'Expert analysis on every question', 'Full analytics & weak area tracking', 'Lifetime access'].map(f => (
+              {[
+                '1,400+ Grade A UPSC audit questions',
+                'AI Coach with unlimited queries',
+                'Expert explanations on every question',
+                'Deep analytics & weak area tracking',
+              ].map(f => (
                 <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                  <span style={{ color: '#2E7D32', fontSize: 14 }}>✓</span>
-                  <span style={{ fontSize: 13, color: 'var(--ink)' }}>{f}</span>
+                  <span style={{ color: '#4ade80', fontSize: 12, flexShrink: 0 }}>✓</span>
+                  <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.65)' }}>{f}</span>
                 </div>
               ))}
             </div>
 
+            {/* Primary CTA — Sprint */}
             <button
               onClick={handleSubscribe}
               disabled={payLoading}
               style={{
-                width: '100%', padding: '14px', fontSize: 16, fontWeight: 700,
+                width: '100%', padding: '14px', fontSize: 15, fontWeight: 700,
                 borderRadius: 14, border: 'none',
-                background: 'linear-gradient(135deg, #A0522D, #7A3A1E)',
-                color: '#fff', cursor: 'pointer',
-                boxShadow: '0 4px 16px rgba(160,82,45,0.4)',
-              }}>
-              {payLoading ? 'Opening payment...' : '🚀 Get Premium — ₹799'}
+                background: 'linear-gradient(135deg, #d4a017, #f5c842, #d4930a)',
+                color: '#0d0a00', cursor: 'pointer',
+                boxShadow: '0 4px 20px rgba(212,160,23,0.4)',
+                marginBottom: 10,
+                transition: 'filter 0.15s',
+              }}
+              onMouseEnter={e => e.currentTarget.style.filter = 'brightness(1.08)'}
+              onMouseLeave={e => e.currentTarget.style.filter = 'brightness(1)'}
+            >
+              {payLoading ? 'Opening payment...' : '🚀 Unlock Prelims Sprint — ₹759'}
             </button>
-            <p style={{ textAlign: 'center', fontSize: 11, color: 'var(--ink-faint)', marginTop: 8 }}>
-              Secure payment via Razorpay · One-time payment
+
+            {/* Secondary — View all plans */}
+            <button
+              onClick={() => setShowPaywall(true)}
+              style={{
+                width: '100%', padding: '11px', fontSize: 13, fontWeight: 600,
+                borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)',
+                background: 'rgba(255,255,255,0.03)',
+                color: 'rgba(255,255,255,0.4)', cursor: 'pointer',
+                marginBottom: 10,
+              }}
+            >
+              View all plans →
+            </button>
+
+            <p style={{ textAlign: 'center', fontSize: 11, color: 'rgba(255,255,255,0.25)', margin: 0 }}>
+              Secure payment via Razorpay · One-time · No auto-renewal
             </p>
           </div>
         ) : (
@@ -290,7 +377,9 @@ export default function ProfilePage() {
             <div>
               <p style={{ fontWeight: 700, color: '#2E7D32', margin: 0 }}>Premium Active</p>
               <p style={{ fontSize: 12, color: 'var(--ink-faint)', margin: '2px 0 0' }}>
-                Subscribed {profile.subscribed_at ? new Date(profile.subscribed_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }) : ''}
+                Subscribed {profile.subscribed_at
+                  ? new Date(profile.subscribed_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
+                  : ''}
               </p>
             </div>
           </div>
@@ -301,15 +390,11 @@ export default function ProfilePage() {
           <p style={{ fontSize: 13, fontWeight: 700, letterSpacing: 1, color: 'var(--ink-soft)', marginBottom: 16 }}>PROFILE SETTINGS</p>
 
           <Field label="Full Name">
-            <input value={name} onChange={e => setName(e.target.value)}
-              placeholder="Your name"
-              style={inputStyle} />
+            <input value={name} onChange={e => setName(e.target.value)} placeholder="Your name" style={inputStyle} />
           </Field>
 
           <Field label="Phone Number">
-            <input value={phone} onChange={e => setPhone(e.target.value)}
-              placeholder="+91 XXXXX XXXXX" type="tel"
-              style={inputStyle} />
+            <input value={phone} onChange={e => setPhone(e.target.value)} placeholder="+91 XXXXX XXXXX" type="tel" style={inputStyle} />
           </Field>
 
           <Field label="Target Year">
@@ -334,16 +419,13 @@ export default function ProfilePage() {
             </select>
           </Field>
 
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            style={{
-              width: '100%', padding: '13px', fontSize: 15, fontWeight: 600,
-              borderRadius: 14, border: 'none',
-              background: saved ? '#2E7D32' : 'var(--terra)',
-              color: '#fff', cursor: 'pointer', marginTop: 8,
-              transition: 'background 0.2s',
-            }}>
+          <button onClick={handleSave} disabled={saving} style={{
+            width: '100%', padding: '13px', fontSize: 15, fontWeight: 600,
+            borderRadius: 14, border: 'none',
+            background: saved ? '#2E7D32' : 'var(--terra)',
+            color: '#fff', cursor: 'pointer', marginTop: 8,
+            transition: 'background 0.2s',
+          }}>
             {saving ? 'Saving...' : saved ? '✓ Saved!' : 'Save Changes'}
           </button>
         </div>
@@ -363,14 +445,11 @@ export default function ProfilePage() {
             </span>
           </div>
 
-          <button
-            onClick={logout}
-            style={{
-              width: '100%', padding: '12px', fontSize: 14, fontWeight: 600,
-              borderRadius: 14, border: '1.5px solid rgba(192,57,43,0.3)',
-              background: 'rgba(192,57,43,0.05)', color: '#C0392B',
-              cursor: 'pointer',
-            }}>
+          <button onClick={logout} style={{
+            width: '100%', padding: '12px', fontSize: 14, fontWeight: 600,
+            borderRadius: 14, border: '1.5px solid rgba(192,57,43,0.3)',
+            background: 'rgba(192,57,43,0.05)', color: '#C0392B', cursor: 'pointer',
+          }}>
             Sign Out
           </button>
         </div>
@@ -390,37 +469,33 @@ export default function ProfilePage() {
             <p style={{ fontSize: 14, color: 'var(--ink-soft)', marginBottom: 24 }}>
               Enter your phone number for the payment receipt and order confirmation.
             </p>
-
             <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.5, color: 'var(--ink-soft)', display: 'block', marginBottom: 8 }}>PHONE NUMBER</label>
-            <input
-              value={phoneInput}
-              onChange={e => setPhoneInput(e.target.value)}
-              placeholder="+91 XXXXX XXXXX"
-              type="tel"
-              style={{ ...inputStyle, marginBottom: 8 }}
-            />
+            <input value={phoneInput} onChange={e => setPhoneInput(e.target.value)}
+              placeholder="+91 XXXXX XXXXX" type="tel"
+              style={{ ...inputStyle, marginBottom: 8 }} />
             {phoneError && <p style={{ fontSize: 12, color: '#C0392B', marginBottom: 12 }}>{phoneError}</p>}
-
             <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
-              <button
-                onClick={() => setShowPhoneModal(false)}
-                style={{
-                  flex: 1, padding: '13px', fontSize: 14, fontWeight: 600,
-                  borderRadius: 14, border: '1.5px solid rgba(160,82,45,0.2)',
-                  background: 'transparent', color: 'var(--ink)', cursor: 'pointer',
-                }}>Cancel</button>
-              <button
-                onClick={handlePhoneSubmit}
-                style={{
-                  flex: 2, padding: '13px', fontSize: 15, fontWeight: 700,
-                  borderRadius: 14, border: 'none',
-                  background: 'linear-gradient(135deg, #A0522D, #7A3A1E)',
-                  color: '#fff', cursor: 'pointer',
-                }}>Continue to Payment →</button>
+              <button onClick={() => setShowPhoneModal(false)} style={{
+                flex: 1, padding: '13px', fontSize: 14, fontWeight: 600,
+                borderRadius: 14, border: '1.5px solid rgba(160,82,45,0.2)',
+                background: 'transparent', color: 'var(--ink)', cursor: 'pointer',
+              }}>Cancel</button>
+              <button onClick={handlePhoneSubmit} style={{
+                flex: 2, padding: '13px', fontSize: 15, fontWeight: 700,
+                borderRadius: 14, border: 'none',
+                background: 'linear-gradient(135deg, #d4a017, #f5c842)',
+                color: '#0d0a00', cursor: 'pointer',
+              }}>Continue to Payment →</button>
             </div>
           </div>
         </div>
       )}
+
+      {/* Paywall Modal — "View all plans" trigger */}
+      <PaywallModal
+        reason={showPaywall ? 'full_mock' : null}
+        onClose={() => setShowPaywall(false)}
+      />
 
       <BottomNav />
     </div>

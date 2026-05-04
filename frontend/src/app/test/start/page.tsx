@@ -3,6 +3,7 @@
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth';
+import PaywallModal from '@/components/PaywallModal';
 
 // ─── Marking scheme ───────────────────────────────────────────────────────────
 const MARKING = [
@@ -21,39 +22,25 @@ const INSTRUCTIONS = [
   { icon: '📵', text: 'Ensure stable internet. The test cannot be paused once started.' },
 ];
 
-// ─── Derive config from URL params ────────────────────────────────────────────
-// Supported params:
-//   ?type=full                     → 100Q / 120 min / no subject filter
-//   ?type=topic                    → 25Q  / 30 min  / no subject filter
-//   ?type=topic&subject=History    → 25Q  / 30 min  / subject = History
-//   ?type=topic&subject=Polity&count=15  → 15Q / 18 min / subject = Polity
-//   ?count=20&subject=Geography    → 20Q  / 24 min  / subject = Geography
 function buildConfig(params: URLSearchParams) {
   const type    = params.get('type') ?? 'full';
-  const subject = params.get('subject') ?? null;       // e.g. "History"
-  const count   = parseInt(params.get('count') ?? '0');// override question count
-
+  const subject = params.get('subject') ?? null;
+  const count   = parseInt(params.get('count') ?? '0');
   const isFull  = type === 'full' && !subject;
-
-  // Question count: explicit param > full mock default > topic default
   const questions = count > 0 ? count : isFull ? 100 : 25;
-
-  // Duration: ~1.2 min per question, minimum 20 min, capped at 120 min
   const durationMin = isFull ? 120 : Math.min(120, Math.max(20, Math.round(questions * 1.2)));
   const durationStr = durationMin >= 60
     ? `${Math.floor(durationMin / 60)}h ${durationMin % 60 > 0 ? `${durationMin % 60}m` : ''}`.trim()
     : `${durationMin} minutes`;
 
-  const color   = isFull  ? '#7c3aed' : subject ? '#c55a1e' : '#2563eb';
-  const lightBg = isFull  ? '#f5f3ff' : subject ? '#fdf6f0' : '#eff6ff';
-  const border  = isFull  ? '#ddd6fe' : subject ? '#f5d5c0' : '#bfdbfe';
-  const icon    = isFull  ? '📋'      : subject ? '📘'      : '📝';
+  const color   = isFull ? '#7c3aed' : subject ? '#c55a1e' : '#2563eb';
+  const lightBg = isFull ? '#f5f3ff' : subject ? '#fdf6f0' : '#eff6ff';
+  const border  = isFull ? '#ddd6fe' : subject ? '#f5d5c0' : '#bfdbfe';
+  const icon    = isFull ? '📋'      : subject ? '📘'      : '📝';
 
   const label = isFull
     ? 'Full Mock Test'
-    : subject
-      ? `${subject} Practice`
-      : 'Topic Test';
+    : subject ? `${subject} Practice` : 'Topic Test';
 
   const description = isFull
     ? 'Simulates the actual UPSC Prelims paper with full 100-question format under exam conditions.'
@@ -65,26 +52,28 @@ function buildConfig(params: URLSearchParams) {
     type, subject, questions, durationMin, durationStr,
     label, description, color, lightBg, border, icon,
     mode: isFull ? 'FULL_MOCK' : 'TOPIC_TEST',
+    isFull,
   };
 }
 
-// ─── Inner component (needs useSearchParams → must be inside Suspense) ────────
+// ─── Inner component ──────────────────────────────────────────────────────────
 function TestStartInner() {
   const router    = useRouter();
   const params    = useSearchParams();
   const { token } = useAuth();
   const config    = buildConfig(params);
 
-  const [starting, setStarting] = useState(false);
-  const [error,    setError]    = useState('');
+  const [starting,      setStarting]      = useState(false);
+  const [error,         setError]         = useState('');
+  const [paywallReason, setPaywallReason] = useState<'full_mock' | 'subject_repeat' | 'subjects_limit' | 'coach' | null>(null);
 
   const BASE = process.env.NEXT_PUBLIC_API_URL ?? 'https://rankbattleupsc-production.up.railway.app';
 
-  // ── Start session ─────────────────────────────────────────────────────────────
   async function startTest() {
     if (!token) { setError('Not authenticated. Please log in.'); return; }
     setStarting(true);
     setError('');
+
     try {
       const res = await fetch(`${BASE}/sessions/start`, {
         method:  'POST',
@@ -93,20 +82,42 @@ function TestStartInner() {
           mode:           config.mode,
           total_q:        config.questions,
           duration_mins:  config.durationMin,
-          subject_filter: config.subject,   // ✅ now passes subject correctly
+          subject_filter: config.subject,
           topic_filter:   null,
           tier_filter:    null,
         }),
       });
+
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        throw new Error(body.detail ?? `Server error ${res.status}`);
+        const detail = body.detail;
+
+        // ── Free tier limit responses ────────────────────────────────────────
+        if (detail?.code === 'FREE_LIMIT_FULL_MOCK') {
+          setPaywallReason('full_mock');
+          setStarting(false);
+          return;
+        }
+        if (detail?.code === 'FREE_LIMIT_SUBJECT_REPEAT') {
+          setPaywallReason('subject_repeat');
+          setStarting(false);
+          return;
+        }
+        if (detail?.code === 'FREE_LIMIT_SUBJECTS') {
+          setPaywallReason('subjects_limit');
+          setStarting(false);
+          return;
+        }
+
+        throw new Error(detail?.message ?? `Server error ${res.status}`);
       }
+
       const data = await res.json();
       if (data.questions?.length) {
         sessionStorage.setItem(`session_${data.session_id}`, JSON.stringify(data.questions));
       }
       router.push(`/test/${data.session_id}`);
+
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Failed to start test. Try again.');
       setStarting(false);
@@ -121,9 +132,18 @@ function TestStartInner() {
         <button onClick={() => router.back()} style={S.backBtn}>← Back</button>
 
         {/* Hero */}
-        <div style={{ background: `linear-gradient(135deg, ${config.color}, ${config.color}dd)`, borderRadius: 20, padding: '24px 20px', boxShadow: `0 8px 32px ${config.color}40` }}>
+        <div style={{
+          background: `linear-gradient(135deg, ${config.color}, ${config.color}dd)`,
+          borderRadius: 20, padding: '24px 20px',
+          boxShadow: `0 8px 32px ${config.color}40`,
+        }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <div style={{ width: 52, height: 52, borderRadius: 14, background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26, flexShrink: 0 }}>
+            <div style={{
+              width: 52, height: 52, borderRadius: 14,
+              background: 'rgba(255,255,255,0.2)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 26, flexShrink: 0,
+            }}>
               {config.icon}
             </div>
             <div>
@@ -147,6 +167,42 @@ function TestStartInner() {
           </p>
         </div>
 
+        {/* Free tier banner — shown for non-subscribed users */}
+        {config.isFull && (
+          <div style={{
+            background: '#f0fdf4', border: '1.5px solid #86efac',
+            borderRadius: 12, padding: '12px 16px',
+            display: 'flex', alignItems: 'center', gap: 10,
+          }}>
+            <span style={{ fontSize: 18 }}>🎁</span>
+            <div>
+              <p style={{ fontSize: 13, fontWeight: 700, color: '#16a34a', margin: 0 }}>
+                Free Full Mock Included
+              </p>
+              <p style={{ fontSize: 12, color: '#4ade80', margin: '2px 0 0' }}>
+                You get 1 free full mock test. Subscribe for unlimited access.
+              </p>
+            </div>
+          </div>
+        )}
+        {!config.isFull && config.subject && (
+          <div style={{
+            background: '#fff7ed', border: '1.5px solid #fed7aa',
+            borderRadius: 12, padding: '12px 16px',
+            display: 'flex', alignItems: 'center', gap: 10,
+          }}>
+            <span style={{ fontSize: 18 }}>🎁</span>
+            <div>
+              <p style={{ fontSize: 13, fontWeight: 700, color: '#c2410c', margin: 0 }}>
+                Free Subject Test
+              </p>
+              <p style={{ fontSize: 12, color: '#ea580c', margin: '2px 0 0' }}>
+                You get 1 free test per subject (3 subjects total). Subscribe for unlimited access.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Exam Overview */}
         <div style={S.section}>
           <div style={S.sectionHead}>EXAM OVERVIEW</div>
@@ -157,7 +213,10 @@ function TestStartInner() {
                 { icon: '❓', label: 'Questions', value: String(config.questions) },
                 { icon: '📊', label: 'Max Marks', value: String(config.questions * 2) },
               ].map(t => (
-                <div key={t.label} style={{ background: config.lightBg, border: `1.5px solid ${config.border}`, borderRadius: 14, padding: '14px 10px', textAlign: 'center' }}>
+                <div key={t.label} style={{
+                  background: config.lightBg, border: `1.5px solid ${config.border}`,
+                  borderRadius: 14, padding: '14px 10px', textAlign: 'center',
+                }}>
                   <div style={{ fontSize: 22, marginBottom: 6 }}>{t.icon}</div>
                   <div style={{ fontSize: 19, fontWeight: 800, color: config.color, lineHeight: 1.1 }}>{t.value}</div>
                   <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 4, fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{t.label}</div>
@@ -172,7 +231,11 @@ function TestStartInner() {
           <div style={S.sectionHead}>MARKING SCHEME</div>
           <div style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 8 }}>
             {MARKING.map(m => (
-              <div key={m.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', borderRadius: 12, background: m.bg, border: `1.5px solid ${m.border}` }}>
+              <div key={m.label} style={{
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                padding: '12px 16px', borderRadius: 12, background: m.bg,
+                border: `1.5px solid ${m.border}`,
+              }}>
                 <span style={{ fontSize: 14, color: '#374151', fontWeight: 500 }}>{m.label}</span>
                 <span style={{ fontFamily: 'monospace', fontWeight: 800, fontSize: 17, color: m.color }}>{m.marks}</span>
               </div>
@@ -185,7 +248,11 @@ function TestStartInner() {
           <div style={S.sectionHead}>INSTRUCTIONS</div>
           <div style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: 2 }}>
             {INSTRUCTIONS.map((ins, i) => (
-              <div key={i} style={{ display: 'flex', gap: 12, padding: '10px 4px', borderBottom: i < INSTRUCTIONS.length - 1 ? '1px solid #f1f5f9' : 'none', alignItems: 'flex-start' }}>
+              <div key={i} style={{
+                display: 'flex', gap: 12, padding: '10px 4px',
+                borderBottom: i < INSTRUCTIONS.length - 1 ? '1px solid #f1f5f9' : 'none',
+                alignItems: 'flex-start',
+              }}>
                 <span style={{ fontSize: 18, flexShrink: 0, width: 24, textAlign: 'center' }}>{ins.icon}</span>
                 <span style={{ fontSize: 14, color: '#374151', lineHeight: 1.6 }}>{ins.text}</span>
               </div>
@@ -217,11 +284,22 @@ function TestStartInner() {
               : `Start ${config.label} →`
             }
           </button>
-          <button onClick={() => router.back()} style={{ width: '100%', minHeight: 48, borderRadius: 14, background: '#fff', color: '#64748b', border: '1.5px solid #e2e8f0', fontSize: 14, fontWeight: 600, cursor: 'pointer' }}>
+          <button onClick={() => router.back()} style={{
+            width: '100%', minHeight: 48, borderRadius: 14,
+            background: '#fff', color: '#64748b',
+            border: '1.5px solid #e2e8f0', fontSize: 14, fontWeight: 600, cursor: 'pointer',
+          }}>
             Cancel
           </button>
         </div>
       </div>
+
+      {/* Paywall Modal */}
+      <PaywallModal
+        reason={paywallReason}
+        subject={config.subject ?? undefined}
+        onClose={() => setPaywallReason(null)}
+      />
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
@@ -241,7 +319,7 @@ const S = {
   sectionHead: { padding: '14px 20px', borderBottom: '1px solid #f1f5f9', background: '#fafafa', fontSize: 13, fontWeight: 700, color: '#64748b', letterSpacing: '0.07em', textTransform: 'uppercase' } as React.CSSProperties,
 };
 
-// ─── Export with Suspense (required for useSearchParams) ──────────────────────
+// ─── Export with Suspense ─────────────────────────────────────────────────────
 export default function TestStartPage() {
   return (
     <Suspense fallback={

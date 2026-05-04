@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/lib/auth';
 import { useRouter } from 'next/navigation';
 import BottomNav from '@/components/BottomNav';
+import PaywallModal from '@/components/PaywallModal';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -28,27 +29,20 @@ const SUGGESTED = [
   "Biodiversity & Conservation — Beginner",
 ];
 
-// Render message content: **bold** → neon highlight, clean up markdown artifacts
 function renderContent(text: string) {
   const lines = text.split('\n');
   return lines.map((line, li) => {
-    // Skip lines that are just step headers or dividers
     if (/^#{1,3}\s/.test(line)) line = line.replace(/^#{1,3}\s+/, '');
     if (/^---+$/.test(line.trim())) return null;
     if (/^\*{3}$/.test(line.trim())) return null;
 
-    // Split by **bold** markers
     const parts = line.split(/\*\*(.+?)\*\*/g);
     const rendered = parts.map((part, pi) => {
       if (pi % 2 === 1) {
-        // This is bold — render as neon highlight
         return (
           <mark key={pi} style={{
-            background: '#fef08a',
-            color: '#1a1a1a',
-            borderRadius: 3,
-            padding: '0 2px',
-            fontWeight: 700,
+            background: '#fef08a', color: '#1a1a1a',
+            borderRadius: 3, padding: '0 2px', fontWeight: 700,
           }}>
             {part}
           </mark>
@@ -69,25 +63,42 @@ function renderContent(text: string) {
 export default function AICoachPage() {
   const { token, isLoading } = useAuth();
   const router = useRouter();
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const bottomRef   = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', content: OPENING }
-  ]);
-  const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [weakAreas, setWeakAreas] = useState<WeakArea[]>([]);
+  const [messages,         setMessages]         = useState<Message[]>([{ role: 'assistant', content: OPENING }]);
+  const [input,            setInput]            = useState('');
+  const [loading,          setLoading]          = useState(false);
+  const [weakAreas,        setWeakAreas]        = useState<WeakArea[]>([]);
+  const [paywallReason,    setPaywallReason]    = useState<'full_mock' | 'subject_repeat' | 'subjects_limit' | 'coach' | null>(null);
+  const [freeMessagesLeft, setFreeMessagesLeft] = useState<number | null>(null);
+  const [isSubscribed,     setIsSubscribed]     = useState(false);
 
   useEffect(() => {
     if (!isLoading && !token) { router.push('/login'); return; }
     if (!token) return;
+
+    // Fetch weak areas
     fetch(`${API}/analytics/me/weak-areas`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(r => r.json())
       .then(d => setWeakAreas(Array.isArray(d) ? d : []))
       .catch(() => {});
+
+    // Fetch free tier status
+    fetch(`${API}/auth/me`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(r => r.json())
+      .then(d => {
+        setIsSubscribed(!!d.is_subscribed)
+        if (!d.is_subscribed) {
+          setFreeMessagesLeft(5 - (d.coach_messages_used || 0))
+        }
+      })
+      .catch(() => {});
+
   }, [token, isLoading]);
 
   useEffect(() => {
@@ -104,13 +115,18 @@ export default function AICoachPage() {
   const sendMessage = async (text: string) => {
     if (!text.trim() || loading) return;
 
+    // ── Free tier check ────────────────────────────────────────────────────────
+    if (!isSubscribed && freeMessagesLeft !== null && freeMessagesLeft <= 0) {
+      setPaywallReason('coach');
+      return;
+    }
+
     const userMsg: Message = { role: 'user', content: text.trim() };
     const newMessages = [...messages, userMsg];
     setMessages(newMessages);
     setInput('');
     setLoading(true);
 
-    // Add empty assistant message to stream into
     const assistantIdx = newMessages.length;
     setMessages([...newMessages, { role: 'assistant', content: '' }]);
 
@@ -128,10 +144,28 @@ export default function AICoachPage() {
         }),
       });
 
+      // ── Backend free tier rejection ──────────────────────────────────────────
+      if (res.status === 403) {
+        const body = await res.json().catch(() => ({}));
+        if (body?.detail?.code === 'FREE_LIMIT_COACH') {
+          setFreeMessagesLeft(0);
+          setPaywallReason('coach');
+          // Remove the empty assistant message
+          setMessages(prev => prev.slice(0, -1));
+          setLoading(false);
+          return;
+        }
+      }
+
       if (!res.ok) throw new Error('Server error');
       if (!res.body) throw new Error('No stream');
 
-      const reader = res.body.getReader();
+      // ── Decrement free messages counter on success ───────────────────────────
+      if (!isSubscribed && freeMessagesLeft !== null) {
+        setFreeMessagesLeft(prev => Math.max(0, (prev ?? 1) - 1));
+      }
+
+      const reader  = res.body.getReader();
       const decoder = new TextDecoder();
       let accumulated = '';
       let buffer = '';
@@ -177,6 +211,11 @@ export default function AICoachPage() {
     }
   };
 
+  // ── Free messages badge color ──────────────────────────────────────────────
+  const badgeBg    = freeMessagesLeft === 0 ? '#fef2f2' : freeMessagesLeft === 1 ? '#fefce8' : '#f0fdf4';
+  const badgeBorder = freeMessagesLeft === 0 ? '#fca5a5' : freeMessagesLeft === 1 ? '#fde68a' : '#86efac';
+  const badgeColor  = freeMessagesLeft === 0 ? '#dc2626' : freeMessagesLeft === 1 ? '#92400e' : '#16a34a';
+
   return (
     <div style={{
       display: 'flex', flexDirection: 'column', height: '100dvh',
@@ -199,6 +238,7 @@ export default function AICoachPage() {
             <path d="M19 12H5M12 19l-7-7 7-7"/>
           </svg>
         </button>
+
         <div style={{ flex: 1 }}>
           <div style={{ color: '#fff', fontWeight: 700, fontSize: 16 }}>AI Coach · Feynman Mode</div>
           <div style={{ color: 'rgba(255,255,255,0.78)', fontSize: 12 }}>
@@ -207,7 +247,49 @@ export default function AICoachPage() {
               : 'Deep learning · UPSC Prelims oriented'}
           </div>
         </div>
+
+        {/* Free messages badge — only for non-subscribed users */}
+        {!isSubscribed && freeMessagesLeft !== null && freeMessagesLeft <= 3 && (
+          <div style={{
+            background: badgeBg,
+            border: `1px solid ${badgeBorder}`,
+            borderRadius: 8, padding: '4px 10px',
+            fontSize: 11, color: badgeColor,
+            fontWeight: 700, flexShrink: 0, whiteSpace: 'nowrap',
+          }}>
+            {freeMessagesLeft === 0
+              ? '0 left'
+              : `${freeMessagesLeft} free left`
+            }
+          </div>
+        )}
       </div>
+
+      {/* Free tier notice banner — shown when ≤2 messages left */}
+      {!isSubscribed && freeMessagesLeft !== null && freeMessagesLeft <= 2 && freeMessagesLeft > 0 && (
+        <div style={{
+          background: '#fefce8', borderBottom: '1px solid #fde68a',
+          padding: '10px 16px', display: 'flex', alignItems: 'center',
+          justifyContent: 'space-between', gap: 10, flexShrink: 0,
+        }}>
+          <p style={{ fontSize: 13, color: '#92400e', margin: 0, fontWeight: 500 }}>
+            {freeMessagesLeft === 1
+              ? '⚠️ Last free message — subscribe to keep coaching'
+              : `⚠️ ${freeMessagesLeft} free messages remaining`
+            }
+          </p>
+          <button
+            onClick={() => router.push('/profile')}
+            style={{
+              background: '#A0522D', color: '#fff', border: 'none',
+              borderRadius: 8, padding: '6px 12px', fontSize: 12,
+              fontWeight: 700, cursor: 'pointer', flexShrink: 0,
+            }}
+          >
+            Subscribe
+          </button>
+        </div>
+      )}
 
       {/* Messages */}
       <div style={{
@@ -260,7 +342,6 @@ export default function AICoachPage() {
               whiteSpace: 'pre-wrap', wordBreak: 'break-word',
             }}>
               {msg.role === 'assistant' ? renderContent(msg.content) : msg.content}
-              {/* Blinking cursor while streaming this message */}
               {loading && i === messages.length - 1 && msg.role === 'assistant' && (
                 <span style={{
                   display: 'inline-block', width: 2, height: 14,
@@ -275,59 +356,90 @@ export default function AICoachPage() {
         <div ref={bottomRef} />
       </div>
 
-      {/* Input — always visible */}
+      {/* Input */}
       <div style={{
         padding: '10px 14px 12px', background: '#fff',
         borderTop: '1px solid #e2e8f0', flexShrink: 0,
-        marginBottom: 64, // space for BottomNav
+        marginBottom: 64,
       }}>
-        <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end' }}>
-          <textarea
-            ref={textareaRef}
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={e => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage(input);
-              }
-            }}
-            placeholder="Type a topic + your level, or ask anything..."
-            rows={1}
-            style={{
-              flex: 1, border: '1.5px solid #e2e8f0', borderRadius: 12,
-              padding: '11px 14px', fontSize: 14, fontFamily: 'Inter, sans-serif',
-              resize: 'none', outline: 'none', lineHeight: 1.5,
-              overflowY: 'auto', transition: 'border-color 0.15s',
-            }}
-            onFocus={e => (e.target.style.borderColor = '#2563eb')}
-            onBlur={e => (e.target.style.borderColor = '#e2e8f0')}
-          />
-          <button
-            onClick={() => sendMessage(input)}
-            disabled={loading || !input.trim()}
-            style={{
-              width: 44, height: 44, borderRadius: 12, border: 'none',
-              background: loading || !input.trim() ? '#cbd5e1' : '#2563eb',
-              cursor: loading || !input.trim() ? 'not-allowed' : 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-            }}
-          >
-            {loading
-              ? <div style={{ width: 16, height: 16, border: '2px solid #fff', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
-              : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="22" y1="2" x2="11" y2="13"/>
-                  <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-                </svg>
-            }
-          </button>
-        </div>
-        <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 5, textAlign: 'center' }}>
-          Enter to send · Shift+Enter for new line
-        </div>
+        {/* Blocked state — no messages left */}
+        {!isSubscribed && freeMessagesLeft === 0 ? (
+          <div style={{
+            background: '#fef2f2', border: '1.5px solid #fca5a5',
+            borderRadius: 12, padding: '16px', textAlign: 'center',
+          }}>
+            <p style={{ fontSize: 14, color: '#dc2626', fontWeight: 600, margin: '0 0 10px' }}>
+              You've used all 5 free AI Coach messages
+            </p>
+            <button
+              onClick={() => setPaywallReason('coach')}
+              style={{
+                background: 'linear-gradient(135deg, #A0522D, #7A3A1E)',
+                color: '#fff', border: 'none', borderRadius: 10,
+                padding: '10px 20px', fontSize: 14, fontWeight: 700,
+                cursor: 'pointer',
+              }}
+            >
+              Unlock Unlimited Coaching →
+            </button>
+          </div>
+        ) : (
+          <>
+            <div style={{ display: 'flex', gap: 8, alignItems: 'flex-end' }}>
+              <textarea
+                ref={textareaRef}
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage(input);
+                  }
+                }}
+                placeholder="Type a topic + your level, or ask anything..."
+                rows={1}
+                style={{
+                  flex: 1, border: '1.5px solid #e2e8f0', borderRadius: 12,
+                  padding: '11px 14px', fontSize: 14, fontFamily: 'Inter, sans-serif',
+                  resize: 'none', outline: 'none', lineHeight: 1.5,
+                  overflowY: 'auto', transition: 'border-color 0.15s',
+                }}
+                onFocus={e => (e.target.style.borderColor = '#2563eb')}
+                onBlur={e => (e.target.style.borderColor = '#e2e8f0')}
+              />
+              <button
+                onClick={() => sendMessage(input)}
+                disabled={loading || !input.trim()}
+                style={{
+                  width: 44, height: 44, borderRadius: 12, border: 'none',
+                  background: loading || !input.trim() ? '#cbd5e1' : '#2563eb',
+                  cursor: loading || !input.trim() ? 'not-allowed' : 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                }}
+              >
+                {loading
+                  ? <div style={{ width: 16, height: 16, border: '2px solid #fff', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.7s linear infinite' }} />
+                  : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="22" y1="2" x2="11" y2="13"/>
+                      <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                    </svg>
+                }
+              </button>
+            </div>
+            <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 5, textAlign: 'center' }}>
+              Enter to send · Shift+Enter for new line
+            </div>
+          </>
+        )}
       </div>
 
       <BottomNav />
+
+      {/* Paywall Modal */}
+      <PaywallModal
+        reason={paywallReason}
+        onClose={() => setPaywallReason(null)}
+      />
 
       <style>{`
         @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }

@@ -1,15 +1,9 @@
 'use client'
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/lib/auth'
 import { login } from '@/lib/api'
-import {
-  signInWithGoogle,
-  sendOTP,
-  verifyOTP,
-  setupRecaptcha,
-  type ConfirmationResult,
-} from '@/lib/firebase'
+import { signInWithGoogle } from '@/lib/firebase'
 
 const API = process.env.NEXT_PUBLIC_API_URL
 
@@ -18,20 +12,13 @@ export default function Login() {
   const { setToken, setUser } = useAuth()
 
   const [googleLoading, setGoogleLoading] = useState(false)
-  const [showPhone, setShowPhone] = useState(false)
-  const [phone, setPhone] = useState('')
-  const [otp, setOtp] = useState('')
-  const [otpSent, setOtpSent] = useState(false)
-  const [phoneLoading, setPhoneLoading] = useState(false)
-  const [confirmResult, setConfirmResult] = useState<ConfirmationResult | null>(null)
-  const recaptchaRef = useRef<ReturnType<typeof setupRecaptcha> | null>(null)
-  const [showEmail, setShowEmail] = useState(false)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [showEmail, setShowEmail]         = useState(false)
+  const [email, setEmail]                 = useState('')
+  const [password, setPassword]           = useState('')
+  const [loading, setLoading]             = useState(false)
+  const [error, setError]                 = useState('')
 
-  const anyLoading = loading || googleLoading || phoneLoading
+  const anyLoading = loading || googleLoading
 
   const exchangeToken = async (idToken: string, endpoint: string) => {
     const res = await fetch(`${API}${endpoint}`, {
@@ -56,35 +43,9 @@ export default function Login() {
       const idToken = await signInWithGoogle()
       const data = await exchangeToken(idToken, '/auth/firebase/google')
       storeAuth(data)
-    } catch (e: any) {
+    } catch {
       setError('Google sign-in failed. Please try again.')
     } finally { setGoogleLoading(false) }
-  }
-
-  const handleSendOTP = async () => {
-    if (!phone || phone.length < 10) { setError('Enter a valid phone number'); return }
-    setPhoneLoading(true); setError('')
-    try {
-      const formatted = phone.startsWith('+') ? phone : `+91${phone.replace(/\s/g, '')}`
-      if (!recaptchaRef.current) recaptchaRef.current = setupRecaptcha('recaptcha-container')
-      const result = await sendOTP(formatted, recaptchaRef.current)
-      setConfirmResult(result); setOtpSent(true)
-    } catch {
-      setError('Failed to send OTP. Check the number and try again.')
-      recaptchaRef.current = null
-    } finally { setPhoneLoading(false) }
-  }
-
-  const handleVerifyOTP = async () => {
-    if (!otp || otp.length < 6) { setError('Enter the 6-digit OTP'); return }
-    if (!confirmResult) return
-    setPhoneLoading(true); setError('')
-    try {
-      const idToken = await verifyOTP(confirmResult, otp)
-      const data = await exchangeToken(idToken, '/auth/firebase/phone')
-      storeAuth(data)
-    } catch { setError('Invalid OTP. Please try again.') }
-    finally { setPhoneLoading(false) }
   }
 
   const handleLogin = async () => {
@@ -108,7 +69,6 @@ export default function Login() {
     }}>
       <div style={{ position: 'absolute', top: -100, right: -80, width: 350, height: 350, borderRadius: '50%', background: 'rgba(160,82,45,0.07)', pointerEvents: 'none' }}/>
       <div style={{ position: 'absolute', bottom: -80, left: -60, width: 280, height: 280, borderRadius: '50%', background: 'rgba(200,150,12,0.06)', pointerEvents: 'none' }}/>
-      <div id="recaptcha-container" />
 
       {/* Logo */}
       <div style={{ textAlign: 'center', marginBottom: 36, position: 'relative', zIndex: 1 }}>
@@ -133,7 +93,7 @@ export default function Login() {
         <button onClick={handleGoogle} disabled={anyLoading} style={{
           width: '100%', padding: '14px', fontSize: 15, fontWeight: 600,
           borderRadius: 14, border: '1.5px solid rgba(0,0,0,0.12)',
-          background: '#fff', color: '#1a1a1a', cursor: 'pointer', marginBottom: 10,
+          background: '#fff', color: '#1a1a1a', cursor: 'pointer', marginBottom: 16,
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
           boxShadow: '0 2px 8px rgba(0,0,0,0.08)', transition: 'box-shadow 0.15s',
         }}
@@ -142,53 +102,6 @@ export default function Login() {
         >
           {googleLoading ? 'Signing in...' : <><GoogleIcon />Continue with Google</>}
         </button>
-
-        {/* Phone OTP */}
-        {!showPhone ? (
-          <button onClick={() => setShowPhone(true)} disabled={anyLoading} style={{
-            width: '100%', padding: '14px', fontSize: 15, fontWeight: 600,
-            borderRadius: 14, border: '1.5px solid rgba(0,0,0,0.12)',
-            background: '#fff', color: '#1a1a1a', cursor: 'pointer', marginBottom: 16,
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10,
-            boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-          }}>
-            📱 Continue with Phone
-          </button>
-        ) : (
-          <div style={{
-            border: '1.5px solid rgba(160,82,45,0.2)', borderRadius: 14,
-            padding: '16px', marginBottom: 16, background: 'rgba(160,82,45,0.03)',
-          }}>
-            <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, color: 'var(--ink-soft)', marginBottom: 10 }}>PHONE LOGIN</p>
-            {!otpSent ? (
-              <div style={{ display: 'flex', gap: 8 }}>
-                <input value={phone} onChange={e => setPhone(e.target.value)}
-                  placeholder="+91 XXXXX XXXXX" type="tel"
-                  style={{ flex: 1, padding: '11px 13px', borderRadius: 10, border: '1.5px solid rgba(160,82,45,0.2)', background: 'var(--paper)', fontSize: 14, color: 'var(--ink)', outline: 'none' }} />
-                <button onClick={handleSendOTP} disabled={phoneLoading} style={{
-                  padding: '11px 16px', borderRadius: 10, border: 'none',
-                  background: 'var(--terra)', color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                }}>{phoneLoading ? '...' : 'Send OTP'}</button>
-              </div>
-            ) : (
-              <>
-                <p style={{ fontSize: 12, color: 'var(--ink-soft)', marginBottom: 10 }}>OTP sent to {phone}</p>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <input value={otp} onChange={e => setOtp(e.target.value)}
-                    placeholder="6-digit OTP" maxLength={6}
-                    style={{ flex: 1, padding: '11px 13px', borderRadius: 10, border: '1.5px solid rgba(160,82,45,0.2)', background: 'var(--paper)', fontSize: 16, color: 'var(--ink)', outline: 'none', letterSpacing: 4, textAlign: 'center' }} />
-                  <button onClick={handleVerifyOTP} disabled={phoneLoading} style={{
-                    padding: '11px 16px', borderRadius: 10, border: 'none',
-                    background: 'var(--terra)', color: '#fff', fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                  }}>{phoneLoading ? '...' : 'Verify'}</button>
-                </div>
-                <button onClick={() => { setOtpSent(false); setOtp('') }} style={{
-                  background: 'none', border: 'none', fontSize: 12, color: 'var(--terra)', cursor: 'pointer', marginTop: 8, padding: 0,
-                }}>Resend OTP</button>
-              </>
-            )}
-          </div>
-        )}
 
         {/* Divider */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>

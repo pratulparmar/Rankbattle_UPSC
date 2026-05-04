@@ -3,10 +3,7 @@ import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
   signOut,
-  type ConfirmationResult,
   type User as FirebaseUser,
 } from 'firebase/auth'
 
@@ -19,7 +16,6 @@ const firebaseConfig = {
   appId:             process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 }
 
-// Only initialize on the client side
 function getFirebaseAuth() {
   if (typeof window === 'undefined') return null
   if (!firebaseConfig.apiKey) return null
@@ -35,26 +31,9 @@ export async function signInWithGoogle(): Promise<string> {
   return result.user.getIdToken()
 }
 
-export function setupRecaptcha(containerId: string): RecaptchaVerifier {
-  const auth = getFirebaseAuth()
-  if (!auth) throw new Error('Firebase not available')
-  return new RecaptchaVerifier(auth, containerId, { size: 'invisible', callback: () => {} })
-}
-
-export async function sendOTP(phone: string, recaptchaVerifier: RecaptchaVerifier): Promise<ConfirmationResult> {
-  const auth = getFirebaseAuth()
-  if (!auth) throw new Error('Firebase not available')
-  return signInWithPhoneNumber(auth, phone, recaptchaVerifier)
-}
-
-export async function verifyOTP(confirmationResult: ConfirmationResult, otp: string): Promise<string> {
-  const result = await confirmationResult.confirm(otp)
-  return result.user.getIdToken()
-}
-
 export async function firebaseSignOut(): Promise<void> {
   const auth = getFirebaseAuth()
   if (auth) await signOut(auth)
 }
 
-export type { FirebaseUser, ConfirmationResult }
+export type { FirebaseUser }

@@ -36,7 +36,45 @@ def start_session(
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user)
 ):
-    # 1. Query eligible questions
+    # ── Free tier enforcement ──────────────────────────────────────────────────
+    if not getattr(user, 'is_subscribed', False):
+        
+        is_full_mock = req.mode == 'FULL_MOCK' or (
+            req.total_q >= 100 and not req.subject_filter
+        )
+
+        if is_full_mock:
+            if getattr(user, 'full_mock_used', False):
+                raise HTTPException(403, detail={
+                    "code":    "FREE_LIMIT_FULL_MOCK",
+                    "message": "You have used your free full mock test. Subscribe to unlock unlimited tests.",
+                })
+
+        else:
+            # Subject test
+            subject = req.subject_filter
+            if not subject:
+                raise HTTPException(400, "Subject filter required for topic tests")
+
+            subjects_used = getattr(user, 'subjects_used', []) or []
+            if isinstance(subjects_used, str):
+                import json
+                subjects_used = json.loads(subjects_used)
+
+            if subject in subjects_used:
+                raise HTTPException(403, detail={
+                    "code":    "FREE_LIMIT_SUBJECT_REPEAT",
+                    "message": f"You have already used your free {subject} test. Subscribe to unlock unlimited tests.",
+                    "subject": subject,
+                })
+
+            if len(subjects_used) >= 3:
+                raise HTTPException(403, detail={
+                    "code":    "FREE_LIMIT_SUBJECTS",
+                    "message": "You have used all 3 free subject tests. Subscribe to unlock unlimited tests.",
+                })
+
+    # ── Existing question query ────────────────────────────────────────────────
     q = db.query(MCQ).filter(
         MCQ.verification_passed == True,
         (MCQ.audit == None) | (MCQ.audit["verdict"].astext == "PASS")
@@ -51,7 +89,7 @@ def start_session(
 
     selected = random.sample(all_mcqs, req.total_q)
 
-    # 2. Create session
+    # ── Create session ─────────────────────────────────────────────────────────
     session = MockSession(
         session_id=uuid.uuid4(),
         user_id=user.user_id,
@@ -64,9 +102,9 @@ def start_session(
         status="IN_PROGRESS"
     )
     db.add(session)
-    db.flush()  # flush to get session_id before writing children
+    db.flush()
 
-    # 3. ✅ CRITICAL: Snapshot the question set — this is now the source of truth
+    # ── Snapshot questions ─────────────────────────────────────────────────────
     for position, mcq in enumerate(selected, start=1):
         sq = SessionQuestion(
             session_id=session.session_id,
@@ -77,6 +115,25 @@ def start_session(
             correct_index_snapshot=mcq.correct_index,
         )
         db.add(sq)
+
+    # ── Update free tier usage ─────────────────────────────────────────────────
+    if not getattr(user, 'is_subscribed', False):
+        import json
+        from sqlalchemy import text
+
+        if is_full_mock:
+            user.full_mock_used = True
+        else:
+            subjects_used = getattr(user, 'subjects_used', []) or []
+            if isinstance(subjects_used, str):
+                subjects_used = json.loads(subjects_used)
+            if req.subject_filter not in subjects_used:
+                subjects_used.append(req.subject_filter)
+            # Use raw SQL for JSONB update
+            db.execute(
+                text("UPDATE users SET subjects_used = :val WHERE user_id = :uid"),
+                {"val": json.dumps(subjects_used), "uid": str(user.user_id)}
+            )
 
     db.commit()
     db.refresh(session)

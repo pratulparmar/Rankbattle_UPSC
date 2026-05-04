@@ -77,8 +77,20 @@ class ChatRequest(BaseModel):
 @router.post("/chat")
 async def chat_stream(
     body: ChatRequest,
-    user: User = Depends(get_current_user)
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),      # ← add db dependency
 ):
+    # ── Free tier enforcement ──────────────────────────────────────────────────
+    if not getattr(user, 'is_subscribed', False):
+        used = getattr(user, 'coach_messages_used', 0) or 0
+        if used >= 5:
+            raise HTTPException(403, detail={
+                "code":    "FREE_LIMIT_COACH",
+                "message": "You have used all 5 free AI Coach messages. Subscribe to unlock unlimited coaching.",
+            })
+        # Increment counter
+        user.coach_messages_used = used + 1
+        db.commit()
     if not ANTHROPIC_API_KEY:
         raise HTTPException(500, "Anthropic API key not configured")
 

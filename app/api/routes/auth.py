@@ -204,6 +204,9 @@ def get_me(current_user: User = Depends(get_current_user)):
         "subscribed_at":    str(current_user.subscribed_at) if getattr(current_user, "subscribed_at", None) else None,
         "streak":           current_user.streak or 0,
         "created_at":       str(current_user.created_at),
+        "full_mock_used":      getattr(current_user, "full_mock_used", False) or False,
+        "subjects_used":       getattr(current_user, "subjects_used", []) or [],
+        "coach_messages_used": getattr(current_user, "coach_messages_used", 0) or 0,
     }
 
 

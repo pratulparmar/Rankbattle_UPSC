@@ -51,6 +51,10 @@ class User(Base):
     is_subscribed    = Column(Boolean, default=False)
     subscribed_at    = Column(TIMESTAMP, nullable=True)
     subscription_id  = Column(Text, nullable=True)
+    # Free tier tracking
+    full_mock_used      = Column(Boolean, default=False)
+    subjects_used       = Column(JSONB, default=list)
+    coach_messages_used = Column(Integer, default=0)
 
     sessions = relationship("MockSession", back_populates="user")
 

@@ -42,7 +42,7 @@ interface StoredResult {
 }
 
 const LABELS = ['A', 'B', 'C', 'D'] as const;
-const API    = process.env.NEXT_PUBLIC_API_URL || 'https://rankbattleupsc-production.up.railway.app';
+const API    = process.env.NEXT_PUBLIC_API_URL;
 
 function grade(pct: number) {
   if (pct >= 80) return { label: 'Excellent',  color: '#16a34a', bg: '#f0fdf4', border: '#86efac' };

@@ -67,7 +67,7 @@ function TestStartInner() {
   const [error,         setError]         = useState('');
   const [paywallReason, setPaywallReason] = useState<'full_mock' | 'subject_repeat' | 'subjects_limit' | 'coach' | null>(null);
 
-  const BASE = process.env.NEXT_PUBLIC_API_URL ?? 'https://rankbattleupsc-production.up.railway.app';
+  const BASE = process.env.NEXT_PUBLIC_API_URL;
 
   async function startTest() {
     if (!token) { setError('Not authenticated. Please log in.'); return; }

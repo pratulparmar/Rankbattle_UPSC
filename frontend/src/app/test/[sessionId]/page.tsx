@@ -100,7 +100,7 @@ export default function TestSessionPage() {
   const qStartRef = useRef<number>(Date.now());
   const timePerQ  = useRef<number[]>([]);
 
-  const BASE = process.env.NEXT_PUBLIC_API_URL ?? 'https://rankbattleupsc-production.up.railway.app';
+  const BASE = process.env.NEXT_PUBLIC_API_URL;
 
   // ── Helper: bank time for current question then move ─────────────────────────
   // Call this every time `current` is about to change.

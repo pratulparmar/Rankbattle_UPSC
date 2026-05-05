@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import BottomNav from "@/components/BottomNav";
 
-const API = "https://rankbattleupsc-production.up.railway.app";
+const API = process.env.NEXT_PUBLIC_API_URL;
 
 // ── Safety helpers ─────────────────────────────────────────────────────────────
 const safeNum = (v: any, fb = 0): number => (v == null || isNaN(Number(v)) ? fb : Number(v));

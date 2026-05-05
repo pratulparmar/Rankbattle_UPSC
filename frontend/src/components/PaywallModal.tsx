@@ -16,7 +16,7 @@ const PLAN_CONFIG = {
   monthly: { label: '30-Day Booster',  price: 999,  amount: 99900,  period: 'per month',   cta: 'Get 30-Day Booster — ₹999 →'    },
 }
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'https://rankbattleupsc-production.up.railway.app'
+const API = process.env.NEXT_PUBLIC_API_URL
 
 // ── Countdown ──────────────────────────────────────────────────────────────────
 function usePrelimsDays() {

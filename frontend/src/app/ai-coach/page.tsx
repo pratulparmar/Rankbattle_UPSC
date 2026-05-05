@@ -20,7 +20,7 @@ interface WeakArea {
 }
 
 // ── Constants ──────────────────────────────────────────────────────────────────
-const API = process.env.NEXT_PUBLIC_API_URL || 'https://rankbattleupsc-production.up.railway.app';
+const API = process.env.NEXT_PUBLIC_API_URL;
 
 const OPENING = `What topic do you want to master today, and what's your current level with it?`;
 

@@ -153,7 +153,7 @@ export default function Login() {
       </div>
 
       <p style={{ marginTop: 24, fontSize: 11, color: 'var(--ink-faint)', textAlign: 'center' }}>
-        1,402 aspirants currently preparing
+        Every serious aspirant is one test ahead of you.
       </p>
     </div>
   )

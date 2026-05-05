@@ -9,6 +9,7 @@ from app.db.database import get_db
 from app.models.models import User
 from app.schemas.schemas import RegisterRequest, LoginRequest, TokenResponse
 from app.core.auth import hash_password, verify_password, create_access_token, decode_token
+from app.services.email_service import send_welcome_email, send_receipt_email
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -91,6 +92,7 @@ def register(req: RegisterRequest, db: Session = Depends(get_db)):
         created_at=datetime.utcnow(),
     )
     db.add(user); db.commit(); db.refresh(user)
+    send_welcome_email(user.email, user.name) 
     return {"access_token": create_access_token({"sub": str(user.user_id), "name": user.name})}
 
 
@@ -308,8 +310,26 @@ def verify_payment(
     expected = hmac.new(RAZORPAY_KEY_SECRET.encode(), body.encode(), hashlib.sha256).hexdigest()
     if not hmac.compare_digest(expected, req.razorpay_signature):
         raise HTTPException(400, "Payment verification failed")
+
     current_user.is_subscribed   = True
     current_user.subscribed_at   = datetime.utcnow()
     current_user.subscription_id = req.razorpay_payment_id
     db.commit()
+ 
+    # Fetch plan from Razorpay order notes
+    try:
+        import razorpay
+        rz_client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
+        order     = rz_client.order.fetch(req.razorpay_order_id)
+        plan      = order.get("notes", {}).get("plan", "sprint")
+    except Exception:
+        plan = "sprint"
+ 
+    send_receipt_email(
+        user_email  = current_user.email,
+        user_name   = current_user.name or "Aspirant",
+        plan        = plan,
+        payment_id  = req.razorpay_payment_id,
+    )
+ 
     return {"success": True, "message": "Subscription activated!"}

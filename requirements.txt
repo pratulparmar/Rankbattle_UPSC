@@ -14,3 +14,4 @@ firebase-admin
 razorpay
 google-auth
 cryptography
+resend

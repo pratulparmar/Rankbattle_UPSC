@@ -243,32 +243,52 @@ def save_phone(
     db.commit()
     return {"success": True}
 
-
+# REPLACE WITH:
 @router.post("/subscription/create-order")
 def create_order(
+    plan: str = "sprint",         # ← query param: "sprint" | "monthly"
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     if not RAZORPAY_KEY_ID:
         raise HTTPException(503, "Razorpay not configured")
+
+    # ── Plan amounts (paise) ──────────────────────────────────────────────────
+    PLAN_AMOUNTS = {
+        "sprint":  75900,   # ₹759 one-time
+        "monthly": 99900,   # ₹999/month
+    }
+    PLAN_LABELS = {
+        "sprint":  "Prelims '26 Sprint",
+        "monthly": "30-Day Booster",
+    }
+
+    if plan not in PLAN_AMOUNTS:
+        raise HTTPException(400, f"Invalid plan '{plan}'. Must be 'sprint' or 'monthly'.")
+
+    amount = PLAN_AMOUNTS[plan]
+
     import razorpay
     client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
     order = client.order.create({
-        "amount": 79900,
+        "amount":   amount,
         "currency": "INR",
         "notes": {
             "user_id": str(current_user.user_id),
             "email":   current_user.email,
+            "plan":    plan,
         },
     })
     return {
         "order_id": order["id"],
-        "amount":   79900,
+        "amount":   amount,
         "currency": "INR",
         "key":      RAZORPAY_KEY_ID,
         "name":     current_user.name,
         "email":    current_user.email,
         "phone":    getattr(current_user, "phone", "") or "",
+        "plan":     plan,
+        "plan_label": PLAN_LABELS[plan],
     }
 
 

@@ -123,58 +123,82 @@ export default function ProfilePage() {
 
   // ── Trigger payment for a given plan ──────────────────────────────────────────
   const startPayment = async (plan: Plan, userPhone: string) => {
-    if (!token) return
-    setPayLoading(true)
-    setPayError('')
-    const planCfg = PLAN_CONFIG[plan]
+  if (!token) { setPayError('Please log in to continue.'); return }
 
-    try {
-      const res = await fetch(`${API}/auth/subscription/create-order?plan=${plan}`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      if (!res.ok) throw new Error('Could not create order')
-      const order = await res.json()
+  setPayLoading(true)
+  setPayError('')
 
-      await loadRazorpay()
+  const planCfg = PLAN_CONFIG[plan]
 
-      const rzp = new (window as any).Razorpay({
-        key:         order.key,
-        amount:      planCfg.amount,
-        currency:    order.currency || 'INR',
-        name:        'RankBattle UPSC',
-        description: planCfg.label,
-        image:       '/logo.png',
-        order_id:    order.order_id,
-        prefill:     { name: order.name, email: order.email, contact: userPhone },
-        theme:       { color: plan === 'sprint' ? '#d4a017' : '#4f46e5' },
-        modal: {
-          ondismiss: () => setPayLoading(false),
-        },
-        handler: async (response: any) => {
-          const verifyRes = await fetch(`${API}/auth/subscription/verify`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-            body: JSON.stringify({
-              razorpay_order_id:   response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature:  response.razorpay_signature,
-            }),
-          })
-          if (verifyRes.ok) {
-            setProfile(p => p ? { ...p, is_subscribed: true, subscribed_at: new Date().toISOString() } : p)
-          } else {
-            setPayError('Payment verification failed. Contact support.')
-          }
+  try {
+    // ── Create order on backend ─────────────────────────────────────────────
+    const res = await fetch(
+      `${API}/auth/subscription/create-order?plan=${plan}`,
+      { method: 'POST', headers: { Authorization: `Bearer ${token}` } }
+    )
+    if (!res.ok) throw new Error('Could not create order')
+    const order = await res.json()
+
+    // ── Validation: ensure backend amount matches UI selection ──────────────
+    if (order.amount !== planCfg.amount) {
+      console.error(
+        `[Payment] Amount mismatch! UI selected ${planCfg.amount} paise (₹${planCfg.price}) ` +
+        `but backend returned ${order.amount} paise. Aborting.`
+      )
+      throw new Error('Payment configuration error. Please refresh and try again.')
+    }
+
+    console.log(
+      `[Payment] ✅ Plan: ${plan} | Amount: ₹${planCfg.amount / 100} | Order: ${order.order_id}`
+    )
+
+    await loadRazorpay()
+
+    const rzp = new (window as any).Razorpay({
+      key:         order.key,
+      amount:      order.amount,       // ← use backend value (already validated)
+      currency:    order.currency || 'INR',
+      name:        'RankBattle UPSC',
+      description: order.plan_label || planCfg.label,
+      order_id:    order.order_id,
+      prefill:     { name: order.name, email: order.email, contact: userPhone },
+      theme:       { color: plan === 'sprint' ? '#d4a017' : '#4f46e5' },
+      modal: {
+        ondismiss: () => {
+          console.log('[Payment] User dismissed Razorpay modal')
           setPayLoading(false)
         },
-      })
-      rzp.open()
-    } catch (e: any) {
-      setPayError(e?.message || 'Payment failed. Please try again.')
-      setPayLoading(false)
-    }
+      },
+      handler: async (response: any) => {
+        console.log('[Payment] Payment success, verifying with backend...')
+        const verifyRes = await fetch(`${API}/auth/subscription/verify`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({
+            razorpay_order_id:   response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature:  response.razorpay_signature,
+          }),
+        })
+        if (verifyRes.ok) {
+          console.log('[Payment] ✅ Verified. Activating subscription.')
+          setProfile(p => p ? { ...p, is_subscribed: true, subscribed_at: new Date().toISOString() } : p)
+          setTimeout(() => window.location.reload(), 1200)
+        } else {
+          setPayError('Payment verification failed. Contact support.')
+        }
+        setPayLoading(false)
+      },
+    })
+
+    rzp.open()
+
+  } catch (e: any) {
+    setPayError(e?.message || 'Payment failed. Please try again.')
+    setPayLoading(false)
   }
+}
+  
 
   const handleSubscribe = (plan: Plan) => {
     const userPhone = phone || profile?.phone || ''

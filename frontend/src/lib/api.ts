@@ -18,7 +18,7 @@ api.interceptors.response.use(
     if (err.response?.status === 401 && typeof window !== 'undefined') {
       localStorage.removeItem('token')
       localStorage.removeItem('user')
-      window.location.href = '/login'
+      window.location.href = '/'
     }
     return Promise.reject(err)
   }
@@ -80,4 +80,5 @@ export const getFeynmanExplanation = async (
   return res.data;
 };
  
-export const guestLogin = () => api.post('/auth/guest')
+export const guestLogin = (payload: { name?: string; org?: string } = {}) =>
+  api.post('/auth/guest', payload)

@@ -118,3 +118,24 @@ class SessionQuestion(Base):
         UniqueConstraint("session_id", "position", name="uq_session_position"),
         UniqueConstraint("session_id", "mcq_id",   name="uq_session_mcq"),
     )
+
+
+class Visit(Base):
+    """Lightweight visitor log for the public demo. One row per new visitor
+    who enters as a guest (recruiters checking out the app). Captures whatever
+    they optionally share (name/org) plus server-side IP geo/org enrichment.
+    Auto-created by Base.metadata.create_all — no migration required."""
+    __tablename__ = "visits"
+    id         = Column(Integer, primary_key=True, autoincrement=True)
+    user_id    = Column(UUID(as_uuid=True), nullable=True)
+    name       = Column(Text, nullable=True)
+    org        = Column(Text, nullable=True)
+    ip         = Column(Text, nullable=True)
+    ip_org     = Column(Text, nullable=True)   # ISP / organization from IP
+    city       = Column(Text, nullable=True)
+    region     = Column(Text, nullable=True)
+    country    = Column(Text, nullable=True)
+    user_agent = Column(Text, nullable=True)
+    referrer   = Column(Text, nullable=True)
+    path       = Column(Text, nullable=True)
+    created_at = Column(TIMESTAMP)

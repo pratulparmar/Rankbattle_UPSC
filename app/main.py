@@ -14,6 +14,9 @@ app = FastAPI(title="RankBattle UPSC", version="1.0.0")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["https://rankbattle-upsc.vercel.app","https://upsc.rankbattle.in","http://localhost:3000"],
+    # Also allow Vercel preview deploys and any rankbattle.in subdomain (guest
+    # demo uses Bearer tokens, not cookies, so credentials stay off).
+    allow_origin_regex=r"https://([a-z0-9-]+\.)*(vercel\.app|rankbattle\.in)",
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],

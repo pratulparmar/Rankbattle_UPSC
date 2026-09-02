@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Header
+from fastapi import APIRouter, Depends, HTTPException, Header, Request
 from sqlalchemy.orm import Session
 from datetime import datetime
 from typing import Optional
@@ -10,6 +10,7 @@ from app.models.models import User
 from app.schemas.schemas import RegisterRequest, LoginRequest, TokenResponse
 from app.core.auth import hash_password, verify_password, create_access_token, decode_token
 from app.services.email_service import send_welcome_email, send_receipt_email
+from app.services.visit_service import record_visit
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -104,19 +105,33 @@ def login(req: LoginRequest, db: Session = Depends(get_db)):
     return {"access_token": create_access_token({"sub": str(user.user_id), "name": user.name})}
 
 
+class GuestRequest(BaseModel):
+    name: Optional[str] = None
+    org:  Optional[str] = None
+
+
 @router.post("/guest", response_model=TokenResponse)
-def guest_login(db: Session = Depends(get_db)):
-    GUEST_EMAIL = "guest@rankbattle.demo"
-    GUEST_NAME  = "Guest Aspirant"
-    user = db.query(User).filter(User.email == GUEST_EMAIL).first()
-    if not user:
-        user = User(
-            email=GUEST_EMAIL, name=GUEST_NAME,
-            password=hash_password("guest_demo_2024"),
-            created_at=datetime.utcnow(),
-        )
-        db.add(user); db.commit(); db.refresh(user)
-    token = create_access_token({"sub": str(user.user_id), "name": GUEST_NAME, "guest": True})
+def guest_login(request: Request, body: Optional[GuestRequest] = None, db: Session = Depends(get_db)):
+    """Credential-free entry for the public demo. Every new visitor gets their
+    own throwaway account so the whole app works with no login wall. Optionally
+    tags the account with a self-reported name + organisation, and always logs
+    the visit (with IP geo/org enrichment) so we can see who checked it out."""
+    name = (body.name.strip() if body and body.name else "")
+    org  = (body.org.strip() if body and body.org else "")
+    display = (name[:80] if name else "") or "Guest Aspirant"
+
+    user = User(
+        email=f"guest_{uuid.uuid4().hex}@rankbattle.demo",
+        name=display,
+        password=hash_password(uuid.uuid4().hex),
+        created_at=datetime.utcnow(),
+    )
+    db.add(user); db.commit(); db.refresh(user)
+
+    # Best-effort visitor log (commits its own row; never blocks entry).
+    record_visit(request, db, user_id=user.user_id, name=name or None, org=org or None)
+
+    token = create_access_token({"sub": str(user.user_id), "name": display, "guest": True})
     return {"access_token": token}
 
 
